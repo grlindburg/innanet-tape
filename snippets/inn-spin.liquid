@@ -1,0 +1,51 @@
+{%- comment -%}
+  360 turnaround viewer. A frame sequence stepped by drag / swipe, not true 3D.
+  Renders nothing unless the product has a frame set listed below.
+
+  Frames are theme assets, numbered from 01, in two sizes:
+    <prefix>-m-NN.webp   phones   (540 x 810)
+    <prefix>-d-NN.webp   desktop  (900 x 1350)
+  Build them with tools/spin-frames.sh in the repo root.
+
+  Usage, inside .inn-product__main:  {% render 'inn-spin', product: product %}
+{%- endcomment -%}
+{%- liquid
+  assign spin_prefix = blank
+  assign spin_count = 0
+  assign spin_reverse = false
+  comment
+    DORMANT since 2026-09-28 (Malik paused the 360 work). No product has a frame
+    set, so this snippet renders nothing. To switch a product on, set its prefix
+    and frame count by handle, for example:
+      if product.handle == 'innanetape-orange-soda-tee'
+        assign spin_prefix = 'inn-spin-tee'
+        assign spin_count = 36
+      endif
+  endcomment
+-%}
+{%- if spin_prefix != blank and spin_count > 1 -%}
+  {{ 'inn-spin.css' | asset_url | stylesheet_tag }}
+  {%- assign spin_first_m = spin_prefix | append: '-m-01.webp' -%}
+  {%- assign spin_first_d = spin_prefix | append: '-d-01.webp' -%}
+  <div class="inn-spin is-active" data-inn-spin data-count="{{ spin_count }}"{% if spin_reverse %} data-reverse{% endif %}>
+    <div class="inn-spin__stage" data-inn-spin-stage tabindex="0" role="img" aria-label="{{ product.title | escape }}, 360 degree view. Drag or use the arrow keys to rotate.">
+      <img class="inn-spin__poster" data-inn-spin-poster
+           src="{{ spin_first_d | asset_url }}"
+           srcset="{{ spin_first_m | asset_url }} 540w, {{ spin_first_d | asset_url }} 900w"
+           sizes="(max-width: 749px) 100vw, 45vw"
+           width="900" height="1350" alt="" fetchpriority="high" decoding="async">
+      <canvas class="inn-spin__canvas" data-inn-spin-canvas aria-hidden="true"></canvas>
+      <span class="inn-spin__hint" data-inn-spin-hint>Drag to rotate</span>
+      <span class="inn-spin__bar" data-inn-spin-bar aria-hidden="true"><i></i></span>
+    </div>
+  </div>
+  <div class="inn-spin__modes" data-inn-spin-modes hidden>
+    <button type="button" class="inn-spin__mode is-active" data-inn-spin-mode="spin" aria-pressed="true">360</button>
+    <button type="button" class="inn-spin__mode" data-inn-spin-mode="photo" aria-pressed="false">Photo</button>
+  </div>
+  <script type="application/json" data-inn-spin-frames>
+    {"m":[{%- for i in (1..spin_count) -%}{%- assign n = i | prepend: '0' | slice: -2, 2 -%}{{ spin_prefix | append: '-m-' | append: n | append: '.webp' | asset_url | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%}],
+     "d":[{%- for i in (1..spin_count) -%}{%- assign n = i | prepend: '0' | slice: -2, 2 -%}{{ spin_prefix | append: '-d-' | append: n | append: '.webp' | asset_url | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%}]}
+  </script>
+  <script defer src="{{ 'inn-spin.js' | asset_url }}"></script>
+{%- endif -%}

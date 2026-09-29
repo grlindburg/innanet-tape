@@ -1,0 +1,71 @@
+
+
+var productDataElement = document.getElementById('product-data');
+var productVariantsList = JSON.parse(productDataElement.dataset.product).variants;
+
+var variantInput = document.getElementById('ultimate-selected-variant');
+
+var variantObserver = new MutationObserver(function(mutationsList) {
+  for (var mutation of mutationsList) {
+    if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
+      var variantValue = variantInput.value
+
+      productVariantsList.forEach(variant => {
+        if(variant.id == variantValue){
+          var productPrice = document.querySelector('.price')
+          productPrice.textContent = Shopify.formatMoney(2000, '${{amount}}')
+          if(variant.compare_at_price > 0){
+          var productComparePrice = document.querySelector('.sale')
+          productComparePrice.textContent = Shopify.formatMoney(2000, '${{amount}}')
+          }
+        }
+      })
+      
+      
+    }
+  }
+});
+
+variantObserver.observe(variantInput, { attributes: true });
+    
+
+
+
+// Add an event listener to each small picture
+var smallPictures = document.querySelectorAll('div.product-img-grid-item img');
+smallPictures.forEach(function(smallPicture) {
+  smallPicture.addEventListener('click', function() {
+    changeBigPicture(this);
+  });
+});
+
+function changeBigPicture(smallPicture) {
+  var bigPicture = document.querySelectorAll('div.featured-product-image img')[0];
+  var zoomedProductImg = document.querySelector('.popup-product-img img')
+  var newSrc = smallPicture.src
+  var newSrcSet = smallPicture.getAttribute('srcset')
+    .replace(/(\d+)w/g, '440w')
+    .replace(/height=\d+&/g, 'height=440')
+    .replace(/width=\d+&/g, 'width=440');
+
+  var newSrcSetZoom = newSrcSet
+    .replace(/(\d+)w/g, '740w')
+    .replace(/height=\d+&/g, 'height=740')
+    .replace(/width=\d+&/g, 'width=740');
+  
+  var newAlt = smallPicture.alt;
+
+  bigPicture.src = newSrc;
+  bigPicture.setAttribute('srcset', newSrcSet);
+  bigPicture.alt = newAlt;
+
+  zoomedProductImg.setAttribute('srcset', newSrcSetZoom);
+  
+}
+
+// var selectElement = document.querySelector('[data-node-type="add-to-cart-option-select"]');
+
+// selectElement.addEventListener('change', function() {
+//   var selectedValue = selectElement.value;
+//   console.log('Selected value:', selectedValue);
+// });

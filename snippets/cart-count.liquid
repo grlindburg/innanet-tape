@@ -1,0 +1,77 @@
+{% if template != 'cart' %}
+  <style>
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    .pulse {
+      animation: pulse 0.3s ease-in-out;
+    }
+  </style>
+
+  <div class="cart-text" style="
+    width: fit-content;
+    margin-top: {{ cart_text_margin_top }}px;
+    margin-bottom: {% if cart_text_margin_bottom %}{{ cart_text_margin_bottom }}px{% else %}0px{% endif %};
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    ">
+    {% if settings.cart_drawer_enabled %}
+      <div style="color: {{ cart_text_color }};">{{ 'cart.general.title' | t }}</div>
+    {% else %}
+      <a href="{{ routes.cart_url }}" style="padding: 0; text-decoration: none; color: {{ cart_text_color }};">{{ 'cart.general.title' | t }}</a>
+    {% endif %}
+
+    <div class="cart-count" style="
+        background-color: {{ cart_bg_color }}; 
+        color: {{ cart_count_color }};
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 10px;">
+      {{ cart.item_count }}
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      let previousCount = {{ cart.item_count }};
+      
+      function updateCartCount(cart) {
+        const cartCountElements = document.querySelectorAll('.cart-count');
+        if (cartCountElements && cart.item_count !== previousCount) {
+          cartCountElements.forEach(element => {
+            element.textContent = cart.item_count;
+            element.classList.add('pulse');
+            setTimeout(() => element.classList.remove('pulse'), 300);
+          });
+          previousCount = cart.item_count;
+        }
+      }
+
+      // Listen for cart changes
+      document.addEventListener('cart:change', function(event) {
+        updateCartCount(event.detail);
+      });
+
+      // Initial cart count
+      fetch('/cart.js')
+        .then(response => response.json())
+        .then(cart => updateCartCount(cart))
+        .catch(error => console.error('Error fetching cart:', error));
+    });
+  </script>
+{% endif %}

@@ -1,0 +1,577 @@
+{%- style -%}
+.email-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  padding: 0;
+  border-radius: {% if section.settings.remove_border_radius %}0{% else %}8px{% endif %};
+  max-width: 400px;
+  width: 90%;
+  z-index: 1000;
+  display: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.email-popup.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}
+
+.email-popup__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.email-popup__overlay.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.email-popup__overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000;
+  opacity: 0.7;
+  z-index: 999;
+  display: none;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.email-popup__overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(0,0,0,0.4));
+  mix-blend-mode: multiply;
+}
+
+/* Fallback for browsers that don't support backdrop-filter */
+@supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
+  .email-popup__overlay {
+    background: rgba(0, 0, 0, 0.85);
+  }
+}
+
+.email-popup__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  color: {{ section.settings.close_button_color }};
+  font-weight: 300;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.email-popup__close:hover {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.email-popup__title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  margin-top: 0;
+  color: {{ section.settings.title_color }};
+}
+
+.email-popup__description {
+  color: {{ section.settings.description_color }};
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.email-popup__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.email-popup__input {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  background: {{ section.settings.input_background_color }};
+  color: {{ section.settings.input_text_color }};
+  width: 100%;
+}
+
+.email-popup__input::placeholder {
+  color: {{ section.settings.input_placeholder_color }};
+}
+
+.email-popup__submit {
+  background: {{ section.settings.submit_button_color }};
+  color: {{ section.settings.submit_button_text_color }};
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.9rem;
+  width: auto;
+  align-self: flex-start;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-family: var(--btn_font), sans-serif;
+}
+
+.email-popup__submit:hover {
+  background: {{ section.settings.submit_button_color | color_modify: 'lightness', 10 }};
+}
+
+.email-popup__image {
+  width: 50%;
+  background-size: cover;
+  background-position: center;
+  border-radius: {% if section.settings.remove_border_radius %}0{% else %}8px 0 0 8px{% endif %};
+  min-height: 100%;
+  object-fit: cover;
+}
+
+.email-popup__content {
+  width: 50%;
+  padding: 2rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding-top: 4rem;
+  background: {% if section.settings.disable_bottom_fade %}
+    {{ section.settings.form_background_color }}
+  {% else %}
+    linear-gradient(
+      to bottom,
+      {{ section.settings.form_background_color }} 0%,
+      {{ section.settings.form_background_color }} 50%,
+      {{ section.settings.form_background_color | color_modify: 'alpha', 0.3 }} 100%
+    )
+  {% endif %};
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  border-radius: {% if section.settings.remove_border_radius %}0{% else %}0 8px 8px 0{% endif %};
+  min-height: 100%;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+/* Add this new style for when content takes full width (no image) */
+.email-popup__content[style*="width: 100%"] {
+  border-radius: {% if section.settings.remove_border_radius %}0{% else %}8px{% endif %};
+}
+
+.email-popup__submit {
+  position: relative;
+  z-index: 1;
+}
+
+.email-popup--with-image {
+  max-width: 690px;
+  height: auto;
+  min-height: 500px;
+}
+
+.email-popup__privacy-text {
+  color: {{ section.settings.privacy_text_color }};
+  font-size: 0.75rem;
+  line-height: 1.4;
+  margin-top: 0.5rem;
+}
+
+.email-popup__top-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Add a pseudo-element for additional blur in the bottom half */
+.email-popup__content::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50%;
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  pointer-events: none;
+  {% if section.settings.disable_bottom_fade %}
+    display: none;
+  {% endif %}
+}
+
+@media screen and (max-width: 768px) {
+  .email-popup__image {
+    display: none;
+  }
+  
+  .email-popup__content {
+    width: 100% !important;
+    border-radius: {% if section.settings.remove_border_radius %}0{% else %}8px{% endif %};
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: {{ section.settings.form_background_color }};
+  }
+
+  .email-popup {
+    max-width: 400px;
+    min-height: auto;
+  }
+
+  .email-popup__content::after {
+    display: none;
+  }
+}
+
+.email-popup__success {
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.email-popup__success .email-popup__title {
+  color: {{ section.settings.success_title_color }};
+}
+
+.email-popup__success .email-popup__description {
+  color: {{ section.settings.success_message_color }};
+}
+{%- endstyle -%}
+
+<div class="email-popup__overlay" data-popup-overlay role="dialog" aria-modal="true" aria-labelledby="email-popup-title" aria-hidden="true">
+  <div class="email-popup {% if section.settings.popup_image != blank %}email-popup--with-image{% endif %}" 
+       data-popup 
+       data-enable-test-mode="{% if section.settings.enable_test_mode %}true{% else %}false{% endif %}">
+    {% if section.settings.popup_image != blank %}
+      <div class="email-popup__image" style="background-image: url('{{ section.settings.popup_image | img_url: 'master' }}')"></div>
+      <div class="email-popup__content">
+    {% else %}
+      <div class="email-popup__content" style="width: 100%">
+    {% endif %}
+      <button class="email-popup__close" data-popup-close aria-label="Close popup">✕</button>
+      
+      {%- form 'customer', class: 'email-popup__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        
+        <div class="email-popup__top-content">
+          <h2 class="email-popup__title" id="email-popup-title">{{ section.settings.popup_title }}</h2>
+          
+          <p class="email-popup__description">
+            {{ section.settings.popup_description }}
+          </p>
+
+          <input
+            type="email"
+            name="contact[email]"
+            class="email-popup__input"
+            placeholder="ENTER EMAIL HERE *"
+            required
+          >
+          
+          {% if section.settings.privacy_text != blank %}
+            <p class="email-popup__privacy-text">
+              {{ section.settings.privacy_text }}
+            </p>
+          {% endif %}
+        </div>
+        
+        <button type="submit" class="email-popup__submit">
+          JOIN
+        </button>
+
+        {%- if form.posted_successfully? -%}
+          <script>
+            // Redirect to show success message
+            window.location.href = window.location.pathname + '?customer_posted=true#contact_form';
+          </script>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+    {
+      "name": "Email Popup",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Content & Data"
+        },
+        {
+          "type": "image_picker",
+          "id": "popup_image",
+          "label": "Popup Image"
+        },
+        {
+          "type": "text",
+          "id": "popup_title",
+          "label": "Popup Title",
+          "default": "GET NOTIFIED OF NEXT DROP"
+        },
+        {
+          "type": "textarea",
+          "id": "popup_description",
+          "label": "Popup Description",
+          "default": "Lorem ipsum dolor sit amet consectetur. Mauris orci viverra nec ac aliquet elit imperdiet egestas sit."
+        },
+        {
+          "type": "textarea",
+          "id": "privacy_text",
+          "label": "Privacy Text",
+          "default": "By signing up, you agree to receive email marketing and accept our privacy policy.",
+          "info": "Text to display below email input (privacy policy, terms, etc.)"
+        },
+        {
+          "type": "text",
+          "id": "success_title",
+          "label": "Success Title",
+          "default": "Thank You!"
+        },
+        {
+          "type": "textarea",
+          "id": "success_message",
+          "label": "Success Message",
+          "default": "You've been successfully added to our mailing list. Stay tuned for updates!"
+        },    
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "color",
+          "id": "form_background_color",
+          "label": "Form Background Color",
+          "default": "#F2F2F2"
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Title Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "description_color",
+          "label": "Description Color",
+          "default": "#1b1b1b"
+        },
+        {
+          "type": "color",
+          "id": "privacy_text_color",
+          "label": "Privacy Text Color",
+          "default": "#1b1b1b"
+        },
+        {
+          "type": "color",
+          "id": "input_background_color",
+          "label": "Input Background Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "input_text_color",
+          "label": "Input Text Color",
+          "default": "#333333"
+        },
+        {
+          "type": "color",
+          "id": "input_placeholder_color",
+          "label": "Input Placeholder Color",
+          "default": "#999999"
+        },
+        {
+          "type": "color",
+          "id": "submit_button_color",
+          "label": "Submit Button Color",
+          "default": "#FE0100"
+        },
+        {
+          "type": "color",
+          "id": "submit_button_text_color",
+          "label": "Submit Button Text Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "close_button_color",
+          "label": "Close Button Color",
+          "default": "#333333"
+        },
+        {
+          "type": "color",
+          "id": "success_title_color",
+          "label": "Success Title Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "success_message_color",
+          "label": "Success Message Color",
+          "default": "#333333"
+        },
+        {
+          "type": "header",
+          "content": "Styling"
+        },
+        {
+          "type": "checkbox",
+          "id": "disable_bottom_fade",
+          "label": "Disable Bottom Fade Effect (On Desktop)",
+          "default": false,
+          "info": "Enable this to remove the transparency effect at the bottom of the form"
+        },
+        {
+          "type": "checkbox",
+          "id": "remove_border_radius",
+          "label": "Remove Rounded Corners",
+          "default": false,
+          "info": "Enable this to remove rounded corners from the popup"
+        },
+        {
+          "type": "header",
+          "content": "Misc"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_test_mode",
+          "label": "Enable Test Mode",
+          "default": false,
+          "info": "When turned on, the email popup will appear every time you refresh the page, instead of once per visit. This makes it easier to test how it looks and works. Remember to turn it off when you're done testing!"
+        }
+      ],
+      "presets": [
+        {
+          "name": "Email Popup",
+          "category": "Promotional"
+        }
+      ]
+    }
+    {% endschema %}
+
+    <script>
+      (function() {
+  class EmailPopup {
+    constructor() {
+      this.popup = document.querySelector('[data-popup]');
+      this.overlay = document.querySelector('[data-popup-overlay]');
+      this.closeButton = document.querySelector('[data-popup-close]');
+      this.popupContent = document.querySelector('.email-popup__content');
+      this.isSuccess = window.location.search.includes('customer_posted=true');
+      this.isTestMode = this.popup.dataset.enableTestMode === 'true';
+      
+      this.init();
+    }
+    
+    init() {
+      if (this.isSuccess) {
+        this.showSuccessPopup();
+        return;
+      }
+      if (!this.isTestMode && this.wasPopupShown()) return;
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this.showPopup();
+        });
+      });
+
+      this.closeButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.hidePopup();
+      });
+      
+      this.overlay.addEventListener('click', (e) => {
+        if (e.target === this.overlay) {
+          this.hidePopup();
+        }
+      });
+
+      this.popup.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
+
+    showPopup() {
+      this.popup.classList.add('active');
+      this.overlay.classList.add('active');
+      this.overlay.style.overflow = 'hidden';
+    }
+
+    hidePopup() {
+      this.popup.classList.remove('active');
+      this.overlay.classList.remove('active');
+      this.overlay.style.overflow = '';
+      if (!this.isTestMode) {
+        this.setPopupShown();
+      }
+    }
+
+    wasPopupShown() {
+      return localStorage.getItem('emailPopupShown') === 'true';
+    }
+
+    setPopupShown() {
+      localStorage.setItem('emailPopupShown', 'true');
+    }
+
+    showSuccessPopup() {
+      const form = this.popup.querySelector('.email-popup__form');
+      form.style.display = 'none';
+      
+      const successContent = `
+        <div class="email-popup__success">
+          <h2 class="email-popup__title">{{ section.settings.success_title }}</h2>
+          <p class="email-popup__description">{{ section.settings.success_message }}</p>
+        </div>
+      `;
+      
+      this.popupContent.insertAdjacentHTML('beforeend', successContent);
+      
+      this.showPopup();
+      
+      setTimeout(() => {
+        this.hidePopup();
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }, 5000);
+    }
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    new EmailPopup();
+  });
+})();
+    </script>

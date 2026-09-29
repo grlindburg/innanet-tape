@@ -1,0 +1,155 @@
+{% style %}
+  .page-text-section {
+    padding: {{ section.settings.vertical_padding }}px {{ section.settings.horizontal_padding }}px;
+    max-width: {{ section.settings.content_width }}px;
+    margin: 10px auto 20px;
+  }
+
+  .page-text-content {
+    text-align: {{ section.settings.text_alignment }};
+    line-height: 1.6;
+  }
+
+  /* Ensure proper spacing for paragraphs */
+  .page-text-content p {
+    margin-bottom: 1.2em;
+  }
+
+  .page-text-content p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Handle line breaks created by newline_to_br filter */
+  .page-text-content br {
+    display: block;
+    margin-bottom: 0.5em;
+  }
+
+  .page-text-content h1,
+  .page-text-content h2,
+  .page-text-content h3,
+  .page-text-content h4,
+  .page-text-content h5,
+  .page-text-content h6 {
+    text-transform: capitalize;
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+  }
+
+  .page-text-content h1:first-child,
+  .page-text-content h2:first-child,
+  .page-text-content h3:first-child,
+  .page-text-content h4:first-child,
+  .page-text-content h5:first-child,
+  .page-text-content h6:first-child {
+    margin-top: 0;
+  }
+
+  /* Lists spacing */
+  .page-text-content ul,
+  .page-text-content ol {
+    margin-bottom: 1.2em;
+    padding-left: 1.5em;
+  }
+
+  .page-text-content li {
+    margin-bottom: 0.5em;
+  }
+
+  @media screen and (max-width: 768px) {
+    .page-text-section {
+      padding: {{ section.settings.vertical_padding | divided_by: 1.5 | round }}px {{ section.settings.horizontal_padding | divided_by: 1.5 | round }}px;
+      max-width: 100%;
+    }
+  }
+{% endstyle %}
+
+<div class="page-text-section">
+  <div class="page-text-content">
+    {{ page.content | newline_to_br }}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Page Text",
+    "settings": [
+      {
+        "type": "select",
+        "id": "text_alignment",
+        "label": "Text Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }, {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "range",
+        "id": "content_width",
+        "min": 400,
+        "max": 1600,
+        "step": 100,
+        "unit": "px",
+        "label": "Content Width",
+        "default": 800
+      },
+      {
+        "type": "range",
+        "id": "vertical_padding",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Vertical Padding",
+        "default": 40
+      }, {
+        "type": "range",
+        "id": "horizontal_padding",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Horizontal Padding",
+        "default": 20
+      }
+    ],
+    "presets": [
+      {
+        "name": "Page Text",
+        "category": "Text"
+      }
+    ],
+    "limit": 1,
+    "disabled_on": {
+      "templates": [
+        "404",
+        "article",
+        "blog",
+        "cart",
+        "collection",
+        "list-collections",
+        "customers/account",
+        "customers/activate_account",
+        "customers/addresses",
+        "customers/login",
+        "customers/order",
+        "customers/register",
+        "customers/reset_password",
+        "gift_card",
+        "index",
+        "product",
+        "password",
+        "search"
+      ]
+    }
+  }
+{% endschema %}

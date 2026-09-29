@@ -1,0 +1,38 @@
+<section class="inn-shop inn-search">
+  <h1 class="inn-label inn-shop__title">Search&gt;</h1>
+  <form class="inn-search__form" action="{{ routes.search_url }}" method="get" role="search">
+    <label class="visually-hidden" for="inn-search-q">Search</label>
+    <input id="inn-search-q" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search the store" autocomplete="off">
+    <input type="hidden" name="type" value="product">
+    <button type="submit" class="inn-add">Search</button>
+  </form>
+
+  {%- if search.performed -%}
+    {%- paginate search.results by 24 -%}
+      {%- if search.results_count == 0 -%}
+        <p class="inn-empty">Nothing found for "{{ search.terms }}".</p>
+      {%- else -%}
+        <div class="inn-grid">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}
+              {% render 'inn-card', product: item %}
+            {%- else -%}
+              <a class="inn-card" href="{{ item.url }}"><div class="inn-card__title">{{ item.title }}</div></a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      {%- if paginate.pages > 1 -%}
+        <nav class="inn-pager" aria-label="Pagination">
+          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">&lt; Prev</a>{%- endif -%}
+          <span>{{ paginate.current_page }} / {{ paginate.pages }}</span>
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}">Next &gt;</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</section>
+
+{% schema %}
+{ "name": "Innanet search", "settings": [] }
+{% endschema %}

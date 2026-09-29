@@ -1,0 +1,15 @@
+{%- comment -%}
+  Outputs target/rel attributes for a nav link that points outside the store,
+  so external menu items (e.g. TOUR -> innanetape.com) open in a new tab.
+  Internal links (paths, or full URLs on the shop's own domains) get nothing.
+
+  Usage: <a href="{{ link.url }}"{% render 'menu-link-target', url: link.url %}>
+{%- endcomment -%}
+{%- assign is_external = false -%}
+{%- if url contains '://' -%}
+  {%- assign is_external = true -%}
+  {%- if url contains shop.domain or url contains shop.permanent_domain -%}
+    {%- assign is_external = false -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if is_external %} target="_blank" rel="noopener"{% endif -%}

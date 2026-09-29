@@ -1,0 +1,714 @@
+{{ 'slider.css' | asset_url | stylesheet_tag }}
+{{ 'slider.js' | asset_url | script_tag }}
+
+<style>
+#CustomSlider-{{ section.id }} {
+  position: relative;
+  width: 100%;
+  height: {{ section.settings.slider_height }};
+  overflow: hidden;
+  margin-top: {{ section.settings.top_spacing }}px;
+  margin-bottom: {{ section.settings.bottom_spacing }}px;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__slide {
+  position: relative;
+  width: 100%;
+  height: {{ section.settings.slider_height }};
+  overflow: hidden;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 2;
+  width: 90%;
+  max-width: 800px;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, var(--overlay-opacity));
+  z-index: 1;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__text {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+}
+
+/* Navigation Arrows */
+#CustomSlider-{{ section.id }} .custom-slider__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__nav:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__nav--prev {
+  left: 20px;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__nav--next {
+  right: 20px;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__nav-icon {
+  width: 20px;
+  height: 20px;
+  border-top: 3px solid #000;
+  border-right: 3px solid #000;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__nav--prev .custom-slider__nav-icon {
+  transform: rotate(-135deg);
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__nav--next .custom-slider__nav-icon {
+  transform: rotate(45deg);
+}
+
+/* Volume Control */
+#CustomSlider-{{ section.id }} .custom-slider__volume {
+  position: absolute;
+  bottom: 30px;
+  right: 20px;
+  z-index: 3;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__volume:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__volume-icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__volume-icon--muted {
+  opacity: 1;
+  visibility: visible;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__volume-icon--unmuted {
+  opacity: 0;
+  visibility: hidden;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__volume.unmuted .custom-slider__volume-icon--muted {
+  opacity: 0;
+  visibility: hidden;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__volume.unmuted .custom-slider__volume-icon--unmuted {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Pagination Dots */
+#CustomSlider-{{ section.id }} .custom-slider__pagination {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: 10px;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#CustomSlider-{{ section.id }} .custom-slider__dot.active {
+  background: rgba(255, 255, 255, 1);
+}
+
+@media screen and (max-width: 768px) {
+  #CustomSlider-{{ section.id }} {
+    margin-top: {{ section.settings.top_spacing_mobile }}px;
+    margin-bottom: {{ section.settings.bottom_spacing_mobile }}px;
+  }
+
+  #CustomSlider-{{ section.id }} .custom-slider__text {
+    font-size: 1.5rem;
+  }
+
+  #CustomSlider-{{ section.id }} .custom-slider__nav {
+    width: 40px;
+    height: 40px;
+  }
+
+  #CustomSlider-{{ section.id }} .custom-slider__nav--prev {
+    left: 10px;
+  }
+
+  #CustomSlider-{{ section.id }} .custom-slider__nav--next {
+    right: 10px;
+  }
+
+  #CustomSlider-{{ section.id }} .custom-slider__volume {
+    width: 40px;
+    height: 40px;
+    bottom: 20px;
+    right: 10px;
+  }
+
+  #CustomSlider-{{ section.id }} .custom-slider__volume-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+</style>
+
+<div id="CustomSlider-{{ section.id }}" class="custom-slider">
+  <div id="blaze-slider-{{ section.id }}" class="blaze-slider">
+    <div class="blaze-container">
+      <div class="blaze-track-container">
+        <div class="blaze-track">
+          {% for block in section.blocks %}
+            <div class="custom-slider__slide" {{ block.shopify_attributes }}>
+              {% if block.settings.media_type == 'video' and block.settings.video != blank %}
+                {{ 'video.css' | asset_url | stylesheet_tag }}
+                {{ 'video.js' | asset_url | script_tag }}
+                <video
+                  class="custom-slider__video video-js"
+                  playsinline
+                  muted
+                  loop
+                  autoplay
+                  data-setup='{}'
+                >
+                  {% for source in block.settings.video.sources %}
+                    {% if source.mime_type == 'video/mp4' %}
+                      <source src="{{ source.url }}" type="video/mp4">
+                    {% endif %}
+                  {% endfor %}
+                </video>
+              {% elsif block.settings.image != blank %}
+                <img
+                  srcset="{%- if block.settings.image.width >= 375 -%}{{ block.settings.image | image_url: width: 375 }} 375w,{%- endif -%}
+                    {%- if block.settings.image.width >= 750 -%}{{ block.settings.image | image_url: width: 750 }} 750w,{%- endif -%}
+                    {%- if block.settings.image.width >= 1100 -%}{{ block.settings.image | image_url: width: 1100 }} 1100w,{%- endif -%}
+                    {%- if block.settings.image.width >= 1500 -%}{{ block.settings.image | image_url: width: 1500 }} 1500w,{%- endif -%}
+                    {%- if block.settings.image.width >= 1780 -%}{{ block.settings.image | image_url: width: 1780 }} 1780w,{%- endif -%}
+                    {%- if block.settings.image.width >= 2000 -%}{{ block.settings.image | image_url: width: 2000 }} 2000w,{%- endif -%}
+                    {%- if block.settings.image.width >= 3000 -%}{{ block.settings.image | image_url: width: 3000 }} 3000w,{%- endif -%}"
+                  src="{{ block.settings.image | image_url: width: 1500 }}"
+                  sizes="100vw"
+                  loading="lazy"
+                  class="custom-slider__image"
+                  alt="{{ block.settings.image.alt | escape }}"
+                >
+              {% else %}
+                <div style="width: 100%; height: 100%; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                  <p style="color: #999;">Add an image or video</p>
+                </div>
+              {% endif %}
+
+              {% if block.settings.show_overlay %}
+                <div class="custom-slider__overlay" style="--overlay-opacity: {{ block.settings.overlay_opacity }}"></div>
+              {% endif %}
+
+              {% if block.settings.slide_text != blank %}
+                <div class="custom-slider__content">
+                  <h2 class="custom-slider__text" style="color: {{ block.settings.text_color }}">
+                    {{ block.settings.slide_text }}
+                  </h2>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if section.settings.show_arrows %}
+    <button class="custom-slider__nav custom-slider__nav--prev" id="prev-{{ section.id }}" aria-label="Previous slide">
+      <span class="custom-slider__nav-icon"></span>
+    </button>
+    <button class="custom-slider__nav custom-slider__nav--next" id="next-{{ section.id }}" aria-label="Next slide">
+      <span class="custom-slider__nav-icon"></span>
+    </button>
+  {% endif %}
+
+  {% if section.settings.show_volume_control %}
+    <button class="custom-slider__volume" id="volume-{{ section.id }}" aria-label="Toggle volume" style="display: none;">
+      <img src="https://cdn.shopify.com/s/files/1/0931/1305/7652/files/volume-xmark-solid-full.svg" alt="Muted" class="custom-slider__volume-icon custom-slider__volume-icon--muted">
+      <img src="https://cdn.shopify.com/s/files/1/0931/1305/7652/files/volume-high-solid-full.svg" alt="Unmuted" class="custom-slider__volume-icon custom-slider__volume-icon--unmuted">
+    </button>
+  {% endif %}
+
+  {% if section.settings.show_pagination %}
+    <div class="custom-slider__pagination" id="pagination-{{ section.id }}">
+      {% for block in section.blocks %}
+        <button class="custom-slider__dot {% if forloop.first %}active{% endif %}" data-slide="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}"></button>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  (function() {
+    const sectionId = '{{ section.id }}';
+    const sliderEl = document.querySelector('#blaze-slider-' + sectionId);
+
+    if (!sliderEl) {
+      console.warn('Custom slider element not found for section: ' + sectionId);
+      return;
+    }
+
+    // Check if track exists
+    const track = sliderEl.querySelector('.blaze-track');
+    if (!track) {
+      console.warn('Custom slider track not found for section: ' + sectionId);
+      return;
+    }
+
+    // Check if slides exist
+    if (!track.children || track.children.length === 0) {
+      console.warn('No slides found in custom slider for section: ' + sectionId);
+      return;
+    }
+
+    let sliderInstance = null;
+
+    function initSlider() {
+      if (sliderInstance) {
+        sliderInstance.destroy?.();
+      }
+
+      try {
+        sliderInstance = new BlazeSlider(sliderEl, {
+          all: {
+            enableAutoplay: {{ section.settings.enable_autoplay }},
+            autoplayInterval: {{ section.settings.autoplay_interval }},
+            transitionDuration: {{ section.settings.transition_duration }},
+            slidesToShow: 1,
+            loop: true,
+            stopAutoplayOnInteraction: {{ section.settings.stop_on_interaction }},
+            slideGap: '0px'
+          }
+        });
+      } catch (error) {
+        console.error('Error initializing custom slider for section ' + sectionId + ':', error);
+        return;
+      }
+
+      // Navigation arrows
+      {% if section.settings.show_arrows %}
+        const prevBtn = document.querySelector('#prev-{{ section.id }}');
+        const nextBtn = document.querySelector('#next-{{ section.id }}');
+
+        if (prevBtn && nextBtn) {
+          prevBtn.addEventListener('click', () => sliderInstance.prev());
+          nextBtn.addEventListener('click', () => sliderInstance.next());
+        }
+      {% endif %}
+
+      // Volume control for videos
+      {% if section.settings.show_volume_control %}
+        const volumeBtn = document.querySelector('#volume-{{ section.id }}');
+        const slides = sliderEl.querySelectorAll('.custom-slider__slide');
+
+        // Function to check if current slide has video and update button visibility
+        function updateVolumeButtonVisibility(slideIndex) {
+          const currentSlide = slides[slideIndex];
+          const video = currentSlide?.querySelector('.custom-slider__video');
+
+          if (video && volumeBtn) {
+            volumeBtn.style.display = 'flex';
+          } else if (volumeBtn) {
+            volumeBtn.style.display = 'none';
+          }
+        }
+
+        // Toggle mute/unmute on button click
+        if (volumeBtn) {
+          volumeBtn.addEventListener('click', () => {
+            const currentSlide = slides[sliderInstance.stateIndex];
+            const video = currentSlide?.querySelector('.custom-slider__video');
+
+            if (video) {
+              // Use Video.js API to toggle mute state
+              const player = videojs(video);
+              if (player) {
+                const isCurrentlyMuted = player.muted();
+                player.muted(!isCurrentlyMuted);
+                volumeBtn.classList.toggle('unmuted', !player.muted());
+              }
+            }
+          });
+        }
+
+        // Update volume button visibility on slide change
+        sliderEl.addEventListener('blaze:slide:changed', (e) => {
+          updateVolumeButtonVisibility(e.detail.currentSlide);
+
+          // Reset all videos to muted when changing slides
+          slides.forEach((slide, index) => {
+            const video = slide.querySelector('.custom-slider__video');
+            if (video && index !== e.detail.currentSlide) {
+              const player = videojs(video);
+              if (player) {
+                player.muted(true);
+              }
+            }
+          });
+
+          // Remove unmuted class from button when changing slides
+          if (volumeBtn) {
+            volumeBtn.classList.remove('unmuted');
+          }
+        });
+
+        // Check initial slide for video
+        updateVolumeButtonVisibility(0);
+      {% endif %}
+
+      // Pagination dots
+      {% if section.settings.show_pagination %}
+        const dots = document.querySelectorAll('#pagination-{{ section.id }} .custom-slider__dot');
+
+        dots.forEach(dot => {
+          dot.addEventListener('click', function() {
+            const slideIndex = parseInt(this.getAttribute('data-slide'));
+            sliderInstance.stopAutoplay?.();
+            sliderInstance.goto?.(slideIndex);
+
+            dots.forEach(d => d.classList.remove('active'));
+            this.classList.add('active');
+          });
+        });
+
+        // Update active dot on slide change
+        sliderEl.addEventListener('blaze:slide:changed', (e) => {
+          dots.forEach(d => d.classList.remove('active'));
+          if (dots[e.detail.currentSlide]) {
+            dots[e.detail.currentSlide].classList.add('active');
+          }
+        });
+      {% endif %}
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSlider);
+    } else {
+      initSlider();
+    }
+
+    // Shopify theme editor support
+    if (Shopify.designMode) {
+      document.addEventListener('shopify:section:load', function(event) {
+        if (event.detail.sectionId === sectionId) {
+          setTimeout(initSlider, 100);
+        }
+      });
+
+      document.addEventListener('shopify:section:unload', function(event) {
+        if (event.detail.sectionId === sectionId && sliderInstance) {
+          sliderInstance.destroy?.();
+        }
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom Slider",
+  "tag": "section",
+  "class": "custom-slider-section",
+  "max_blocks": 10,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout & Display"
+    },
+    {
+      "type": "select",
+      "id": "slider_height",
+      "label": "Slider Height",
+      "options": [
+        {
+          "value": "50vh",
+          "label": "50% of Viewport"
+        },
+        {
+          "value": "75vh",
+          "label": "75% of Viewport"
+        },
+        {
+          "value": "100vh",
+          "label": "100% of Viewport (Full Screen)"
+        }
+      ],
+      "default": "75vh"
+    },
+    {
+      "type": "header",
+      "content": "Autoplay Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Enable Autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_interval",
+      "min": 2000,
+      "max": 9500,
+      "step": 500,
+      "unit": "ms",
+      "label": "Autoplay Interval",
+      "default": 5000,
+      "info": "Time between slide transitions in milliseconds"
+    },
+    {
+      "type": "range",
+      "id": "transition_duration",
+      "min": 300,
+      "max": 2000,
+      "step": 100,
+      "unit": "ms",
+      "label": "Transition Duration",
+      "default": 800,
+      "info": "Duration of slide transition animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "stop_on_interaction",
+      "label": "Stop Autoplay on Interaction",
+      "default": true,
+      "info": "Stop autoplay when user interacts with slider"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show Navigation Arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "Show Pagination Dots",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_volume_control",
+      "label": "Show Volume Control",
+      "default": true,
+      "info": "Shows mute/unmute button on video slides"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "top_spacing",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Top Spacing (Desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "bottom_spacing",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom Spacing (Desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "top_spacing_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top Spacing (Mobile)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "bottom_spacing_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom Spacing (Mobile)",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Media"
+        },
+        {
+          "type": "select",
+          "id": "media_type",
+          "label": "Media Type",
+          "options": [
+            {
+              "value": "image",
+              "label": "Image"
+            },
+            {
+              "value": "video",
+              "label": "Video"
+            }
+          ],
+          "default": "image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Recommended: 2000px x 1200px"
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video",
+          "info": "Shopify-hosted video. Will be muted and auto-played."
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "text",
+          "id": "slide_text",
+          "label": "Slide Text",
+          "default": "Slide Title"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "header",
+          "content": "Overlay"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_overlay",
+          "label": "Show Overlay",
+          "default": true,
+          "info": "Adds a dark overlay to improve text readability"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "min": 0,
+          "max": 0.8,
+          "step": 0.1,
+          "label": "Overlay Opacity",
+          "default": 0.3
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Slider",
+      "category": "Media",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "slide_text": "First Slide"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "slide_text": "Second Slide"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "slide_text": "Third Slide"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

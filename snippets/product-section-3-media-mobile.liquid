@@ -1,0 +1,178 @@
+{% for media in product.media %}
+  <div class="gallery-slide">
+    {% case media.media_type %}
+      {% when 'model' %}
+        <div class="model-viewer-container" style="position: relative;">
+          {{ media | image_url: width: 1200 | image_tag: 
+            loading: 'lazy', 
+            class: 'product-image model-preview-image'
+          }}
+          
+          <button 
+            class="model-viewer-button"
+            id="ModelViewerButton-{{ media.id }}"
+            data-shopify-xr
+            data-shopify-model3d-id="{{ media.id }}"
+            data-shopify-title="{{ product.title }}"
+            data-shopify-xr-hidden
+            aria-label="View in your space"
+            style="
+              position: absolute;
+              top: 12px;
+              right: 12px;
+              background: rgba(255, 255, 255, 0.95);
+              border: none;
+              border-radius: 50%;
+              padding: 10px;
+              cursor: pointer;
+              z-index: 2;
+              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+              transition: all 0.2s ease;
+              display: none;
+            "
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block;">
+              <path d="M12 19.7L5 15.2V8.7L12 13.2V19.7Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M19 15.2L12 19.7V13.2L19 8.7V15.2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M12 12.2L5 7.7L12 3.2L19 7.7L12 12.2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M12 13.2V19.7" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M5 8.7V15.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M19 8.7V15.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            </svg>
+          </button>
+        </div>
+
+      {% when 'image' %}
+        {% if settings.enable_lazy_loading %}
+          <img 
+            src="{{ media | preview_image | img_url: '150x' }}"
+            data-srcset="
+            {{ media | preview_image | img_url: '325x' }} 325w,
+            {{ media | preview_image | img_url: '400x' }} 500w,
+            {{ media | preview_image | img_url: '500x' }} 500w,
+            {{ media | preview_image | img_url: '600x' }} 500w,
+            {{ media | preview_image | img_url: '700x' }} 500w,
+            {{ media | preview_image | img_url: '1024x' }} 1524w"
+            data-sizes="auto"
+            class="lazyload product-image"
+            style="width: 100%;"
+            alt="{{ media.alt | escape }}"
+          >
+        {% else %}
+          {{ media | image_url: width: 1200 | class: 'product-image' }}
+        {% endif %}
+      {% when 'video' %}
+        <div class="video-container" style="position: relative;">
+          {{ media | video_tag: 
+            controls: false, 
+            image_size: '1200x',
+            style: 'width: 100%; height: auto; max-height: 80vh; position:relative;'
+          }}
+          <button class="play-button" aria-label="Play video" data-video-id="{{ media.id }}">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="11.5" stroke="currentColor"/>
+              <path d="M9.5 7.5v9l7-4.5-7-4.5z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      {% when 'external_video' %}
+        <div class="video-container" style="position: relative;">
+          {{ media | external_video_tag: 
+            controls: false, 
+            image_size: '1200x',
+            style: 'width: 100%; height: auto; max-height: 80vh; position:relative;'
+          }}
+          <button class="play-button" aria-label="Play video" data-video-id="{{ media.id }}">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="11.5" stroke="currentColor"/>
+              <path d="M9.5 7.5v9l7-4.5-7-4.5z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      {% else %}
+        {{ media | media_tag }}
+    {% endcase %}
+  </div>
+{% endfor %}
+
+
+<script type="application/json" id="ProductJSON-{{ product.id }}">
+  {{ product.media | where: "media_type", "model" | json }}
+</script>
+
+<script defer src="{{ 'lazyloadz.js' | asset_url }}" type="text/javascript"></script>
+
+
+<script>
+// Only run on mobile devices
+if (window.innerWidth <= 768) {
+  document.querySelectorAll('.model-viewer-button').forEach(button => {
+    button.style.display = 'block';
+  });
+  window.ProductModel = {
+    loadShopifyXR() {
+      Shopify.loadFeatures([
+        {
+          name: 'shopify-xr',
+          version: '1.0',
+          onLoad: this.setupShopifyXR.bind(this),
+        },
+      ]);
+    },
+
+    setupShopifyXR(errors) {
+      if (errors) return;
+
+      if (!window.ShopifyXR) {
+        document.addEventListener('shopify_xr_initialized', () => this.setupShopifyXR());
+        return;
+      }
+
+      // Check if AR is available
+      const checkARAvailability = () => {
+        if (window.ShopifyXR && window.ShopifyXR.isWebXRAvailable) {
+          window.ShopifyXR.isWebXRAvailable().then((isAvailable) => {
+            if (isAvailable) {
+              // Show AR buttons if AR is available
+              document.querySelectorAll('[data-shopify-xr]').forEach(button => {
+                button.style.display = 'block';
+              });
+            }
+          });
+        }
+      };
+
+      document.querySelectorAll('[id^="ProductJSON-"]').forEach((modelJSON) => {
+        window.ShopifyXR.addModels(JSON.parse(modelJSON.textContent));
+        modelJSON.remove();
+      });
+      window.ShopifyXR.setupXRElements();
+
+      // Check AR availability
+      checkARAvailability();
+
+      // Add event listeners for AR mode changes
+      window.addEventListener('shopify_xr_launch', () => {
+        document.body.style.overflow = 'hidden';
+      });
+
+      window.addEventListener('shopify_xr_exit', () => {
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        window.scrollTo(0, window.lastScrollPosition || 0);
+      });
+
+      // Store scroll position before entering AR
+      document.querySelectorAll('[data-shopify-xr]').forEach(button => {
+        button.addEventListener('click', () => {
+          window.lastScrollPosition = window.scrollY;
+        });
+      });
+    },
+  };
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (window.ProductModel) window.ProductModel.loadShopifyXR();
+  });
+}
+</script>

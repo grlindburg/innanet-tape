@@ -1,0 +1,372 @@
+<footer class="other-footer" role="contentinfo" style="background-color: {{ settings.footer_background_color }}; position: relative;">
+  <div class="footer-container-1">
+
+    {% if settings.show_email_footer_signup %}
+      <div class="footer-email-section">
+        <h2 class="footer-email-heading" style="color: {{ settings.footer_email_header_color }}">
+          {{ settings.footer_email_header }}
+        </h2>
+        
+        <p class="footer-email-text" style="color: {{ settings.footer_email_message_color }}">
+          {{ settings.email_description }}
+        </p>
+
+        {% form 'customer' %}
+          <div class="footer-email-form">
+            {% if form.posted_successfully? %}
+              <p class="footer-email-success" style="color: {{ settings.footer_email_message_color }}">
+                {{ settings.footer_success_message | default: "Thank you for subscribing!" }}
+              </p>
+            {% else %}
+              <input 
+                type="email" 
+                name="contact[email]"
+                class="footer-email-input"
+                placeholder="{{ settings.footer_email_placeholder | default: 'EMAIL ADDRESS *' }}"
+                required
+                style="
+                  color: {{ settings.footer_input_txt_color }};
+                  border-bottom-color: {{ settings.footer_input_color }};
+                  --footer-placeholder-color: {{ settings.footer_input_placeholder_color }};
+                "
+              >
+              
+              <p class="footer-email-disclaimer" style="color: {{ settings.footer_email_privacy_color }}">
+                {{ settings.privacy_text }}
+              </p>
+
+              <button
+                type="submit" 
+                class="footer-email-submit"
+                style="
+                  background-color: {{ settings.footer_email_btn_color }};
+                  color: {{ settings.footer_email_btn_txt_color }};
+                  font-family: var(--btn_font), sans-serif;
+                "
+              >
+                {{ settings.footer_email_button_txt | default: 'SUBSCRIBE' }}
+              </button>
+            {% endif %}
+          </div>
+        {% endform %}
+      </div>
+
+      <style>
+        .footer-container-1 {
+          display: flex;
+          align-items: start;
+          padding: 40px 0px;
+          padding-left: 2rem;
+          justify-content: center;
+        }
+
+        .footer-email-section {
+          max-width: 320px;
+          position: relative;
+        }
+
+        .footer-email-form {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .footer-email-input {
+          width: 100%;
+          box-sizing: border-box;
+          border: none;
+          border-bottom-width: 1px;
+          border-bottom-style: solid;
+          padding: 8px 0;
+          font-size: 14px;
+          background: transparent;
+          outline: none;
+        }
+
+        .footer-email-input::placeholder {
+          color: var(--footer-placeholder-color);
+          opacity: 1;
+        }
+
+        .footer-email-heading {
+          font-size: 14px;
+          font-weight: 700;
+          text-transform: uppercase;
+          margin-bottom: 20px;
+          letter-spacing: 0.5px;
+        }
+
+        .footer-email-text {
+          font-size: 14px;
+          line-height: 1.5;
+          margin-bottom: 24px;
+        }
+
+        .footer-email-disclaimer {
+          font-size: 12px;
+          line-height: 1.4;
+        }
+
+        .footer-email-link {
+          text-decoration: underline;
+        }
+
+        .footer-email-submit {
+          align-self: flex-start;
+          padding: 6px 24px;
+          border: none;
+          font-size: 14px;
+          cursor: pointer;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .footer-email-submit:hover {
+          opacity: 0.9;
+        }
+
+        .footer-email-success {
+          font-size: 14px;
+          line-height: 1.5;
+          margin: 0;
+          text-align: left;
+        }
+      </style>
+    {% endif %}
+    <div class="footer-links-container">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'link_list' %}
+            <div class="footer-grid footer-link-section-mobile" {{ block.shopify_attributes }}>
+              <h3 style="
+              margin-top: 10px;
+                --footer-header-font-size-mobile: {{ settings.footer_header_text_size_mobile }}px; 
+                font-size: {{ settings.footer_header_text_size_desktop }}px; 
+                color:{{ settings.footer_links_title_color }};
+              ">
+                {{ block.settings.heading }}
+              </h3>
+              {%- for link in linklists[block.settings.menu].links -%}
+                <a class="footer-grid-item" href="{{ link.url }}">
+                  <p class="footer-links" style="
+                    {% if settings.disable_highlight_animation %} animation-duration: 0s; {% endif %}
+                    font-size: {{ settings.footer_text_size }}px;
+                    --footer-mobile-font-size: {{ settings.footer_text_size_mobile }}px;
+                    --footer-txt-color: {{ settings.footer_text_color }};
+                    --footer-highlight-txt-color: {{ settings.footer_text_color_highlighed }};
+                    --footer-highlight-txt-bg-color: {{ settings.footer_text_color_highlighed_bg }};
+                  ">
+                    {{ link.title }}
+                  </p>
+                </a>
+              {%- endfor -%}
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if settings.show_social_icons %}
+    <div class="footer-social-section">
+      {% render 'social-icons' %}
+    </div>
+  {% endif %}
+
+  <div class="footer-container-2">
+    {% if settings.show_copyright %}
+        <p class="copyright-text" style="color:{{ settings.footer_copyright_color }}; font-size:{{ settings.footer_copyright_size }}px;">
+          {{ settings.footer_copyright_text }}
+        </p>
+      {% endif %}
+  {%- if settings.payment_enable -%}
+    <div class="footer__payment">
+      <ul class="list list-payment" role="list">
+        {%- for type in shop.enabled_payment_types -%}
+          <li>
+            {{ type | payment_type_svg_tag }}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+  </div>
+</footer>
+
+<style>
+.other-footer{
+  padding-bottom: 10px;
+}
+
+  .footer-social-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 2rem 20px;
+    margin: 0 auto;
+  }
+
+  .footer__payment {
+    margin: 16px 0 5px;
+  }
+  .footer-links-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0px 80px;
+    max-width: 600px;
+    padding-left: 7rem;
+  }
+  
+  .footer-container-2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+  }
+  .list-payment {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    line-height: 0;
+    flex-wrap: wrap;
+    max-width: 800px;
+  }
+  .list-payment li {
+    list-style: none;
+    min-width: 38px;
+  }
+  
+  .footer-grid-item {
+    display: block;
+    text-decoration: none;
+    margin-bottom: 10px;
+  }
+
+  .footer-links {
+    margin: 0;
+    padding: 2px 0;
+  }
+
+  .copyright-text {
+    margin-right: {% if settings.payment_enable %}40px{% else %}0{% endif %};
+    margin-bottom: 0;
+  }
+  
+  @media screen and (min-width: 768px) {
+    .footer-container-1 {
+      display: flex;
+      align-items: start;
+      padding: 40px 34px;
+    }
+    .footer__payment {
+      margin: 0;
+    }
+    .list-payment {
+      grid-template-columns: repeat(6, auto);
+    }
+    /* 3-column layout when email signup is hidden */
+  {% unless settings.show_email_footer_signup %}
+      .footer-links-container {
+        {% assign block_count = section.blocks.size %}
+        {% if block_count >= 3 %}
+          grid-template-columns: repeat(3, 1fr);
+          max-width: 900px;
+        {% elsif block_count == 2 %}
+          grid-template-columns: repeat(2, 1fr);
+          max-width: 600px;
+        {% else %}
+          grid-template-columns: 1fr;
+          max-width: 300px;
+        {% endif %}
+        padding-left: 0;
+        margin: 0 auto;
+      }
+  {% endunless %}
+  }
+ 
+
+  @media screen and (max-width: 768px) {
+    .footer-container-1 {
+      flex-direction: column;
+      padding: 40px 2rem;
+    }
+
+    .footer-social-section {
+      padding: 20px 2rem 15px;
+    }
+
+    .footer-links{
+      font-size: var(--footer-mobile-font-size) !important;
+    }
+
+    .list-payment {
+      justify-content: start;
+      max-width: 300px;
+    }
+
+    .footer-container-2 {
+      justify-content: start;
+      align-items: start;
+      margin: 11px 0;
+      flex-direction: column-reverse;
+      gap: 18px;
+      padding-left: 2rem;
+}
+
+    .footer-links-container {
+      padding-left: 0;
+      width: 100%;
+      gap: 0px 40px;
+      margin-top: 50px;
+    }
+
+
+  }
+
+
+</style>
+
+{% schema %}
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "text",
+        "id": "footer_success_message",
+        "label": "Success Message",
+        "default": "Thank you for subscribing!"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "link_list",
+        "name": "Menu",
+        "settings": [
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading",
+            "default": "Quick links"
+          },
+          {
+            "type": "link_list",
+            "id": "menu",
+            "label": "Menu",
+            "info": "Select menu for this section"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+  footer {
+    background-color: {{ settings.footer_background_color }};
+  }
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

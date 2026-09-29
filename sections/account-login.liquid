@@ -1,0 +1,445 @@
+{{ 'account.css' | asset_url | stylesheet_tag }}
+
+{% assign pj = section.settings %}
+
+
+<div id="account_template">
+
+  <div class="account-container" style="{% if pj.switch_account_side_img %} flex-direction: row-reverse; {% endif %}">
+
+    {% if pj.remove_account_side_img == false %}
+      <img
+        src="{% if pj.account_login_side_img %}{{ pj.account_login_side_img | image_url }}{% else %}{{ 'account.png' | asset_img_url: 'master' }}{% endif %}"
+        alt=""
+        class="account-login-side-image"
+        style="{% if pj.curve_account_side_img %} border-radius: 12px; {% endif %}">
+    {% endif %}
+
+    <div id="customer">
+      <div class="account_template_header">
+        <h1 class="account_template_title" style="color: {{ pj.login_header_color }};">{{ pj.login_header }}</h1>
+        <p class="account_template_description" style="color: {{ pj.login_desc_color }};">{{ pj.login_desc }}</p>
+      </div>
+
+      {% form 'customer_login' %}
+        <div class="login_error_txt" style="color: {{ pj.login_errors_color }};">
+          {{ form.errors | default_errors }}
+        </div>
+
+        <div
+          style="width: 100%; margin-bottom: 0;"
+          id="login_email"
+          class="clearfix large_form">
+          <label
+            id="login_email_label"
+            style="color: {{ pj.login_email_label_color }};"
+            for="customer_email"
+            class="login account_input_label">{{ 'account.form.email_placeholder' | t }}</label>
+          <input
+            style="
+        color: {{ pj.login_email_input_text_color }};
+        background: transparent;
+        border-radius: {% if pj.enable_login_border_radius %} 4px {% else %} 0px {% endif %};
+        border: 0.5px {{ pj.login_email_input_border_color }} solid;"
+            type="email"
+            value=""
+            name="customer[email]"
+            id="customer_email"
+            class="large account_input"
+            autocomplete="email"
+            aria-required="true"
+            size="30" />
+        </div>
+
+        {% if form.password_needed %}
+
+          {% comment %}
+            Customer Account Login
+          {% endcomment %}
+
+          <div
+            style="width: 100%;"
+            id="login_password"
+            class="clearfix large_form">
+            <label
+              id="login_password_label"
+              style="color: {{ pj.login_password_label_color }};"
+              for="customer_password"
+              class="login account_input_label">{{ 'account.form.password_placeholder' | t }}</label>
+            <input
+              style="
+          color: {{ pj.login_password_input_text_color }};
+          background: transparent;
+          border-radius: {% if pj.enable_login_border_radius %} 4px {% else %} 0px {% endif %};
+          border: 0.5px {{ pj.login_password_input_border_color }} solid;"
+              type="password"
+              value=""
+              name="customer[password]"
+              id="customer_password"
+              class="large password account_input"
+              autocomplete="current-password"
+              aria-required="true"
+              size="30" />
+            <div id="forgot_password" style="display: flex; justify-content: space-between; text-decoration: none;">
+              <a href="{{ routes.account_register_url }}" style="
+                       color:{{ pj.login_register_color }};
+                       text-decoration: none;
+                       -webkit-text-decoration-skip: objects;
+                       font-size: 14px;
+                       font-weight: 200;
+                       margin: 11px 0;
+                       ">
+                {{ pj.login_register }}</a>
+              <a
+                href="#"
+                onclick="showRecoverPasswordForm();return false;"
+                id="account_forgot_password_link"
+                style="
+              color:{{ pj.login_forget_password_color }};
+              text-decoration: none;
+              background-color: transparent;
+              -webkit-text-decoration-skip: objects;
+                      font-size: 14px;
+                      font-weight: 200;
+              margin: 11px 0;
+              ">
+                {{ pj.login_forget_password }}</a>
+            </div>
+          </div>
+
+        {% endif %}
+
+        <div class="account_action_bottom" style="
+        align-items: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        ">
+          <input
+            style="
+          width: 100%;
+          height: 44px;
+          font-family: var(--btn_font), sans-serif;
+          border-radius: {% if pj.enable_login_border_radius %} 4px {% else %} 0px {% endif %};
+          border-color: transparent;
+          background-color: {{ pj.login_btn_color }};
+          font-size: 17px;
+          color: {{ pj.login_btn_txt_color }};
+                cursor: pointer;
+          "
+            class="account_action_btn"
+            type="submit"
+            value="{{ pj.login_btn_txt }}" />
+          <a style="text-decoration: none; font-weight: 200; color: {{ pj.login_back_store_color }};  margin: 20px;" href="{{ routes.root_url }}">{{ pj.login_back_store_text }}</a>
+        </div>
+      {% endform %}
+    </div>
+
+    {% comment %}
+      Customer Recover Password Form
+    {% endcomment %}
+
+    <div id="recover-password" style="display:none; --login-error-color: {{ pj.login_errors_color }};">
+      <div class="template_header">
+        <h2 style="color: {{ pj.login_header_color }};" class="account_template_title">{{ 'account.form.reset_password' | t }}</h2>
+        <p style="color: {{ pj.login_desc_color }};" class="account_template_description">{{ 'account.form.reset_password_desc' | t }}</p>
+      </div>
+
+
+      {% form 'recover_customer_password' %}
+        {% assign recover_success = form.posted_successfully? %}
+        {{ form.errors | default_errors }}
+        <div
+          style="width: 100%; margin-bottom: 0;"
+          id="login_email"
+          class="clearfix large_form">
+          <label
+            id="login_email_label"
+            style="color: {{ pj.login_email_label_color }};"
+            for="email"
+            class="login account_input_label">{{ 'account.form.email_placeholder' | t }}</label>
+          <input
+            style="
+                color: {{ pj.login_email_input_text_color }};
+                background: transparent;
+                border-radius: {% if pj.enable_login_border_radius %} 4px {% else %} 0px {% endif %};
+                border: 0.5px {{ pj.login_email_input_border_color }} solid;"
+            type="email"
+            value=""
+            name="email"
+            id="recover-email"
+            class="large account_input"
+            size="30" />
+        </div>
+        <div class="action_bottom" style="
+      align-items: center;
+      width: 100%;
+      display: flex;
+      flex-direction: column;">
+          <input
+            style="
+                width: 100%;
+                height: 44px;
+                border-radius: {% if pj.enable_login_border_radius %} 4px {% else %} 0px {% endif %};
+                border-color: transparent;
+                background-color: {{ pj.login_btn_color }};
+                font-size: 20px;
+                color: {{ pj.login_btn_txt_color }};
+                cursor: pointer;
+                "
+            class="btn"
+            type="submit"
+            value="Submit" />
+          <a
+            style="text-decoration: none; font-weight: 200; color: {{ pj.login_back_store_color }};  margin: 20px;"
+            href="#"
+            onclick="hideRecoverPasswordForm();return false;">Cancel</a>
+        </div>
+      {% endform %}
+
+    </div>
+
+    {% if recover_success %}
+      <p
+        id="form__message"
+        tabindex="-1"
+        autofocus
+        style="
+      position: absolute;
+      top: 188px;
+      background-color: white;
+      /* box-shadow: .4px .4px 9px whitesmoke; */
+      border: 1px solid #bfbfbf;
+      padding: 30px;
+      display: flex;
+      align-items: center;
+">
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          viewBox="0 0 13 13"
+          style="width: 18px">
+          <path
+            d="M6.5 12.35C9.73087 12.35 12.35 9.73086 12.35 6.5C12.35 3.26913 9.73087 0.65 6.5 0.65C3.26913 0.65 0.65 3.26913 0.65 6.5C0.65 9.73086 3.26913 12.35 6.5 12.35Z"
+            fill="#428445"
+            stroke="white"
+            stroke-width="0.7" />
+          <path d="M5.53271 8.66357L9.25213 4.68197" stroke="white" />
+          <path d="M4.10645 6.7688L6.13766 8.62553" stroke="white" />
+        </svg>
+        {{ 'account.form.reset_password_success' | t }}
+      </p>
+      <script>
+        function fadeOutElement(element) {
+          setTimeout(function() {
+            element.classList.add('hide-success-msg');
+          }, 6000);
+        }
+        let successMessage = document.getElementById('form__message');
+        fadeOutElement(successMessage)
+      </script>
+    {% endif %}
+
+
+    {% comment %}
+      Guest Login form for shops with optional customer accounts. This form is displayed only when users click on the checkout link
+      on the cart page.
+    {% endcomment %}
+
+    {% if shop.checkout.guest_login %}
+      <div id="guest">
+        <div class="template_header">
+          <h3 class="title">Guest Login</h3>
+        </div>
+        {% form 'guest_login' %}
+          <input
+            class="btn"
+            type="submit"
+            value="Continue as Guest" />
+        {% endform %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  function showRecoverPasswordForm() {
+    document.getElementById('recover-password').style.display = 'inline-block';
+    document.getElementById('customer').style.display='none';
+  }
+
+  function hideRecoverPasswordForm() {
+    document.getElementById('recover-password').style.display = 'none';
+    document.getElementById('customer').style.display = 'inline-block';
+  }
+
+  if (window.location.hash == '#recover') { showRecoverPasswordForm() }
+</script>
+
+
+{% schema %}
+  {
+    "name": "Login Form",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Login Side Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "account_login_side_img",
+        "label": "Choose an Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_account_side_img",
+        "label": "Remove Side Image",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "switch_account_side_img",
+        "label": "Side Image Position (Left/Right)",
+        "default": false
+      }, {
+        "type": "checkbox",
+        "id": "curve_account_side_img",
+        "label": "Curve Side Image",
+        "default": false
+      }, {
+        "type": "header",
+        "content": "Login Header"
+      }, {
+        "type": "text",
+        "id": "login_header",
+        "label": "Header Text",
+        "default": "LOGIN"
+      }, {
+        "type": "text",
+        "id": "login_desc",
+        "label": "Sub-Header Text",
+        "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      }, {
+        "type": "color",
+        "id": "login_header_color",
+        "label": "Header Text Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_desc_color",
+        "label": "Sub-Header Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Email Field"
+      }, {
+        "type": "color",
+        "id": "login_email_label_color",
+        "label": "Label Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_email_input_border_color",
+        "label": "Border Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_email_input_text_color",
+        "label": "Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Password Field"
+      }, {
+        "type": "color",
+        "id": "login_password_label_color",
+        "label": "Label Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_password_input_border_color",
+        "label": "Border Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_password_input_text_color",
+        "label": "Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Login Button"
+      }, {
+        "type": "text",
+        "id": "login_btn_txt",
+        "label": "Button Text",
+        "default": "Enter"
+      }, {
+        "type": "color",
+        "id": "login_btn_txt_color",
+        "label": "Text Color",
+        "default": "#fff"
+      }, {
+        "type": "color",
+        "id": "login_btn_color",
+        "label": "Background Color",
+        "default": "#FE0000"
+      }, {
+        "type": "header",
+        "content": "Login Error Info"
+      }, {
+        "type": "color",
+        "id": "login_errors_color",
+        "label": "Text Color",
+        "default": "#FE0000"
+      }, {
+        "type": "header",
+        "content": "Register Link"
+      }, {
+        "type": "text",
+        "id": "login_register",
+        "label": "Text",
+        "default": "Register Now"
+      }, {
+        "type": "color",
+        "id": "login_register_color",
+        "label": "Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Forgot Password Link"
+      }, {
+        "type": "text",
+        "id": "login_forget_password",
+        "label": "Text",
+        "default": "Forgot Password?"
+      }, {
+        "type": "color",
+        "id": "login_forget_password_color",
+        "label": "Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Back To Store Link"
+      }, {
+        "type": "text",
+        "id": "login_back_store_text",
+        "label": "Text",
+        "default": "Back To Store"
+      }, {
+        "type": "color",
+        "id": "login_back_store_color",
+        "label": "Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Misc"
+      }, {
+        "type": "checkbox",
+        "id": "enable_login_border_radius",
+        "label": "Curve Fields & Buttons Corners",
+        "default": false
+      }
+    ]
+  }
+{% endschema %}

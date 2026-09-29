@@ -1,0 +1,399 @@
+<style>
+  .contact-inquiries {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding: 20px 40px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .contact-inquiries__col {
+    flex: 1;
+  }
+  .contact-inquiries__col--support {
+    flex: 1.2;
+  }
+  .contact-inquiries__heading {
+    font-family: 'Xheighter', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.2;
+    text-transform: lowercase;
+    margin-bottom: 16px;
+  }
+  .contact-inquiries__message {
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .contact-inquiries .text-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .contact-inquiries .textarea {
+    width: 100%;
+    height: 200px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+  }
+  .contact-inquiries .w-row {
+    display: flex;
+    gap: 10px;
+  }
+  .contact-inquiries .w-row::before,
+  .contact-inquiries .w-row::after {
+    display: none;
+  }
+  .contact-inquiries .w-row .w-col {
+    flex: 1;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .contact-inquiries .div-block-8 {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .contact-inquiries .btn.form {
+    display: inline-block;
+    padding: 12px 24px;
+    font-family: var(--btn_font), sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    border: 1px solid #fff;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .contact-inquiries .btn.form.left {
+    margin-right: 0;
+    margin-left: auto;
+  }
+  .contact-inquiries .btn.form.right {
+    margin-left: 0;
+    margin-right: auto;
+  }
+  .contact-inquiries .success-message {
+    display: none;
+    text-align: center;
+    padding: 20px;
+  }
+  .contact-inquiries .form-posted-successfully ~ .success-message,
+  .contact-inquiries .success-message.form-posted-successfully {
+    display: block;
+  }
+  .contact-inquiries .form-posted-successfully .form-2 {
+    display: none;
+  }
+  .contact-inquiries .w-form-fail {
+    display: none;
+    color: #e74c3c;
+    margin-top: 10px;
+  }
+  .contact-inquiries .form-has-errors {
+    display: block;
+  }
+
+  /* Booking card */
+  .contact-inquiries__booking-card {
+    background-color: {{ section.settings.booking-card-bg-color }};
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: auto;
+  }
+  .contact-inquiries__booking-card .contact-inquiries__heading {
+    color: {{ section.settings.booking-card-text-color }} !important;
+  }
+  .contact-inquiries__booking-blurb {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 0;
+    color: {{ section.settings.booking-card-text-color }};
+  }
+  a.contact-inquiries__booking-blurb {
+    color: {{ section.settings.booking-card-text-color }} !important;
+  }
+  .contact-inquiries__book-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    font-family: var(--btn_font), sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    margin-top: 24px;
+  }
+  a.contact-inquiries__book-btn {
+    color: {{ section.settings.booking-btn-text-color }} !important;
+    background-color: {{ section.settings.booking-btn-bg-color }};
+  }
+
+  @media (max-width: 767px) {
+    .contact-inquiries {
+      flex-direction: column;
+      padding: 20px 20px 40px;
+      gap: 40px;
+    }
+    .contact-inquiries .w-row {
+      flex-direction: column;
+      gap: 0;
+    }
+    .contact-inquiries__booking-card {
+      padding: 32px 24px;
+    }
+  }
+</style>
+
+<div class="contact-inquiries">
+  {%- comment -%} LEFT COLUMN: BOOKING INQUIRIES {%- endcomment -%}
+  <div class="contact-inquiries__col">
+    <div class="contact-inquiries__booking-card">
+      <h2 class="contact-inquiries__heading">
+        booking inquiries
+      </h2>
+      <p class="contact-inquiries__booking-blurb">
+        {{ section.settings.booking-message }}
+      </p>
+      <a
+        href="{{ section.settings.booking_url }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="contact-inquiries__book-btn"
+        style="background-color: {{ section.settings.booking-btn-bg-color }}; color: {{ section.settings.booking-btn-text-color }};">
+        BOOK VIC
+      </a>
+    </div>
+  </div>
+
+  {%- comment -%} RIGHT COLUMN: STORE SUPPORT {%- endcomment -%}
+  <div class="contact-inquiries__col contact-inquiries__col--support">
+    <h2 class="contact-inquiries__heading" style="color: {{ section.settings.contact_text_color }};">
+      store support
+    </h2>
+    <p class="contact-inquiries__message" style="color: {{ section.settings.contact_text_color }};">
+      {{ section.settings.contact-message }}
+    </p>
+
+    <div class="w-form">
+      {%- form "contact", class: "form-2" -%}
+        <div class="w-row">
+          <div class="w-col w-col-6">
+            <input
+              style="background-color:{{ section.settings.field-bg-color }}; color:{{ section.settings.field-text-color }};"
+              type="text"
+              class="text-field w-input"
+              maxlength="256"
+              name="contact[first_name_]"
+              data-name="First Name 2"
+              placeholder="{{ 'general.contact.first_name' | t }}"
+              id="First-Name-2">
+            <input
+              style="background-color:{{ section.settings.field-bg-color }}; color:{{ section.settings.field-text-color }};"
+              type="email"
+              class="text-field w-input"
+              maxlength="256"
+              name="contact[email]"
+              data-name="Email Address 2"
+              placeholder="{{ 'general.contact.email' | t }}"
+              id="Email-Address-2"
+              required="">
+          </div>
+          <div class="w-col w-col-6">
+            <input
+              style="background-color:{{ section.settings.field-bg-color }}; color:{{ section.settings.field-text-color }};"
+              type="text"
+              class="text-field w-input"
+              maxlength="256"
+              name="contact[last_name_]"
+              data-name="Last Name 2"
+              placeholder="{{ 'general.contact.last_name' | t }}"
+              id="Last-Name-2"
+              required="">
+            <input
+              style="background-color:{{ section.settings.field-bg-color }}; color:{{ section.settings.field-text-color }};"
+              type="text"
+              class="text-field w-input"
+              maxlength="256"
+              name="contact[order_number_]"
+              data-name="Order Number 2"
+              placeholder="{{ 'general.contact.order_number' | t }}"
+              id="Order-Number-2">
+          </div>
+        </div>
+        <input
+          style="background-color:{{ section.settings.field-bg-color }}; color:{{ section.settings.field-text-color }};"
+          type="text"
+          class="text-field w-input"
+          maxlength="256"
+          name="contact[subject_]"
+          data-name="Subject 2"
+          placeholder="{{ 'general.contact.subject' | t }}"
+          id="Subject-2">
+        <textarea
+          style="background-color:{{ section.settings.field-bg-color }}; color:{{ section.settings.field-text-color }};"
+          id="Message-2"
+          name="contact[message_]"
+          maxlength="5000"
+          data-name="Message 2"
+          placeholder="{{ 'general.contact.message' | t }}"
+          required=""
+          class="textarea w-input"></textarea>
+
+        <div class="div-block-8">
+          <input
+            style="border:none; background-color:{{ section.settings.submit-bg-color }}; color:{{ section.settings.submit-text-color }};"
+            type="submit"
+            value="{{ 'general.contact.submit' | t }}"
+            data-wait="Please wait..."
+            class="btn form left w-button">
+          <a
+            style="border:none; background-color:{{ section.settings.back-home-color }}; color:{{ section.settings.back-home-text-color }};"
+            href="{{ routes.root_url }}"
+            class="btn form right w-button">{{ 'tn3c849388' | t }}</a>
+        </div>
+
+        {%- assign form_success = form.posted_successfully? -%}
+        {%- assign form_errors = form.errors -%}
+        {%- render "form-general-script", form_success: form_success, form_errors: form_errors -%}
+      {%- endform -%}
+
+      <div class="success-message w-form-done {% if form_success %}form-posted-successfully{% endif %}">
+        <div class="text-block-17">{{ 't5a0ea5a1' | t }}</div>
+        <a href="{{ routes.root_url }}" class="btn w-button">{{ 'tnc0d2788' | t }}</a>
+      </div>
+
+      {%- unless form_success -%}
+        <div class="w-form-fail {% if form.errors %}form-has-errors{% endif %}">
+          <div>{%- render "form-errors", form_errors: form_errors -%}</div>
+        </div>
+      {%- endunless -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  var currentSection = document.currentScript.closest('.shopify-section');
+</script>
+
+{% schema %}
+{
+  "name": "Contact Inquiries",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Store Support"
+    },
+    {
+      "type": "textarea",
+      "id": "contact-message",
+      "label": "Support Message",
+      "default": "For all order-related inquiries, please allow 3-5 business days for a response to your inquiry."
+    },
+    {
+      "type": "color",
+      "id": "contact_text_color",
+      "label": "Text Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "field-bg-color",
+      "label": "Form Field BG Color",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
+      "id": "field-text-color",
+      "label": "Form Field Text Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "submit-bg-color",
+      "label": "Submit Button Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "submit-text-color",
+      "label": "Submit Text Color",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
+      "id": "back-home-color",
+      "label": "Home Button Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "back-home-text-color",
+      "label": "Home Text Color",
+      "default": "#fff"
+    },
+    {
+      "type": "header",
+      "content": "Booking Inquiries"
+    },
+    {
+      "type": "textarea",
+      "id": "booking-message",
+      "label": "Booking Message",
+      "default": "If you're interested in booking Vic for performances, appearances, DJ sets, or other opportunities, please reach below."
+    },
+    {
+      "type": "text",
+      "id": "booking_url",
+      "label": "Booking Form URL",
+      "default": "https://docs.google.com/forms/d/e/1FAIpQLScZM-dJEmkKL8S_arm7Byf2Sd19Ekkx_FbR4AUi7mLBMBAaQg/viewform?usp=header"
+    },
+    {
+      "type": "color",
+      "id": "booking-card-bg-color",
+      "label": "Booking Card BG Color",
+      "default": "#037246"
+    },
+    {
+      "type": "color",
+      "id": "booking-card-text-color",
+      "label": "Booking Card Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "booking-btn-bg-color",
+      "label": "Book Button Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "booking-btn-text-color",
+      "label": "Book Button Text Color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Inquiries"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,752 @@
+<div class="cart-page">
+  <div class="cart-page-header">
+    <h1>{{ section.settings.cart_header_title }}</h1>
+  </div>
+  {% if settings.show_fomo_timer %}
+    <div id="fomo-timer" class="fomo-timer">
+      <span id="fomo-timer-text">
+        <span>{{ settings.fomo_timer_text }}</span>
+        <span id="timer-countdown"></span>
+      </span>
+    </div>
+  {% endif %}
+  <div class="cart-page-content">
+    <div id="cart-page-items">
+      {% if cart.item_count > 0 %}
+        {% for item in cart.items %}
+          <div class="cart-item" data-variant-id="{{ item.variant_id }}">
+            <a href="{{ item.url }}" class="cart-item-image">
+              <img src="{{ item.image | img_url: '200x200', crop: 'center' }}" alt="{{ item.title | escape }}">
+            </a>
+            <div class="cart-item-details">
+              <div class="cart-item-title">{{ item.product.title }}</div>
+              <div class="cart-item-price">{{ item.final_line_price | money }}</div>
+            </div>
+            <div class="cart-item-quantity">
+              <input
+                type="number"
+                class="quantity-input"
+                value="{{ item.quantity }}"
+                min="0"
+                max="{{ item.variant.inventory_quantity }}">
+              <div class="quantity-buttons">
+                <button class="quantity-btn minus" aria-label="Decrease quantity">-</button>
+                <button class="quantity-btn plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>{{ 'cart.general.empty' | t }}</p>
+      {% endif %}
+    </div>
+    <div
+      id="cart-page-skeleton"
+      class="cart-skeleton"
+      style="display: none;">
+      <div class="skeleton-item"></div>
+      <div class="skeleton-item"></div>
+      <div class="skeleton-item"></div>
+    </div>
+  </div>
+  <div class="cart-page-footer">
+    <div id="cart-page-total">{{ 'cart.general.total' | t }}: {{ cart.total_price | money }}</div>
+    {% if content_for_additional_checkout_buttons %}
+      <div class="additional-checkout-buttons additional-checkout-buttons--vertical">
+        {{ content_for_additional_checkout_buttons }}
+      </div>
+    {% endif %}
+    <a href="/checkout" class="btn-checkout">{{ section.settings.cart_button_text }}</a>
+  </div>
+</div>
+
+<style>
+  .cart-page {
+    max-width: 1022px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: transparent;
+  }
+
+  .cart-page-header {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .cart-page-header h1 {
+    margin: 0 auto;
+    color: {{ section.settings.cart_header_color }};
+    font-size: {{ section.settings.cart_header_size }}px;
+  }
+
+  .cart-page-content {
+    margin-bottom: 20px;
+  }
+
+  #cart-page-items {
+    border-radius: 4px;
+    margin-bottom: 20px;
+
+  }
+
+  .cart-page-footer {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 20px;
+  }
+
+  .btn-checkout {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: {{ section.settings.cart_button_color }};
+    color: {{ section.settings.cart_button_text_color }};
+    text-align: center;
+    text-decoration: none;
+    margin-top: 10px;
+    font-family: var(--btn_font), sans-serif;
+  }
+
+  .cart-item {
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .cart-item:last-child {
+    border-bottom: none;
+  }
+
+  .cart-item-image {
+    flex-shrink: 0;
+    width: 120px;
+    margin-right: 20px;
+  }
+
+  .cart-item-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .cart-item-details {
+    flex-grow: 1;
+    min-width: 0;
+    padding-right: 20px;
+  }
+
+  .cart-item-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    color: {{ section.settings.cart_text_color }};
+  }
+
+  .cart-item-price {
+    font-size: 16px;
+    color: {{ section.settings.cart_product_price_color }};
+  }
+
+  .cart-item-quantity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 120px;
+  }
+
+  .quantity-input {
+    width: 50px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    margin: 0 5px;
+    padding: 5px 0;
+    font-size: 16px;
+    color: #000000;
+  }
+
+  .quantity-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .quantity-btn {
+    background: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: {{ section.settings.cart_product_quantity_color }};
+  }
+
+  .quantity-btn:hover {
+    background-color: #f0f0f0;
+  }
+
+  .quantity-btn.minus {
+    border-radius: 4px 0 0 4px;
+  }
+
+  .quantity-btn.plus {
+    border-radius: 0 4px 4px 0;
+  }
+
+  .cart-item a {
+    text-decoration: none;
+  }
+
+  .fomo-timer {
+    background-color: {{ section.settings.fomo_timer_background }};
+    color: {{ section.settings.fomo_timer_text_color }};
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  #timer-countdown {
+    margin-left: 5px;
+  }
+
+  #cart-page-total {
+    color: {{ section.settings.cart_total_price_color }};
+    font-size: {{ section.settings.cart_total_price_size }}px;
+  }
+
+  .additional-checkout-buttons {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .additional-checkout-buttons .shopify-cleanslate ul {
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  .additional-checkout-buttons .shopify-cleanslate ul li {
+    width: 100% !important;
+  }
+
+  .additional-checkout-buttons .shopify-cleanslate .kqsiVA9Jf8LJAbxw8Bau {
+    width: 100% !important;
+    height: 50px !important;
+    max-width: none !important;
+  }
+
+  .cart-skeleton {
+    padding: 20px;
+  }
+
+  .skeleton-item {
+    height: 80px;
+    margin-bottom: 10px;
+    background: linear-gradient(90deg, rgba(240, 240, 240, 0.3) 25%, rgba(224, 224, 224, 0.3) 50%, rgba(240, 240, 240, 0.3) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 8px;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .fomo-timer-expired {
+    animation: pulse 1s infinite;
+    color: red;
+  }
+
+  @keyframes shake {
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-5px);
+    }
+    50% {
+      transform: translateX(5px);
+    }
+    75% {
+      transform: translateX(-5px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .fomo-timer-shake {
+    display: inline-block;
+    animation: shake 0.5s ease-in-out infinite;
+  }
+
+  @media screen and (max-width: 767px) {
+    .cart-item-image {
+      width: 80px;
+      margin-right: 15px;
+    }
+
+    .cart-item-image img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  @media screen and (max-width: 365px) {
+    .cart-item {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .cart-item-image {
+      width: 120px;
+      margin-right: 0;
+      margin-bottom: 15px;
+    }
+
+    .cart-item-details {
+      width: 100%;
+      padding-right: 0;
+      margin-bottom: 15px;
+    }
+
+    .cart-item-quantity {
+      width: 100%;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .quantity-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quantity-input {
+      width: 40px;
+      margin: 0 5px;
+    }
+
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+    }
+  }
+</style>
+
+<script>
+  // Add Shopify money formatting function
+  Shopify.formatMoney = function(cents, format) {
+    if (typeof cents === 'string') { cents = cents.replace('.',''); }
+    var value = '';
+    var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+    var formatString = format || this.money_format;
+
+    function defaultOption(opt, def) {
+      return (typeof opt == 'undefined' ? def : opt);
+    }
+
+    function formatWithDelimiters(number, precision, thousands, decimal) {
+      precision = defaultOption(precision, 2);
+      thousands = defaultOption(thousands, ',');
+      decimal = defaultOption(decimal, '.');
+
+      if (isNaN(number) || number == null) { return 0; }
+
+      number = (number/100.0).toFixed(precision);
+
+      var parts = number.split('.'),
+          dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+          cents = parts[1] ? (decimal + parts[1]) : '';
+
+      return dollars + cents;
+    }
+
+    switch(formatString.match(placeholderRegex)[1]) {
+      case 'amount':
+        value = formatWithDelimiters(cents, 2);
+        break;
+      case 'amount_no_decimals':
+        value = formatWithDelimiters(cents, 0);
+        break;
+      case 'amount_with_comma_separator':
+        value = formatWithDelimiters(cents, 2, '.', ',');
+        break;
+      case 'amount_no_decimals_with_comma_separator':
+        value = formatWithDelimiters(cents, 0, '.', ',');
+        break;
+    }
+
+    return formatString.replace(placeholderRegex, value);
+  };
+
+  window.theme = window.theme || {};
+  window.theme.settings = {
+    show_fomo_timer: {{ settings.show_fomo_timer | json }},
+    fomo_timer_duration: {{ settings.fomo_timer_duration | json }},
+    moneyFormat: {{ shop.money_format | json }},
+    moneyFormatWithCurrency: {{ shop.money_with_currency_format | json }}
+  };
+</script>
+{{ 'option_selection.js' | shopify_asset_url | script_tag }}
+
+  <script>
+    document.addEventListener('shopify:section:load', function(event) {
+      if (event.detail.sectionId === {{ section.id }}) {
+        window.theme.settings.fomo_timer_duration = {{ section.settings.fomo_timer_duration | json }};
+        if (typeof initFomoTimer === 'function') {
+          initFomoTimer();
+        }
+      }
+    });
+  </script>
+  <script>
+    (function() {
+document.addEventListener('DOMContentLoaded', function() {
+  const cartItems = document.getElementById('cart-page-items');
+  const cartSkeleton = document.getElementById('cart-page-skeleton');
+  const cartTotal = document.getElementById('cart-page-total');
+
+  // Check if all required elements exist
+  if (!cartItems || !cartSkeleton || !cartTotal) {
+    console.error('One or more required elements are missing from the DOM');
+    return; // Exit the script if elements are missing
+  }
+
+  function showCartSkeleton() {
+    if (cartItems && cartSkeleton) {
+      cartItems.style.display = 'none';
+      cartSkeleton.style.display = 'block';
+    }
+  }
+
+  function hideCartSkeleton() {
+    if (cartItems && cartSkeleton) {
+      cartItems.style.display = 'block';
+      cartSkeleton.style.display = 'none';
+    }
+  }
+
+  function updateCart() {
+    showCartSkeleton();
+    fetch('/cart.js')
+      .then(response => response.json())
+      .then(cart => {
+        if (cartItems) {
+          if (cart.item_count > 0) {
+            cartItems.innerHTML = cart.items.map(item => {
+              let variantTitle = item.variant_title;
+              let productTitle = item.product_title;
+              
+              // Combine product title with variant title if it exists
+              if (variantTitle && variantTitle !== 'Default Title') {
+                productTitle += ` - ${variantTitle}`;
+              }
+              
+              return `
+                <div class="cart-item" data-variant-id="${item.variant_id}">
+                  <a href="${item.url}" class="cart-item-image">
+                    <img src="${item.image.replace(/(\.[^.]*)$/, '_120x$1')}" alt="${item.title}" width="120">
+                  </a>
+                  <div class="cart-item-details">
+                    <div class="cart-item-title">${productTitle}</div>
+                    <div class="cart-item-price">${Shopify.formatMoney(item.final_line_price, 
+                      {{ section.settings.show_price_with_currency }} ? window.theme.settings.moneyFormatWithCurrency : window.theme.settings.moneyFormat
+                    )}</div>
+                  </div>
+                  <div class="cart-item-quantity">
+                    <div class="quantity-buttons">
+                      <button class="quantity-btn minus" aria-label="Decrease quantity">-</button>
+                      <input type="number" class="quantity-input" value="${item.quantity}" min="0" max="${item.variant_inventory_quantity || 9999}">
+                      <button class="quantity-btn plus" aria-label="Increase quantity">+</button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          } else {
+            cartItems.innerHTML = '<p>Your cart is empty</p>';
+          }
+        }
+        if (cartTotal) {
+          cartTotal.innerHTML = `Total: ${Shopify.formatMoney(cart.total_price, 
+            {{ section.settings.show_price_with_currency }} ? window.theme.settings.moneyFormatWithCurrency : window.theme.settings.moneyFormat
+          )}`;
+        }
+        hideCartSkeleton();
+        addQuantityListeners();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        hideCartSkeleton();
+      });
+  }
+
+  function addQuantityListeners() {
+    const quantityInputs = document.querySelectorAll('.quantity-input');
+    quantityInputs.forEach(input => {
+      const minusBtn = input.previousElementSibling;
+      const plusBtn = input.nextElementSibling;
+      const variantId = input.closest('.cart-item').dataset.variantId;
+
+      minusBtn.addEventListener('click', () => updateQuantity(variantId, parseInt(input.value) - 1));
+      plusBtn.addEventListener('click', () => updateQuantity(variantId, parseInt(input.value) + 1));
+      input.addEventListener('change', () => updateQuantity(variantId, parseInt(input.value)));
+    });
+  }
+
+  function updateQuantity(variantId, newQuantity) {
+    if (newQuantity < 0) return;
+
+    const cartItem = document.querySelector(`.cart-item[data-variant-id="${variantId}"]`);
+    const quantityInput = cartItem.querySelector('.quantity-input');
+    const originalQuantity = parseInt(quantityInput.value);
+
+    // Optimistically update the input value
+    quantityInput.value = newQuantity;
+
+    // Add loading class to cart item
+    cartItem.classList.add('cart-item-loading');
+
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: variantId,
+        quantity: newQuantity
+      })
+    })
+    .then(response => response.json())
+    .then(cart => {
+      updateCart();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Revert the quantity if there's an error
+      quantityInput.value = originalQuantity;
+    })
+    .finally(() => {
+      setTimeout(() => {
+        cartItem.classList.remove('cart-item-loading');
+      }, 300); // Remove the loading class after a short delay
+    });
+  }
+
+  // FOMO Timer functionality
+  function startFomoTimer(endTime, display) {
+    const timerText = document.getElementById('fomo-timer-text');
+    
+    function updateTimer() {
+      const now = new Date().getTime();
+      const distance = endTime - now;
+
+      if (distance < 0) {
+        clearInterval(window.fomoTimerInterval);
+        display.textContent = "Offer expired!";
+        timerText.classList.add('fomo-timer-shake');
+        
+        // Show message for 3 seconds, then restart timer
+        setTimeout(() => {
+          timerText.classList.remove('fomo-timer-shake');
+          initFomoTimer(); // Reinitialize the timer
+        }, 3000);
+        
+        return;
+      }
+
+      const hours = Math.floor(distance / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      display.textContent = `${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateTimer(); // Call once immediately to avoid delay
+    window.fomoTimerInterval = setInterval(updateTimer, 1000);
+  }
+
+  function initFomoTimer() {
+    const display = document.querySelector('#timer-countdown');
+    if (display && window.theme.settings.show_fomo_timer) {
+      clearInterval(window.fomoTimerInterval);
+      
+      const now = new Date().getTime();
+      let endTime = localStorage.getItem('fomoTimerEnd');
+      const duration = window.theme.settings.fomo_timer_duration * 60 * 60 * 1000; // Convert hours to milliseconds
+      const storedDuration = localStorage.getItem('fomoTimerDuration');
+      
+      // Check if the duration has changed or if the timer has expired
+      if (!endTime || now > parseInt(endTime) || storedDuration !== duration.toString()) {
+        endTime = now + duration;
+        localStorage.setItem('fomoTimerEnd', endTime.toString());
+        localStorage.setItem('fomoTimerDuration', duration.toString());
+      } else {
+        // If the timer hasn't expired, but the remaining time is longer than the current duration, adjust the end time
+        const remainingTime = parseInt(endTime) - now;
+        if (remainingTime > duration) {
+          endTime = now + duration;
+          localStorage.setItem('fomoTimerEnd', endTime.toString());
+        }
+      }
+      
+      startFomoTimer(parseInt(endTime), display);
+    }
+  }
+
+  // Initialize the cart and FOMO timer
+  updateCart();
+  initFomoTimer();
+});
+})();
+  </script>
+
+{% schema %}
+  {
+    "name": "Cart Page",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Cart Header"
+      },
+      {
+        "type": "text",
+        "id": "cart_header_title",
+        "label": "Header Title",
+        "default": "Cart"
+      },
+      {
+        "type": "range",
+        "id": "cart_header_size",
+        "min": 12,
+        "max": 36,
+        "step": 1,
+        "unit": "px",
+        "label": "Header Size",
+        "default": 24
+      },
+      {
+        "type": "color",
+        "id": "cart_header_color",
+        "label": "Header Color",
+        "default": "#FFFFFF"
+      }, {
+        "type": "header",
+        "content": "FOMO Timer"
+      }, {
+        "type": "range",
+        "id": "fomo_timer_duration",
+        "min": 1,
+        "max": 72,
+        "step": 1,
+        "unit": "hr",
+        "label": "Timer Duration",
+        "default": 24
+      }, {
+        "type": "color",
+        "id": "fomo_timer_background",
+        "label": "Timer Background Color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "fomo_timer_text_color",
+        "label": "Timer Text Color",
+        "default": "#FFFFFF"
+      }, {
+        "type": "checkbox",
+        "id": "show_fomo_timer",
+        "label": "Show Timer",
+        "default": true
+      }, {
+        "type": "header",
+        "content": "Cart Items"
+      }, {
+        "type": "range",
+        "id": "cart_total_price_size",
+        "min": 12,
+        "max": 36,
+        "step": 1,
+        "unit": "px",
+        "label": "Total Price Size",
+        "default": 18
+      }, {
+        "type": "color",
+        "id": "cart_text_color",
+        "label": "Product Description Color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "cart_product_price_color",
+        "label": "Product Price Color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "cart_product_quantity_color",
+        "label": "Product Quantity Color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "cart_total_price_color",
+        "label": "Total Price Color",
+        "default": "#000000"
+      }, 
+      {
+        "type": "checkbox",
+        "id": "show_price_with_currency",
+        "label": "Show Price with Currency",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Cart Checkout Button"
+      }, {
+        "type": "text",
+        "id": "cart_button_text",
+        "label": "Button Text",
+        "default": "Checkout"
+      }, {
+        "type": "color",
+        "id": "cart_button_color",
+        "label": "Button Color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "cart_button_text_color",
+        "label": "Button Text Color",
+        "default": "#FFFFFF"
+      }
+    ]
+  }
+{% endschema %}

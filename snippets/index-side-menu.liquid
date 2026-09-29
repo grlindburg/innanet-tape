@@ -1,0 +1,214 @@
+<div
+  {% if section.settings['link-alignment'] == 'right' %}
+  align-menu-right
+  {% endif %}
+  class="pages-menu home-menu-grid-mobile"
+  style="
+        position: absolute;
+        bottom: 27px;
+        display: flex;
+        flex-direction: column;
+{% if section.settings['link-alignment'] == 'left' %}
+{% if settings.enable_announcement_floater %}
+        left: 4.16%;
+        align-items: start;
+{% else %}
+        left: 20px;
+         align-items: start;
+{% endif %}
+{% endif %}
+{% if section.settings['link-alignment'] == 'right' %}
+{% if settings.enable_announcement_floater %}
+        right: 4.16%;
+        align-items: end;
+{% else %}
+        right: 20px;
+        align-items: end;
+{% endif %}
+{% endif %}
+        ">
+
+  {% if section.settings.display_login_link == 'top' %}
+    {% if shop.customer_accounts_enabled %}
+      {% if customer %}
+        <a
+          href="{{ routes.account_url }}"
+          class="nav-link link-block w-inline-block enter-nav-link"
+          style="
+                                margin-top: {{ section.settings.menu-spacing }}px;
+                                margin-right: 0;
+                                margin-left: 0;
+                        {% if section.settings.enable_nav_scaling %}
+                                transition: transform 0.3s;
+                                --enter-nav-scaling: scale(1.1);
+                        {% endif %}
+                        {% if settings.disable_highlight_animation %}
+                                animation-duration: 0s;
+                        {% endif %}
+                        {% if section.settings.disable_highlight_effect %}
+                                background-image: none;
+                        {% endif %}
+                                font-size:{{ section.settings.font-size }}px;
+                                --navlink-hover-color: {{ section.settings.navlink_hover_color }};
+                                --navlink-background-color: {{ section.settings.navlink_background_color }};
+                                --nav-link-color: {{ section.settings.nav_link_color }};
+                        {% if section.settings['link-alignment'] == 'right' %}
+                                text-align: right;
+                        {% endif %}
+                                ">
+          {{ 'customer.account_link' | t }}
+        </a>
+      {% else %}
+        <a
+          href="{{ routes.account_login_url }}"
+          class="nav-link link-block w-inline-block enter-nav-link"
+          style="
+                                margin-top: {{ section.settings.menu-spacing }}px;
+                                margin-right: 0;
+                                margin-left: 0;
+                        {% if section.settings.enable_nav_scaling %}
+                                transition: transform 0.3s;
+                                --enter-nav-scaling: scale(1.1);
+                        {% endif %}
+                        {% if settings.disable_highlight_animation %}
+                                animation-duration: 0s;
+                        {% endif %}
+                        {% if section.settings.disable_highlight_effect %}
+                                background-image: none;
+                        {% endif %}
+                                font-size:{{ section.settings.font-size }}px;
+                                --navlink-hover-color: {{ section.settings.navlink_hover_color }};
+                                --navlink-background-color: {{ section.settings.navlink_background_color }};
+                                --nav-link-color: {{ section.settings.nav_link_color }};
+                        {% if section.settings['link-alignment'] == 'right' %}
+                                text-align: right;
+                        {% endif %}
+                                ">
+          {{ 'customer.log_in' | t }}
+        </a>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+
+  {% comment %} LIST OF LINKS LEFT{% endcomment %}
+  {%- for link in section.settings.side-menu.links -%}
+
+
+    {% if section.settings['link-alignment'] == 'left' %}
+      <a
+        href="{{ link.url }}"
+        class="nav-link link-block w-inline-block enter-nav-link"
+        style=" margin-top: {{ section.settings.menu-spacing }}px;
+                            margin-right: 0;
+                            margin-left: 0;
+                    {% if section.settings.enable_nav_scaling %}
+                            transition: transform 0.3s;
+                            --enter-nav-scaling: scale(1.1);
+                    {% endif %}
+                    {% if settings.disable_highlight_animation %}
+                            animation-duration: 0s;
+                    {% endif %}
+                    {% if section.settings.disable_highlight_effect %}
+                            background-image: none;
+                    {% endif %}
+                            font-size:{{ section.settings.font-size }}px;
+                            --navlink-hover-color: {{ section.settings.navlink_hover_color }};
+                            --navlink-background-color: {{ section.settings.navlink_background_color }};
+                            --nav-link-color: {{ section.settings.nav_link_color }};
+                            ">
+        {{ link.title }}
+      </a>
+
+
+    {% comment %} LIST OF LINKS RIGHT{% endcomment %}
+    {% elsif section.settings['link-alignment'] == 'right' %}
+      <a
+        href="{{ link.url }}"
+        class="nav-link link-block w-inline-block enter-nav-link"
+        style=" margin-top: {{ section.settings.menu-spacing }}px;
+                            text-align: right;
+                            margin-right: 0;
+                            margin-left: 0;
+                    {% if section.settings.enable_nav_scaling %}
+                            transition: transform 0.3s;
+                            --enter-nav-scaling: scale(1.1);
+                    {% endif %}
+                    {% if settings.disable_highlight_animation %}
+                            animation-duration: 0s;
+                    {% endif %}
+                    {% if section.settings.disable_highlight_effect %}
+                            background-image: none;
+                    {% endif %}
+                            font-size:{{ section.settings.font-size }}px;
+                            --navlink-hover-color: {{ section.settings.navlink_hover_color }};
+                            --navlink-background-color: {{ section.settings.navlink_background_color }};
+                            --nav-link-color: {{ section.settings.nav_link_color }};
+                            ">
+        {{ link.title }}
+      </a>
+    {% endif %}
+  {%- endfor -%}
+  {% if section.settings.display_login_link == 'bottom' %}
+    {% if shop.customer_accounts_enabled %}
+      {% if customer %}
+        <a
+          href="{{ routes.account_url }}"
+          class="nav-link link-block w-inline-block enter-nav-link"
+          style="
+                                margin-top: {{ section.settings.menu-spacing }}px;
+                                margin-right: 0;
+                                margin-left: 0;
+                        {% if section.settings.enable_nav_scaling %}
+                                transition: transform 0.3s;
+                                --enter-nav-scaling: scale(1.1);
+                        {% endif %}
+                        {% if settings.disable_highlight_animation %}
+                                animation-duration: 0s;
+                        {% endif %}
+                        {% if section.settings.disable_highlight_effect %}
+                                background-image: none;
+                        {% endif %}
+                                font-size:{{ section.settings.font-size }}px;
+                                --navlink-hover-color: {{ section.settings.navlink_hover_color }};
+                                --navlink-background-color: {{ section.settings.navlink_background_color }};
+                                --nav-link-color: {{ section.settings.nav_link_color }};
+                        {% if section.settings['link-alignment'] == 'right' %}
+                                text-align: right;
+                        {% endif %}
+                                ">
+          {{ 'customer.account_link' | t }}
+        </a>
+      {% else %}
+        <a
+          href="{{ routes.account_login_url }}"
+          class="nav-link link-block w-inline-block enter-nav-link"
+          style="               margin-top: {{ section.settings.menu-spacing }}px;
+                                margin-right: 0;
+                                margin-left: 0;
+                        {% if section.settings.enable_nav_scaling %}
+                                transition: transform 0.3s;
+                                --enter-nav-scaling: scale(1.1);
+                        {% endif %}
+                        {% if settings.disable_highlight_animation %}
+                                animation-duration: 0s;
+                        {% endif %}
+                        {% if section.settings.disable_highlight_effect %}
+                                background-image: none;
+                        {% endif %}
+                                font-size:{{ section.settings.font-size }}px;
+                                --navlink-hover-color: {{ section.settings.navlink_hover_color }};
+                                --navlink-background-color: {{ section.settings.navlink_background_color }};
+                                --nav-link-color: {{ section.settings.nav_link_color }};
+                        {% if section.settings['link-alignment'] == 'right' %}
+                                text-align: right;
+                        {% endif %}
+                                ">
+          {{ 'customer.log_in' | t }}
+        </a>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+
+  {%- render 'index-side-social-media' , menu-spacing: section.settings.menu-spacing -%}
+
+</div>

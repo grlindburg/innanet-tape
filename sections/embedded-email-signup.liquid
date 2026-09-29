@@ -1,0 +1,415 @@
+<div class="password-email-form">
+  <div class="container">
+    {% if section.settings.header != blank %}
+      <h2 class="form-header">{{ section.settings.header }}</h2>
+    {% endif %}
+    
+    {% if section.settings.email_message != blank %}
+      <div class="form-message">{{ section.settings.email_message }}</div>
+    {% endif %}
+    
+    {%- form 'customer', class: 'email-form' -%}
+      {% if form.errors %}
+        <div class="form-error">
+          {{ form.errors | default_errors }}
+        </div>
+      {% endif %}
+      
+      {% if form.posted_successfully? %}
+        <div class="form-success">
+          {{ section.settings.success_message }}
+        </div>
+      {% else %}
+        <div class="form-fields">
+          <input
+            type="email"
+            name="contact[email]"
+            id="EmailAddress"
+            class="email-input"
+            placeholder="{{ section.settings.email_placeholder }}"
+            required
+          >
+          
+          <button type="submit" class="submit-button-email">
+            {{ section.settings.button_text }}
+          </button>
+        </div>
+      {% endif %}
+    {%- endform -%}
+  </div>
+</div>
+
+
+<style>
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: {{ section.settings.margin_top_desktop }}px;
+  margin-bottom: {{ section.settings.margin_bottom_desktop }}px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  background-color: {{ section.settings.background_color }};
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.password-email-form {
+  text-align: center;
+  width: 100%;
+}
+
+.form-header {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: {{ section.settings.title_size_desktop }}px;
+  font-weight: {{ section.settings.title_weight }};
+  color: {{ section.settings.heading_color }};
+  text-align: {{ section.settings.heading_alignment }};
+}
+
+.form-message {
+  margin-bottom: 30px;
+  font-size: 18px;
+  font-weight: 400;
+  color: {{ section.settings.message_color }};
+  max-width: 560px;
+  text-align: {{ section.settings.heading_alignment }};
+}
+
+.email-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-fields {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.email-input {
+  flex: 1;
+  padding: 12px 20px;
+  border: 1px solid {{ section.settings.input_border }};
+  border-radius: {{ section.settings.input_radius }}px;
+  font-size: 16px;
+  max-width: 400px;
+  background-color: {{ section.settings.input_background }};
+  color: {{ section.settings.input_text }};
+}
+
+.email-input::placeholder {
+  color: {{ section.settings.input_placeholder }};
+}
+
+.submit-button-email {
+  padding: 12px 16px;
+  background-color: {{ section.settings.button_background }};
+  color: {{ section.settings.button_text_color }};
+  border: none;
+  border-radius: {{ section.settings.button_radius }}px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: fit-content;
+  font-family: var(--btn_font), sans-serif;
+}
+
+.submit-button-email:hover {
+  background-color: {{ section.settings.button_background | color_modify: 'lightness', -10 }};
+}
+
+.form-error {
+  color: #ee4444;
+  margin-bottom: 20px;
+}
+
+.form-success {
+  color: {{ section.settings.success_color }};
+  margin-bottom: 20px;
+  font-size: 16px;
+  padding: 12px;
+  border-radius: 4px;
+  background-color: {{ section.settings.success_color | color_modify: 'alpha', 0.1 }};
+}
+
+@media screen and (max-width: 600px) {
+  .container {
+    margin-top: {{ section.settings.margin_top_mobile }}px;
+    margin-bottom: {{ section.settings.margin_bottom_mobile }}px;
+    margin-left: {{ section.settings.margin_horizontal_mobile }}px;
+    margin-right: {{ section.settings.margin_horizontal_mobile }}px;
+  }
+
+  .form-header {
+    font-size: {{ section.settings.title_size_mobile }}px;
+  }
+
+  .form-message {
+    font-size: 13px;
+  }
+
+  .form-fields {
+    flex-direction: column;
+  }
+  
+  .email-input {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .submit-button-email {
+    width: 100%;
+  }
+
+  .form-success {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+</style>
+
+{% schema %}
+  {
+    "name": "Embedded Email Signup",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content & Data"
+      },
+      {
+        "type": "text",
+        "id": "header",
+        "label": "Header",
+        "default": "Join Our VIP List"
+      },
+      {
+        "type": "richtext",
+        "id": "email_message",
+        "label": "Email Message",
+        "default": "<p>Be the first to know when our exclusive collection launches. Enter your email address below and we'll notify you the moment it goes live. Don't miss out on this limited release - join our VIP notification list today.</p>"
+      },
+      {
+        "type": "text",
+        "id": "email_placeholder",
+        "label": "Email Placeholder",
+        "default": "EMAIL"
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button Text",
+        "default": "JOIN"
+      },
+      {
+        "type": "text",
+        "id": "success_message",
+        "label": "Success Message",
+        "default": "Thank you for subscribing! We'll keep you updated."
+      },
+  
+      {
+        "type": "header",
+        "content": "Layout & Display"
+      },
+      {
+        "type": "select",
+        "id": "heading_alignment",
+        "label": "Text Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Heading Text Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "message_color",
+        "label": "Email Message Color",
+        "default": "#4C4C4C"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color",
+        "default": "transparent"
+      },
+      {
+        "type": "color",
+        "id": "button_background",
+        "label": "Button Background Color",
+        "default": "#FE0000"
+      },
+      {
+        "type": "color",
+        "id": "button_text_color",
+        "label": "Button Text Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "input_background",
+        "label": "Input Background Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "input_border",
+        "label": "Input Border Color",
+        "default": "#e0e0e0"
+      },
+      {
+        "type": "color",
+        "id": "input_text",
+        "label": "Input Text Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "input_placeholder",
+        "label": "Input Placeholder Color",
+        "default": "#999999"
+      },
+      {
+        "type": "color",
+        "id": "success_color",
+        "label": "Success Message Color",
+        "default": "#28a745"
+      },
+  
+      {
+        "type": "header",
+        "content": "Styling"
+      },
+      {
+        "type": "range",
+        "id": "button_radius",
+        "label": "Round Button Corners",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "input_radius",
+          "label": "Round Input Corners",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "default": 0
+      },
+  
+      {
+        "type": "header",
+        "content": "Spacing"
+      },
+      {
+        "type": "range",
+        "id": "margin_top_desktop",
+        "label": "Top Spacing (Desktop)",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "margin_bottom_desktop",
+        "label": "Bottom Spacing (Desktop)",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "margin_top_mobile",
+        "label": "Top Spacing (Mobile)",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "default": 18
+      },
+      {
+        "type": "range",
+        "id": "margin_bottom_mobile",
+        "label": "Bottom Spacing (Mobile)",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "default": 18
+      },
+      {
+        "type": "header",
+        "content": "Typography"
+      },
+      {
+        "type": "range",
+        "id": "title_size_desktop",
+        "min": 12,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Section Title Size - Desktop",
+        "default": 24
+      },
+      {
+        "type": "range",
+        "id": "title_size_mobile",
+        "min": 12,
+        "max": 30,
+        "step": 1,
+        "unit": "px",
+        "label": "Section Title Size - Mobile",
+        "default": 20
+      },
+      {
+        "type": "select",
+        "id": "title_weight",
+        "label": "Section Title Font Weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "400"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Embedded Email Signup",
+        "category": "Forms"
+      }
+    ]
+  }
+  {% endschema %}

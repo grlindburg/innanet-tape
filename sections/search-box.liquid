@@ -1,0 +1,73 @@
+{{ 'search-box.css' | asset_url | stylesheet_tag }}
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<div class="sb-parent">
+  <div 
+    id="search-box-container" 
+    class="search-box-container"
+    style="
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 14px;
+      --search-box-color: #fdf9f9;
+      --search-box-results-txt-color: #232323;
+      --search-box-results-line-color: #232323;
+    "
+  >
+    <div class="search-cancel-button" id="search-cancel-button">✕</div>
+    <predictive-search>
+      <form
+        action="{{ routes.search_url }}"
+        method="get"
+        role="search"
+        style="display:flex; flex-direction: column; align-items: center;">
+        <input
+          class="search-box"
+          id="Search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          class="search-box-input"
+          type="search"
+          placeholder="{{ 'general.search.placeholder' | t }}"
+          role="combobox"
+          aria-expanded="false"
+          aria-owns="predictive-search-results"
+          aria-controls="predictive-search-results"
+          aria-haspopup="listbox"
+          aria-autocomplete="list" 
+          autocomplete="off"
+          style="
+            border-radius: 7px;
+            color: #232323;
+            background-color: #ffffff;
+            --search-input-placeholder-color: #232323;
+          "
+        />
+        <input type="hidden" name="type" value="product">
+        <div id="predictive-search" tabindex="-1"></div>
+      </form>
+    </predictive-search>
+  </div>
+</div>
+
+<div id="search-blur-backdrop" class="search-blur-backdrop"></div>
+
+<script src="{{ 'predictive-search.js' | asset_url }}" type="text/javascript"></script>
+
+{% schema %}
+  {
+    "name": "Search Box",
+    "tag": "div",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_date_time",
+        "label": "Show Date/Time",
+        "default": true
+      }, {
+        "type": "color",
+        "id": "index_date_color",
+        "label": "Date Color",
+        "default": "#000"
+      }
+    ]
+  }
+{% endschema %}

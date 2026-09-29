@@ -1,0 +1,77 @@
+{% render 'global-menu-icon-unified', menu_margin_top: section.settings.menu_margin_top %}
+{% render 'index-side-logo-compact' %}
+
+{% schema %}
+    {
+      "name": "Compact Menu",
+      "tag": "div",
+      "limit": 1,
+      "presets": [
+        {
+          "name": "Compact Menu"
+        }
+      ],
+      "disabled_on": {
+        "templates": [
+          "404",
+          "article",
+          "blog",
+          "cart",
+          "collection",
+          "list-collections",
+          "customers/account",
+          "customers/activate_account",
+          "customers/addresses",
+          "customers/login",
+          "customers/order",
+          "customers/register",
+          "customers/reset_password",
+          "gift_card",
+          "product",
+          "page",
+          "password",
+          "search"
+        ]
+      },
+    "settings": [
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "select",
+        "id": "logo-alignment",
+        "label": "Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "header",
+        "content": "Menu Icon"
+      },
+      {
+        "type": "range",
+        "id": "menu_margin_top",
+        "min": -50,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "label": "Menu Icon Vertical Adjustment",
+        "default": 0
+      }
+    ]
+}
+{% endschema %}

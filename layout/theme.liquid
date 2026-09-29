@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html
+  style="height: 100%; overflow-x: hidden;"
+  data-wf-page="{{ wfPage }}"
+  data-wf-site="63f81962926b3cf73bfbfcee"
+  lang="{{ request.locale.iso_code }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  store={{ shop.email }}>
+  <head>
+    <style>
+      shopify-accelerated-checkout {
+        --shopify-accelerated-checkout-button-block-size: 20px;
+        --shopify-accelerated-checkout-button-border-radius: 0;
+        --shopify-accelerated-checkout-button-box-shadow: none;
+        --shopify-accelerated-checkout-skeleton-background-color: #dedede;
+        --shopify-accelerated-checkout-skeleton-animation-opacity-start: 1;
+        --shopify-accelerated-checkout-skeleton-animation-opacity-end: 0.5;
+        --shopify-accelerated-checkout-skeleton-animation-duration: 4s;
+        --shopify-accelerated-checkout-skeleton-animation-timing-function: ease;
+      }
+      shopify-accelerated-checkout-cart {
+        --shopify-accelerated-checkout-button-block-size: 150px;
+        --shopify-accelerated-checkout-button-inline-size: 160px;
+        --shopify-accelerated-checkout-button-border-radius: 4px;
+        --shopify-accelerated-checkout-row-gap: 12px;
+        --shopify-accelerated-checkout-skeleton-background-color: #dedede;
+        --shopify-accelerated-checkout-skeleton-animation-opacity-start: 1;
+        --shopify-accelerated-checkout-skeleton-animation-opacity-end: 0.5;
+        --shopify-accelerated-checkout-skeleton-animation-duration: 4s;
+        --shopify-accelerated-checkout-skeleton-animation-timing-function: ease;
+      }
+      /* BODY FONTS */
+      {% if settings.enable_custom_body_font %}
+        @font-face {
+          font-family: "{{ settings.custom_body_font_name }}";
+          src: url("{{ settings.custom_body_font }}") format("woff2")
+          , url("{{ settings.custom_body_font }}") format("woff");
+        }
+      {% else %}
+      {{ settings.body_font | font_face }}
+    {% endif %}
+    /* HEADER FONTS */
+    {% if settings.enable_custom_font_header %}
+      @font-face {
+        font-family: "{{ settings.custom_font_header_name }}";
+        src: url("{{ settings.custom_font_header }}") format("woff2")
+        , url("{{ settings.custom_font_header }}") format("woff");
+      }
+    {% else %}
+    {{ settings.font_header | font_face }}
+  {% endif %}
+  /* BUTTON FONTS */
+  {% if settings.enable_custom_btn_font %}
+    @font-face {
+      font-family: "{{ settings.custom_btn_font_name }}";
+      src: url("{{ settings.custom_btn_font }}") format("woff2")
+      , url("{{ settings.custom_btn_font }}") format("woff");
+    }
+  {% else %}
+  {{ settings.btn_font | font_face }}
+{% endif %}
+/* ENTER NAVIGATION FONTS */
+{% if settings.enable_custom_nav_font %}
+  @font-face {
+    font-family: "{{ settings.custom_nav_font_name }}";
+    src: url("{{ settings.custom_nav_font }}") format("woff2")
+    , url("{{ settings.custom_nav_font }}") format("woff");
+  }
+{% else %}
+{{ settings.nav_font | font_face }}
+{% endif %}
+/* COUNTDOWN TIMER FONT */
+{% if settings.enable_custom_countdown_font %}
+  @font-face {
+    font-family: "{{ settings.custom_countdown_font_name }}";
+    src: url("{{ settings.custom_countdown_font }}") format("woff2")
+    , url("{{ settings.custom_countdown_font }}") format("woff");
+  }
+{% else %}
+{{ settings.countdown_font | font_face }}
+{% endif %}
+/* MARQUEE FONT */
+{% if settings.enable_custom_marquee_font %}
+  @font-face {
+    font-family: "{{ settings.custom_marquee_font_name }}";
+    src: url("{{ settings.custom_marquee_font }}") format("woff2")
+    , url("{{ settings.custom_marquee_font }}") format("woff");
+  }
+{% else %}
+{{ settings.marquee_font | font_face }}
+{% endif %}
+
+
+{% if settings.page_transition_type != 'none' %}
+    {% if settings.page_transition_type == 'fade_in' %}
+      body {
+        opacity: 0; 
+        animation: fade_in {{ settings.page_transition_duration }}s forwards;
+      }
+      
+      @keyframes fade_in {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+    {% endif %}
+{% endif %}
+
+:root  {
+  --font_body: {% if settings.enable_custom_body_font %}{{ settings.custom_body_font_name }}
+{% else %}{{ settings.body_font.family }}
+{% endif %};
+  --font_header: {% if settings.enable_custom_font_header %}{{ settings.custom_font_header_name }}
+{% else %}{{ settings.font_header.family }}
+{% endif %};
+  --btn_font: {% if settings.enable_custom_btn_font %}{{ settings.custom_btn_font_name }}
+{% else %}{{ settings.btn_font.family }}
+{% endif %};
+  --nav_font: {% if settings.enable_custom_nav_font %}{{ settings.custom_nav_font_name }}
+{% else %}{{ settings.nav_font.family }}
+{% endif %};
+  --countdown_font: {% if settings.enable_custom_countdown_font %}{{ settings.custom_countdown_font_name }}
+{% else %}{{ settings.countdown_font.family }}
+{% endif %};
+  --marquee_font: {% if settings.enable_custom_marquee_font %}{{ settings.custom_marquee_font_name }}
+{% else %}{{ settings.marquee_font.family }}
+{% endif %};
+}
+.fullscreen-gallery {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgb(126 126 126 / 90%) 100%);
+  z-index: 9999;
+  overflow-y: auto;
+  display: none;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+@supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+  .fullscreen-gallery {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(0, 0, 0, 0.95) 100%
+    );
+  }
+}
+.fullscreen-gallery.active {
+  opacity: 1;
+}
+.fullscreen-gallery-content {
+  padding: 10px;
+  padding-top: 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+.fullscreen-slide {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.fullscreen-slide img,
+.fullscreen-slide video,
+.fullscreen-slide .media-model {
+  max-width: 100%;
+  height: auto;
+  max-height: 90vh;
+  object-fit: contain;
+}
+.close-gallery {
+  position: sticky;
+  top: 15px;
+  right: 25px;
+  color: #fff;
+  font-size: 35px;
+  cursor: pointer;
+  z-index: 10000;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1;
+  margin-left: auto;
+  margin-bottom: -40px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.close-gallery:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+</style>
+    {%- liquid
+        render "__default-head"
+    -%}
+    {% if settings.hide_homepage and template == 'index' %}
+      <script>
+        window.location.href = "{{ settings.homepage_redirect_url | default: collections['all'].url }}";
+      </script>
+    {% endif %}
+    {{ content_for_header }}
+    
+
+    {{ "modernizr.js" |  asset_url |  script_tag }}
+    {{ "custom-grant.css" | asset_url | stylesheet_tag }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
+    {{ "innanet.css" | asset_url | stylesheet_tag }}
+    <link rel="shortcut icon" type="image/png" href="{{ 'inn-favicon-32.png' | asset_url }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ 'inn-favicon-32.png' | asset_url }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ 'inn-favicon-192.png' | asset_url }}">
+    <link rel="apple-touch-icon" href="{{ 'inn-apple-touch-icon.png' | asset_url }}">
+  </head>
+  <body
+  data-instant-allow-query-string
+    style="
+        background-color: #ffffff;
+        min-height: 100dvh;
+        height: 100%;
+        overflow-x: hidden;
+        position: relative;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+{% if request.page_type == 'password' %}
+        height: 100%;
+        width: 100%;
+        overflow-y: scroll;
+{% endif %}
+{% if request.page_type == 'collection' %}
+        /*position: relative;*/
+{% endif %}
+        display: flex;
+        flex-direction: column;
+        --scrollbar-thumb-radius:{{ settings.thumb_radius }}px;
+        --scrollbar-track-color:{{ settings.track_color }};
+        --scrollbar-thumb-color:{{ settings.thumb_color }};
+        --custom-cursor: {% if settings.custom_cursor_img %}{{ settings.custom_cursor_img | img_url }}{% else %}none{% endif %};
+        "
+    class="{{ bodyClasses }} {{ "template-" | append: request.page_type | handle }}"
+    d3503khivhk343="{{ settings['3593809343bfibhiddsfh_relfe3252_fdfg'] }}">
+    <a href="#container" class="skip-to-content-link">{{ 'general.accessibility.skip_to_content' | t }}</a>
+    {% render 'a11y-live-region' %}
+    <div id="search-blur-backdrop" class="search-blur-backdrop"></div>
+    <div class="fullscreen-gallery" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Fullscreen image gallery" style="display: none;">
+      <span class="close-gallery" role="button" tabindex="0" aria-label="Close gallery">&times;</span>
+      <div class="fullscreen-gallery-content">
+        {% if template contains 'product' %}
+          {% for media in product.media %}
+            <div class="fullscreen-slide">
+              {% case media.media_type %}
+                {% when 'image' %}
+                  {% render 'product-media-main', media: media %}
+              {% endcase %}
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    {% if template contains 'product' %}
+      <div
+            id="ModelViewer-Product-Section-3"
+            class="model-viewer-wrapper"
+            role="dialog"
+            aria-modal="true"
+            aria-hidden="true"
+            aria-label="3D product viewer"
+            style="visibility: hidden; opacity: 0; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.9); z-index: 9999; transition: opacity 0.3s ease;"
+          >
+            <button
+              class="close-button"
+              aria-label="Close 3D model viewer"
+              style="position: absolute; top: 20px; right: 20px; z-index: 10000; background: none; border: none; color: white; cursor: pointer; padding: 10px;"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+            
+            <div id="ModelViewerContainer-Product-Section-3" style="width: 100%; height: 100%;">
+              <!-- Model viewer will be loaded here when button is clicked -->
+            </div>
+          </div>
+    {% endif %}
+    {% section 'innanet-header' %}
+    {% unless request.page_type == 'password' %}
+      {% section 'cart-drawer' %}
+    {% endunless %}
+    <main id="container" tabindex="-1" style="flex: 1; background-color: transparent; width: 100%; outline: none;">
+      {% section 'announcement-bar' %}
+      {{ content_for_layout }}
+  </main>
+    <aside aria-label="Site utilities">
+      {% sections 'email-popup' %}
+
+      <div
+        id="sort-menu"
+        class="sort-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden="true"
+        aria-label="Sorting options"
+        style="display: none; position: fixed; background-color: #f9f9f9; min-width: 200px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 9999;">
+        <div id="sort-menu-handle" style="cursor: move; padding: 10px; background-color: #e0e0e0; text-align: center;">Drag to move</div>
+      </div>
+    </aside>
+    {% unless request.page_type == 'password' %}{% section 'innanet-footer' %}{% endunless %}
+  <script defer src="{{ 'clock.js' | asset_url }}" type="text/javascript"></script>
+  <script defer src="{{ 'jquery-3.7.1.min.js' | asset_url }}" type="text/javascript"></script>
+  <script defer src="{{ 'sundiata-redirect.js' | asset_url }}" type="text/javascript"></script>
+  <script defer src="{{ 'ts.js' | asset_url }}"></script>
+  <script defer src="{{ 'innanet.js' | asset_url }}"></script>
+  </body>
+
+</html>{%- comment -%}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{{ settings.3593809343bfibhiddsfh_relfe3252_fdfg }}"
+  to: "{{ settings['3593809343bfibhiddsfh_relfe3252_fdfg'] }}"
+  position: 8074..8128
+{%- endcomment -%}

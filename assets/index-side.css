@@ -1,0 +1,21 @@
+/* Large Devices in Landscape */
+@media screen and (max-height: 640px) {
+    .pages-menu{
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 13px;
+        text-align: center;
+    }
+    .logo-link{
+        display: block;
+    }
+    .date-time-container{
+        display: none;
+    }
+}
+
+@media screen and (max-height: 480px) {
+    .logo-link{
+        display: none;
+    }
+}

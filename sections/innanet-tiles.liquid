@@ -1,0 +1,43 @@
+<section class="inn-tiles">
+  {%- for block in section.blocks -%}
+    {%- liquid
+      assign fallback = 'inn-tile-substack.jpg'
+      assign fallback_url = 'https://vicmensa.substack.com'
+      if block.settings.kind == 'podcast'
+        assign fallback = 'inn-tile-podcast.jpg'
+        assign fallback_url = 'https://thevicmensashow.com'
+      endif
+    -%}
+    <a class="inn-tile inn-tile--{{ block.settings.kind }}" href="{{ block.settings.url | default: fallback_url }}" target="_blank" rel="noopener" aria-label="{{ block.settings.label }}" {{ block.shopify_attributes }}>
+      {%- if block.settings.image -%}
+        {{ block.settings.image | image_url: width: 2600 | image_tag: loading: 'lazy', sizes: '(min-width: 750px) 50vw, 100vw', widths: '800,1200,1600,2000,2600', alt: '' }}
+      {%- else -%}
+        <img src="{{ fallback | asset_url }}" alt="" loading="lazy" width="2600" height="2286">
+      {%- endif -%}
+      {%- if block.settings.kind == 'substack' -%}
+        <span class="inn-icon inn-tile__mark" style="--inn-icon: url('{{ 'inn-icon-sb.svg' | asset_url }}')" aria-hidden="true"></span>
+      {%- endif -%}
+      <span class="inn-label inn-tile__label">{{ block.settings.label }}&gt;</span>
+    </a>
+  {%- endfor -%}
+</section>
+
+{% schema %}
+{
+  "name": "Innanet tiles",
+  "max_blocks": 2,
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Tile",
+      "settings": [
+        { "type": "select", "id": "kind", "label": "Kind", "default": "substack", "options": [ { "value": "substack", "label": "Substack" }, { "value": "podcast", "label": "Podcast" } ] },
+        { "type": "text", "id": "label", "label": "Label", "default": "Substack" },
+        { "type": "image_picker", "id": "image", "label": "Image (replaces the built-in artwork)" },
+        { "type": "url", "id": "url", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Innanet tiles", "blocks": [ { "type": "tile", "settings": { "kind": "substack", "label": "Substack" } }, { "type": "tile", "settings": { "kind": "podcast", "label": "Podcast" } } ] }]
+}
+{% endschema %}

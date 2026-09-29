@@ -1,0 +1,60 @@
+function initClock() {
+document.addEventListener("DOMContentLoaded", function() {
+const storeTimezone = "{{ settings.timezone }}";
+const storeTimeOffset = parseInt("0") || 0;
+function updateClock() {
+  const now = new Date(); 
+  now.setMinutes(now.getMinutes() + storeTimeOffset);
+  let options, dateOptions;
+  try {
+    options = { 
+      timeZone: storeTimezone, 
+      hour: "numeric", 
+      minute: "numeric", 
+      hour12: true,
+      timeZoneName: "short"
+    };
+    dateOptions = { 
+      timeZone: storeTimezone, 
+      year: "numeric", 
+      month: "2-digit", 
+      day: "2-digit"
+    };
+  } catch (e) {
+    console.warn("Invalid timezone, falling back to local time", e);
+    options = { 
+      hour: "numeric", 
+      minute: "numeric", 
+      hour12: true,
+      timeZoneName: "short"
+    };
+    dateOptions = { 
+      year: "numeric", 
+      month: "2-digit", 
+      day: "2-digit"
+    };
+  }
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  const dateFormatter = new Intl.DateTimeFormat("en-US", dateOptions);
+  const formattedTime = formatter.format(now);
+  const formattedDate = dateFormatter.format(now).replace(/(\d+)\/(\d+)\/(\d+)/, '$1/$2/$3');
+  document.querySelectorAll(".date").forEach(el => el.textContent = formattedDate);
+  document.querySelectorAll(".time").forEach(el => el.textContent = formattedTime);
+}
+updateClock(); 
+setInterval(updateClock, 60000); 
+});
+};
+
+
+
+
+
+
+initClock();
+
+if (Shopify.designMode) {
+document.addEventListener('shopify:section:load', function(event) {
+  initClock();
+});
+}

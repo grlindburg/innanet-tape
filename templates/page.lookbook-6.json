@@ -1,0 +1,75 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "background": {
+      "type": "default-background",
+      "settings": {}
+    },
+    "clock": {
+      "type": "default-timezone",
+      "disabled": true,
+      "settings": {}
+    },
+    "lookbook": {
+      "type": "lookbook",
+      "blocks": {
+        "lookbook-item-1": {
+          "type": "lookbook_item",
+          "settings": {}
+        },
+        "lookbook-item-2": {
+          "type": "lookbook_item",
+          "settings": {}
+        },
+        "lookbook-item-3": {
+          "type": "lookbook_item",
+          "settings": {}
+        },
+        "lookbook-item-4": {
+          "type": "lookbook_item",
+          "settings": {}
+        },
+        "lookbook-item-5": {
+          "type": "lookbook_item",
+          "settings": {}
+        },
+        "lookbook-item-6": {
+          "type": "lookbook_item",
+          "settings": {}
+        },
+        "lookbook-item-7": {
+          "type": "lookbook_item",
+          "settings": {}
+        },
+        "lookbook-item-8": {
+          "type": "lookbook_item",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "lookbook-item-1",
+        "lookbook-item-2",
+        "lookbook-item-3",
+        "lookbook-item-4",
+        "lookbook-item-5",
+        "lookbook-item-6",
+        "lookbook-item-7",
+        "lookbook-item-8"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "background",
+    "clock",
+    "lookbook"
+  ]
+}

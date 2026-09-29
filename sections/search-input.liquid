@@ -1,0 +1,778 @@
+{{ 'plain-jane.css' | asset_url | stylesheet_tag }}
+{{ 'search-box.css' | asset_url | stylesheet_tag }}
+
+<style>
+  img.lazyload:not([src]) {
+    visibility: hidden;
+  }
+    /* Blur-up effect for LQIP */
+    .blur-up {
+    -webkit-filter: blur(5px);
+    filter: blur(5px);
+    transition: filter 400ms, -webkit-filter 400ms;
+  }
+
+  .blur-up.lazyloaded {
+    -webkit-filter: blur(0);
+    filter: blur(0);
+  }
+  
+  /* Smooth transitions for hover effect */
+  .product-image, .product-image-hover {
+    transition: opacity 400ms ease;
+  }
+  
+  .product-image-hover {
+    opacity: 0;
+  }
+  
+  /* Fix for image hover sizing issues */
+  .product-image-wrapper {
+    position: relative;
+    padding-bottom: 100%;
+    overflow: hidden;
+  }
+  
+  .product-image-wrapper img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  /* Product aspect ratio container */
+  .aspect-ratio-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  /* Default is natural, no padding needed */
+  
+  /* Square aspect ratio 1:1 */
+  .aspect-ratio-1-1 {
+    padding-bottom: 100%; /* 1:1 aspect ratio (height = width) */
+  }
+  
+  /* Landscape aspect ratio 4:3 */
+  .aspect-ratio-4-3 {
+    padding-bottom: 75%; /* 4:3 aspect ratio (height = 3/4 of width) */
+  }
+  
+  /* Portrait aspect ratio 3:4 */
+  .aspect-ratio-3-4 {
+    padding-bottom: 133.33%; /* 3:4 aspect ratio (height = 4/3 of width) */
+  }
+  
+  /* Widescreen aspect ratio 16:9 */
+  .aspect-ratio-16-9 {
+    padding-bottom: 56.25%; /* 16:9 aspect ratio (height = 9/16 of width) */
+  }
+  
+  /* Content positioning inside aspect ratio container */
+  .aspect-ratio-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensures image maintains aspect ratio within container */
+  }
+</style>
+
+<div id="searchresults">
+    <form class="search-box-page-settings" action="/search" method="get" role="search" style="display:flex; flex-direction: column; align-items: center;">
+        <input
+                type="search"
+                id="Search"
+                name="q"
+                class="search-box-input search-box"
+                value="{{search.terms | escape}}"
+                placeholder="{{ 'general.search.placeholder' | t }}"
+                style=" {% if section.settings.enable_search_input_radius %} border-radius: 7px; {% endif %};
+                        color: {{ section.settings.search_box_input_txt_color }};
+                        background-color: {{ section.settings.search_box_input_bg_color }};
+                        --search-input-placeholder-color: {{ section.settings.search_box_input_txt_color }};
+                        margin: 0;
+                        "
+        >
+        <input type="hidden" name="type" value="product">
+    </form>
+
+    {% if search.performed %}
+        {% paginate search.results by 24 %}
+            {% if search.results == empty %}
+                <p style="color: {{ section.settings.no_results_color }};">Your search for "{{ search.terms | escape }}" did not yield any results</p>
+            {% else %}
+                <div id="product-grid" style="
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 20px;
+                    padding: 1rem;
+                    width: 100%;
+                    margin: 2rem auto;
+                    opacity: 0;
+                    animation: fadeIn 0.6s ease-out forwards;
+                ">
+                    {% for item in search.results %}
+                        {% if item.featured_image %}
+                            <div class="product-item" style="text-align: center;">
+                                <a href="{{ item.url }}" style="text-decoration: none;" class="collection-product-container">
+                                    <div class="product-image-wrapper" style="position: relative; padding-bottom: {% if settings.product_aspect_ratio == '1:1' %}100%{% elsif settings.product_aspect_ratio == '4:3' %}75%{% elsif settings.product_aspect_ratio == '3:4' %}133.33%{% elsif settings.product_aspect_ratio == '16:9' %}56.25%{% else %}100%{% endif %}; overflow: hidden; background-color: {{ section.settings.background_color }};">
+                                        <img 
+                                        {% if settings.enable_lazy_loading %}
+                                            src="{{ item.featured_media.preview_image | img_url: '50x' }}"
+                                            data-sizes="auto"
+                                            data-srcset="
+                                            {{ item.featured_media.preview_image | img_url: '325x' }} 325w,
+                                            {{ item.featured_media.preview_image | img_url: '400x' }} 500w,
+                                            {{ item.featured_media.preview_image | img_url: '500x' }} 500w,
+                                            {{ item.featured_media.preview_image | img_url: '600x' }} 500w,
+                                            {{ item.featured_media.preview_image | img_url: '700x' }} 500w,
+                                            {{ item.featured_media.preview_image | img_url: '1024x' }} 1524w"
+                                            {% else %} 
+                                            src="{{ item.featured_media.preview_image | img_url: 'master' }}" alt="{{ item.featured_media.preview_image.alt }}" 
+                                            {% endif %}  
+                                            alt="{{ item.title | escape }}"
+                                            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; object-fit: contain; background-color: {{ section.settings.background_color }};"
+                                            class="product-image lazyload blur-up"
+                                        >
+                                        {% if item.media[1].preview_image != null and item.media[1].media_type != 'video' and item.media[1].media_type != 'external_video' and settings.enable_product_hover %}
+                                            <img 
+                                            {% if settings.enable_lazy_loading %}
+                                                src="{{ item.media[1].preview_image | img_url: '50x' }}"
+                                                data-sizes="auto"
+                                                data-srcset="
+                                                {{ item.media[1].preview_image | img_url: '325x' }} 325w,
+                                                {{ item.media[1].preview_image | img_url: '400x' }} 400w,
+                                                {{ item.media[1].preview_image | img_url: '500x' }} 500w,
+                                                {{ item.media[1].preview_image | img_url: '600x' }} 600w,
+                                                {{ item.media[1].preview_image | img_url: '700x' }} 700w,
+                                                {{ item.media[1].preview_image | img_url: '1024x' }} 1524w"
+                                                {% else %}
+                                                src="{{ item.media[1].preview_image | img_url: 'master' }}" alt="{{ item.media[1].preview_image.alt }}"
+                                                {% endif %}  
+                                                alt="{{ item.media[1].preview_image.alt | escape }}"
+                                                style="opacity: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; object-fit: contain; background-color: {{ section.settings.background_color }};"
+                                                class="product-image-hover lazyload blur-up"
+                                            >
+                                        {% endif %}
+                                        {% if item.available == false %}
+                                            <span class="minimal-product-row__badge sold-out" style="background-color: {{ section.settings.sold_out_bg_color }}; color: {{ section.settings.sold_out_text_color }};">
+                                                {{ section.settings.sold_out_label }}
+                                            </span>
+                                        {% elsif item.compare_at_price > item.price %}
+                                            <span class="minimal-product-row__badge on-sale" style="background-color: {{ section.settings.sale_bg_color }}; color: {{ section.settings.sale_text_color }};">
+                                                {{ section.settings.sale_label }}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    {% if section.settings.show_product_titles %}
+                                        <p style="
+                                            margin: 10px 0;
+                                            font-size: 0.9em;
+                                            color: {{ section.settings.search_card_header_color }};
+                                        ">
+                                            {{ item.title }}
+                                        </p>
+                                    {% endif %}
+                                    {% if section.settings.show_product_prices %}
+                                        <p style="
+                                            margin: 5px 0;
+                                            font-size: 0.9em;
+                                            color: {{ section.settings.search_card_price_color }};
+                                        ">
+                                            {{ item.price | money }}
+                                        </p>
+                                    {% endif %}
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                
+                {% if paginate.next %}
+                    <div id="loading-spinner" style="display: none; text-align: center; padding: 20px;">
+                        <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; margin: 0 auto; animation: spin 1s linear infinite;"></div>
+                    </div>
+                    <div id="pagination-url" data-current-page="{{ paginate.current_page }}" data-search-terms="{{ search.terms | escape }}"></div>
+                {% endif %}
+            {% endif %}
+        {% endpaginate %}
+    {% endif %}
+</div>
+
+<style>
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .product-item {
+        opacity: 0;
+    }
+
+    .product-item.fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    /* Hide broken image placeholder */
+    img.product-image,
+    img.product-image-hover {
+        background-color: {{ section.settings.background_color | default: '#ffffff' }};
+        object-fit: contain;
+    }
+    
+    /* Ensure proper positioning of hover images */
+    .collection-product-container {
+        position: relative;
+        display: block;
+    }
+    
+    /* Prevent layout shifts during loading */
+    .product-item {
+        min-height: 200px;
+    }
+    
+    /* Ensure hover images maintain exact same dimensions as first image */
+    .product-image-wrapper {
+        position: relative;
+        padding-bottom: 100%;
+        overflow: hidden;
+    }
+    
+    .product-image-wrapper img.product-image,
+    .product-image-wrapper img.product-image-hover {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    @media screen and (min-width: 768px) {
+        #product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+            gap: 20px !important;
+            padding: 2rem !important;
+        }
+
+        #product-grid .product-item p {
+            font-size: 1em !important;
+        }
+    }
+
+    .search-results-header {
+        margin-right: auto;
+        padding-left: 2rem;
+    }
+
+    .search-results-header h2 {
+        font-size: var(--title-size-desktop, 16px);
+        font-weight: var(--title-weight, 500);
+        margin: 0;
+    }
+
+    @media screen and (max-width: 1024px) {
+        .search-results-header h2 {
+            font-size: var(--title-size-mobile, 14px);
+        }
+    }
+
+    .minimal-product-row__badge {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    @media screen and (max-width: 1024px) {
+        .minimal-product-row__badge {
+            font-size: 0.65rem;
+        }
+    }
+</style>
+
+<script src="{{ 'lazyloadz.js' | asset_url }}" type="text/javascript"></script>
+<script src="{{ 'collection-product-hover.js' | asset_url }}" type="text/javascript"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let loading = false;
+        const productGrid = document.getElementById('product-grid');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const paginationUrl = document.getElementById('pagination-url');
+        let reachedEnd = false;
+
+        console.log('=== INITIAL SETUP ===');
+        console.log('Elements found:', {
+            productGrid: !!productGrid,
+            loadingSpinner: !!loadingSpinner,
+            paginationUrl: !!paginationUrl
+        });
+
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'none';
+        }
+
+        const productObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('fade-in');
+                    }, index * 50); 
+                    productObserver.unobserve(entry.target); 
+                }
+            });
+        }, {
+            threshold: 0.1 
+        });
+
+        function observeProducts() {
+            document.querySelectorAll('.product-item').forEach(product => {
+                productObserver.observe(product);
+            });
+        }
+
+        observeProducts();
+
+        if (typeof initializeProductHover === 'function') {
+            console.log('Initializing product hover for initial products');
+            initializeProductHover();
+        }
+
+        function loadMoreProducts() {
+            console.log('=== LOAD MORE TRIGGERED ===');
+            if (loading || !paginationUrl || reachedEnd) {
+                console.log('Loading blocked:', { loading, hasPaginationUrl: !!paginationUrl, reachedEnd });
+                return;
+            }
+            
+            const currentPage = parseInt(paginationUrl.dataset.currentPage);
+            const searchTerms = paginationUrl.dataset.searchTerms;
+            const nextPage = currentPage + 1;
+            const nextUrl = `/search?q=${encodeURIComponent(searchTerms)}&page=${nextPage}&type=product`;
+            
+            console.log('Preloading next page:', { nextUrl });
+
+            loading = true;
+           
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'block';
+            }
+
+            fetch(nextUrl)
+                .then(response => {
+                    console.log('Fetch response:', response.status);
+                    return response.text();
+                })
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newProducts = doc.querySelectorAll('.product-item');
+                    console.log('Products found:', newProducts.length);
+                    
+                    if (newProducts.length > 0) {
+                        newProducts.forEach(product => {
+                            const clonedProduct = product.cloneNode(true);
+                            productGrid.appendChild(clonedProduct);
+                            productObserver.observe(clonedProduct);
+                        });
+                        
+                        console.log(`Setting pagination current page to ${nextPage}`);
+                        paginationUrl.dataset.currentPage = nextPage;
+                        
+                        if (typeof initializeProductHover === 'function') {
+                            console.log('Reinitializing product hover for new products');
+                            initializeProductHover();
+                        }
+                        
+                        const nextPageElement = doc.querySelector('#pagination-url');
+                        console.log('Next page element found in fetched HTML:', nextPageElement);
+                        
+                        if (!nextPageElement) {
+                            console.log('No more pages detected');
+                            reachedEnd = true;
+                            if (loadingSpinner) loadingSpinner.remove();
+                        } else {
+                            setupPreloadTrigger();
+                           
+                            checkIfShouldPreloadNext();
+                        }
+                    } else {
+                        console.log('No products found on next page');
+                        reachedEnd = true;
+                        if (loadingSpinner) loadingSpinner.remove();
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                })
+                .finally(() => {
+                    console.log('Resetting loading state');
+                    loading = false;
+                    if (loadingSpinner) {
+                        loadingSpinner.style.display = 'none';
+                    }
+                });
+        }
+
+        function setupPreloadTrigger() {
+            const allProducts = document.querySelectorAll('.product-item');
+            if (allProducts.length === 0) return;
+
+            const percentages = [0.25, 0.4, 0.5, 0.6, 0.75, 0.85, 0.95];
+            
+            const triggerIndices = percentages
+                .map(percentage => Math.floor(allProducts.length * percentage))
+                .filter((value, index, self) => self.indexOf(value) === index) // Remove duplicates
+                .filter(index => index >= 0 && index < allProducts.length);
+            
+            if (triggerIndices.length === 0) return;
+            
+            if (window.preloadNextPageObserver) {
+                window.preloadNextPageObserver.disconnect();
+            }
+            
+            window.preloadNextPageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !loading && !reachedEnd) {
+                        console.log('Preload trigger reached, loading next page');
+                        loadMoreProducts();
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '300px', 
+                threshold: 0.01 
+            });
+            
+            triggerIndices.forEach(index => {
+                if (index < allProducts.length) {
+                    const triggerProduct = allProducts[index];
+                    window.preloadNextPageObserver.observe(triggerProduct);
+                    console.log(`Set up preload trigger at product index ${index}`);
+                }
+            });
+            
+            const bottomTrigger = document.createElement('div');
+            bottomTrigger.id = 'bottom-trigger';
+            bottomTrigger.style.height = '1px';
+            bottomTrigger.style.width = '100%';
+            bottomTrigger.style.position = 'absolute';
+            bottomTrigger.style.bottom = '1000px'; 
+            document.body.appendChild(bottomTrigger);
+            window.preloadNextPageObserver.observe(bottomTrigger);
+            console.log('Added bottom trigger element');
+        }
+        
+        function debounce(func, wait, immediate = false) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                const later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                const callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        }
+        
+        function throttle(func, limit) {
+            let lastFunc;
+            let lastRan;
+            return function() {
+                const context = this;
+                const args = arguments;
+                if (!lastRan) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                } else {
+                    clearTimeout(lastFunc);
+                    lastFunc = setTimeout(function() {
+                        if ((Date.now() - lastRan) >= limit) {
+                            func.apply(context, args);
+                            lastRan = Date.now();
+                        }
+                    }, limit - (Date.now() - lastRan));
+                }
+            };
+        }
+        
+        const scrollHandler = debounce(() => {
+            if (loading || !paginationUrl || reachedEnd) return;
+            
+            const scrollPosition = window.scrollY + window.innerHeight;
+            const totalHeight = document.body.scrollHeight;
+            const scrollPercentage = scrollPosition / totalHeight;
+            
+            if (scrollPercentage > 0.4) { 
+                console.log('Scroll event: 40% through page, triggering load');
+                loadMoreProducts();
+            }
+        }, 50);
+        let lastScrollTop = 0;
+        let lastScrollTime = Date.now();
+        let scrollVelocity = 0;
+        let consecutiveFastScrolls = 0;
+        
+        const velocityScrollHandler = () => {
+            if (loading || !paginationUrl || reachedEnd) return;
+            
+            const currentScrollTop = window.scrollY;
+            const currentTime = Date.now();
+            const timeDelta = currentTime - lastScrollTime;
+            
+            if (timeDelta > 0) {
+                scrollVelocity = Math.abs(currentScrollTop - lastScrollTop) / timeDelta;
+                
+                const scrollPercentage = (window.scrollY + window.innerHeight) / document.body.scrollHeight;
+                
+                if (scrollVelocity > 2 && scrollPercentage > 0.2) {
+                    consecutiveFastScrolls++;
+                    console.log(`Fast scroll detected! Velocity: ${scrollVelocity.toFixed(2)}px/ms, Position: ${(scrollPercentage * 100).toFixed(0)}%, Consecutive: ${consecutiveFastScrolls}`);
+                    
+                    if (consecutiveFastScrolls >= 2) {
+                        loadMoreProducts();
+                        consecutiveFastScrolls = 0;
+                    }
+                } else {
+                    if (scrollVelocity < 1) {
+                        consecutiveFastScrolls = 0;
+                    }
+                }
+            }
+            
+            lastScrollTop = currentScrollTop;
+            lastScrollTime = currentTime;
+        };
+        
+        function checkIfShouldPreloadNext() {
+            if (loading || !paginationUrl || reachedEnd) return;
+            
+            const scrollPosition = window.scrollY + window.innerHeight;
+            const totalHeight = document.body.scrollHeight;
+            const scrollPercentage = scrollPosition / totalHeight;
+            
+            if (scrollPercentage > 0.7) {
+                console.log('Already 70% down the page, loading next page immediately');
+                loadMoreProducts();
+            }
+        }
+        
+        let scrollDirection = 'down';
+        let lastScrollY = window.scrollY;
+        
+        const scrollDirectionHandler = () => {
+            const currentScrollY = window.scrollY;
+            
+            if (currentScrollY > lastScrollY) {
+                if (scrollDirection !== 'down') {
+                    scrollDirection = 'down';
+                    console.log('Scroll direction changed to DOWN');
+                }
+            } else if (currentScrollY < lastScrollY) {
+                if (scrollDirection !== 'up') {
+                    scrollDirection = 'up';
+                    console.log('Scroll direction changed to UP');
+                }
+            }
+            
+            lastScrollY = currentScrollY;
+            
+            if (scrollDirection === 'down') {
+                const scrollPosition = window.scrollY + window.innerHeight;
+                const totalHeight = document.body.scrollHeight;
+                const remainingScroll = totalHeight - scrollPosition;
+                
+                if (remainingScroll < 1000 && !loading && !reachedEnd) {
+                    console.log(`Near bottom (${remainingScroll.toFixed(0)}px remaining), loading next page`);
+                    loadMoreProducts();
+                }
+            }
+        };
+        
+        window.addEventListener('scroll', scrollHandler);
+        window.addEventListener('scroll', velocityScrollHandler, { passive: true });
+        window.addEventListener('scroll', throttle(scrollDirectionHandler, 100), { passive: true });
+        
+        const wheelHandler = (event) => {
+            if (loading || !paginationUrl || reachedEnd) return;
+            
+            if (event.deltaY > 50) {
+                const scrollPosition = window.scrollY + window.innerHeight;
+                const totalHeight = document.body.scrollHeight;
+                const scrollPercentage = scrollPosition / totalHeight;
+                
+                if (scrollPercentage > 0.3) {
+                    console.log('Rapid wheel scrolling detected, loading next page');
+                    loadMoreProducts();
+                }
+            }
+        };
+        
+        window.addEventListener('wheel', wheelHandler, { passive: true });
+        
+        if (productGrid && paginationUrl) {
+            setupPreloadTrigger();
+            
+            checkIfShouldPreloadNext();
+            
+            if (document.querySelectorAll('.product-item').length < 8) {
+                console.log('Few initial products, loading next page immediately');
+                loadMoreProducts();
+            }
+            
+            return function cleanup() {
+                if (window.preloadNextPageObserver) {
+                    window.preloadNextPageObserver.disconnect();
+                }
+                window.removeEventListener('scroll', scrollHandler);
+                window.removeEventListener('scroll', velocityScrollHandler);
+                window.removeEventListener('scroll', scrollDirectionHandler);
+                window.removeEventListener('wheel', wheelHandler);
+                
+                const bottomTrigger = document.getElementById('bottom-trigger');
+                if (bottomTrigger) {
+                    bottomTrigger.remove();
+                }
+            };
+        }
+    });
+</script>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Search Input"
+    },
+    {
+      "type": "color",
+      "id": "search_box_input_bg_color",
+      "label": "Search Box Input Bg Color",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
+      "id": "search_box_input_txt_color",
+      "label": "Search Box Input Txt Color",
+      "default": "#000"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_search_input_radius",
+      "label": "Curve Search Input Corners",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Product Display"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_titles",
+      "label": "Show Product Titles",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_prices",
+      "label": "Show Product Prices",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Product Image Background Color",
+      "default": "#ffffff",
+      "info": "Background color shown while images are loading"
+    },
+    {
+      "type": "color",
+      "id": "no_results_color",
+      "label": "No Results Text Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "search_card_header_color",
+      "label": "Product Title Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "search_card_price_color",
+      "label": "Product Price Color",
+      "default": "#000"
+    },
+    {
+      "type": "header",
+      "content": "Badge Settings"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold Out Label Text",
+      "default": "SOLD OUT"
+    },
+    {
+      "type": "text",
+      "id": "sale_label",
+      "label": "Sale Label Text",
+      "default": "ON SALE"
+    },
+    {
+      "type": "color",
+      "id": "sold_out_bg_color",
+      "label": "Sold Out Badge Background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "sold_out_text_color",
+      "label": "Sold Out Badge Text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "sale_bg_color",
+      "label": "Sale Badge Background",
+      "default": "#FF4D4D"
+    },
+    {
+      "type": "color",
+      "id": "sale_text_color",
+      "label": "Sale Badge Text",
+      "default": "#FFFFFF"
+    }
+  ]
+}
+{% endschema %}
+

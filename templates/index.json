@@ -1,0 +1,99 @@
+{
+  "sections": {
+    "hero": {
+      "type": "innanet-hero",
+      "settings": {
+        "capture": true,
+        "capture_desktop": true
+      }
+    },
+    "featured": {
+      "type": "innanet-featured",
+      "settings": {
+        "label": "Shop",
+        "limit": 4
+      }
+    },
+    "tour": {
+      "type": "innanet-tour",
+      "settings": {
+        "label": "Shows",
+        "cta": "Get tickets"
+      },
+      "blocks": {
+        "london": {
+          "type": "city",
+          "settings": {
+            "city": "London",
+            "date": "Oct 12",
+            "sold_out": false,
+            "url": "https://www.seetickets.com/event/vic-mensa/village-underground/3712289?utm_source=shopify&utm_medium=store&utm_campaign=innanetour_london&utm_content=tour_banner"
+          }
+        },
+        "la": {
+          "type": "city",
+          "settings": {
+            "city": "Los Angeles",
+            "date": "Oct 24",
+            "sold_out": false,
+            "url": "https://www.bluenotejazz.com/la/tm-event/vic-mensa-with-live-band/?utm_source=shopify&utm_medium=store&utm_campaign=innanetour_la&utm_content=tour_banner"
+          }
+        },
+        "chicago": {
+          "type": "city",
+          "settings": {
+            "city": "Chicago",
+            "date": "Oct 28",
+            "sold_out": false,
+            "url": "https://www.ticketmaster.com/event/0400652F6BB81FE9?utm_source=shopify&utm_medium=store&utm_campaign=innanetour_chicago&utm_content=tour_banner"
+          }
+        },
+        "nyc": {
+          "type": "city",
+          "settings": {
+            "city": "New York",
+            "date": "Nov 10",
+            "sold_out": false,
+            "url": "https://www.bluenotejazz.com/nyc/tm-event/vic-mensa-with-live-band/?utm_source=shopify&utm_medium=store&utm_campaign=innanetour_nyc&utm_content=tour_banner"
+          }
+        }
+      },
+      "block_order": [
+        "london",
+        "la",
+        "chicago",
+        "nyc"
+      ]
+    },
+    "tiles": {
+      "type": "innanet-tiles",
+      "blocks": {
+        "substack": {
+          "type": "tile",
+          "settings": {
+            "kind": "substack",
+            "label": "Substack"
+          }
+        },
+        "podcast": {
+          "type": "tile",
+          "settings": {
+            "kind": "podcast",
+            "label": "Podcast"
+          }
+        }
+      },
+      "block_order": [
+        "substack",
+        "podcast"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "featured",
+    "tour",
+    "tiles"
+  ]
+}

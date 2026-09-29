@@ -1,0 +1,401 @@
+#PBarNextFrameWrapper {
+    /* display: none !important; */
+}
+
+@font-face {
+    font-family: 'Xheighter';
+    src: url('https://cdn.shopify.com/s/files/1/0931/1305/7652/files/Xheighter-Condensed.ttf?v=1759477323') format('truetype');
+}
+
+@font-face {
+    font-family: 'Arimo';
+    src: url('https://cdn.shopify.com/s/files/1/0931/1305/7652/files/Arimo-Regular.ttf?v=1759477339') format('truetype');
+}
+
+@font-face {
+    font-family: 'Bookman';
+    src: url('https://cdn.shopify.com/s/files/1/0931/1305/7652/files/BookmanJFPro-Regular.ttf?v=1763082360') format('truetype');
+}
+
+@font-face {
+    font-family: 'BookmanItalic';
+    src: url('https://cdn.shopify.com/s/files/1/0931/1305/7652/files/BookmanJFPro-Italic.ttf?v=1763086352') format('truetype');
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Xheighter';
+    color: #191818 !important;
+}
+
+p, a, input, button, textarea, select, option, label, span, div, label, li, ul, ol {
+    font-family: 'Arimo', sans-serif !important;
+    color: #191818;
+}
+
+.collection-display-row__title {
+    font-family: 'Xheighter' !important;
+    text-transform: capitalize !important;
+}
+
+.collection-display-row__price-amount {
+    font-family: 'Arimo' !important;
+    font-size: 12pt !important;
+}
+
+.home-menu-grid-mobile > a:last-of-type {
+    display: none !important;
+}
+
+.home-menu-grid-mobile > a {
+    text-transform: lowercase;
+}
+
+.minimal-text-banner__subtitle {
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+.minimal-text-banner__text p {
+    font-family: 'Bookman' !important;
+}
+
+main {
+    background: #F6B117 !important;
+}
+
+.keep-shopping-button {
+    display: none !important;
+}
+
+.lookbook-list {
+    padding: 0px !important;
+}
+
+.lookbook-list__grid {
+    margin-top: 0px !important;
+}
+
+.collection-display-row__title {
+    letter-spacing: 0px;
+    font-size: 28pt !important;
+    line-height: 30pt !important;
+}
+
+.shopify-policy__title h1 {
+    font-weight: 500 !important;
+}
+
+.shopify-policy__body h2 {
+    font-weight: 500 !important;
+}
+
+/* Add bottom padding for policy pages */
+.shopify-policy__container {
+    padding-bottom: 60px !important;
+}
+
+.page-text-content h4, .page-text-content h4 strong {
+    font-weight: 500 !important;
+    font-size: 24pt !important;
+    letter-spacing: 1.5px !important;
+}
+
+.lookbook-list__image {
+    height: 100% !important;
+    max-width: none !important;
+}
+
+.footer-grid h3 {
+    letter-spacing: 0.5px !important;
+    font-size: 24pt !important;
+    font-weight: 500 !important;
+    color: #f7f5ec !important;
+    text-align: center;
+}
+
+.footer-grid-item {
+    display: block;
+    text-decoration: none;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.footer-links {
+    width: 100%;
+}
+
+/* Global link color override - set all links to default black */
+a {
+    color: #191818 !important;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #191818 !important;
+}
+
+a:hover {
+    color: #191818 !important;
+}
+
+a:active {
+    color: #191818 !important;
+}
+
+/* Override CSS variables for navigation links */
+.nav-link {
+    --nav-link-color: #191818 !important;
+    --navlink-color: #191818 !important;
+    --navlink-hover-color: #191818 !important;
+}
+
+/* Specific overrides for content areas */
+/* .page-text-content a,
+.article-content a,
+.rte a {
+    color: #191818 !important;
+    text-decoration: underline;
+}
+
+.page-text-content a:hover,
+.article-content a:hover,
+.rte a:hover {
+    color: #191818 !important;
+    text-decoration: underline;
+} */
+
+/* Product template and policy page template link colors */
+/* Targets links within product descriptions on product pages */
+.template-product .product-description a,
+/* Targets links within Shopify policy pages (default policy template) */
+.shopify-policy__body a,
+.shopify-policy__container a {
+    color: #D91D1E !important;
+    text-decoration: underline;
+}
+
+.template-product .product-description a:hover,
+.shopify-policy__body a:hover,
+.shopify-policy__container a:hover {
+    color: #D91D1E !important;
+    text-decoration: underline;
+}
+
+.template-product .product-description a:visited,
+.shopify-policy__body a:visited,
+.shopify-policy__container a:visited {
+    color: #D91D1E !important;
+}
+
+.template-product .product-description a:active,
+.shopify-policy__body a:active,
+.shopify-policy__container a:active {
+    color: #D91D1E !important;
+}
+
+/* .minimal-text-banner {
+    min-height: 100vh !important;
+} */
+
+.minimal-text-banner {
+    background-position: top center !important;
+}
+
+.cart-text {
+    /* display: none !important; */
+}
+
+#preloader h1, #preloader h2, #preloader h3, #preloader h4, #preloader h5, #preloader h6, #preloader p, #preloader a {
+    font-family: 'Xheighter' !important;
+    text-align: center;
+    font-weight: 500 !important;
+}
+
+#preloader a {
+    text-decoration: underline;
+    font-size: 18pt !important;
+    letter-spacing: 0.5px !important;
+}
+
+#shopify-section-announcement-bar .text-block {
+    box-shadow: none !important;
+}
+
+.password-email-form .form-message {
+    font-size: 14px !important;
+}
+
+.collection-display-row__item {
+    margin-bottom: 30px !important;
+}
+
+.logo-container .cart-text {
+    display: none !important;
+}
+
+.side-index-logo .logo {
+    position: fixed !important;
+    left: 25px;
+    bottom: 35px;
+}
+
+/* .fa-play {
+    color: white;
+} */
+
+.related-product-row__title {
+    text-transform: capitalize !important;
+}
+
+.shopify-policy__body {
+    font-size: 14pt !important;
+}
+
+.custom-slider video {
+    object-fit: contain !important;
+}
+
+.touchevents .custom-slider, .touchevents .custom-slider__slide {
+    height: auto !important;
+    min-height: 33.5vh;
+}
+
+.touchevents .custom-slider video {
+    object-fit: contain !important;
+    height: auto !important;
+    top: 30px !important;
+}
+
+.collection-display-row__info {
+    margin-top: 24px !important;
+}
+
+.copyright-text {
+    margin-right: 0;
+    margin-bottom: 40px !important;
+}
+
+/* Lowercase all headings site-wide */
+h1, h2, h3, h4, h5, h6 {
+    text-transform: lowercase !important;
+}
+
+/* Lowercase all product title variations */
+.product-title,
+.product-1-title,
+.collection-display-row__title,
+.related-product-row__title,
+.minimal-product-row__title,
+.prouduct-title,
+.related__product__title {
+    text-transform: lowercase !important;
+}
+
+.quick-add-btn {
+    font-size: 9pt !important;
+}
+
+.product-info-left {
+    padding-top: 5vh;
+}
+
+.product-gallery-container {
+    margin-top: -35vh !important;
+}
+
+.lookbook-list__carousel-wrapper {
+    background: #191818;
+}
+
+.form-header {
+    color: #F7F5EC !important;
+}
+
+.form-message p {
+    color: #F7F5EC !important;
+}
+
+.btn.form.right {
+    display: none !important;
+}
+
+.related-product-row__controls {
+    display: none !important;
+}
+
+.touchevents .side-index-logo .logo {
+    width: 100px !important;
+    bottom: 25px;
+}
+
+.touchevents .logo-link .logo {
+    width: 100px !important;
+    margin-top: 0 !important;
+}
+
+.touchevents .footer-links-container {
+    display: block !important;
+}
+
+.touchevents .footer-links-container .footer-grid {
+    text-align: center !important;
+}
+
+.touchevents .footer-container-2 {
+    padding-left: 0 !important;
+}
+
+.touchevents .copyright-text {
+    display: block;
+    margin: 0 auto;
+}
+
+.touchevents .form-header {
+    font-size: 25pt !important;
+}
+
+.touchevents .logo-container.collection {
+    padding: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    height: 100px !important;
+}
+
+.touchevents .product-gallery-container {
+    margin-top: -10vh !important;
+}
+
+.touchevents .related-product-row__section-title, .touchevents .related-product-row__title {
+    font-size: 20pt !important;
+}
+
+.touchevents .product-container .product-title {
+    font-size: 32pt !important;
+}
+
+.mobile-fullscreen-trigger {
+    display: none !important;
+}
+
+.touchevents .other-footer {
+    padding-bottom: 60px !important;
+}
+
+.custom-slider__volume {
+    top: 120px !important;
+    bottom: auto !important;
+    right: 12.5px !important;
+}
+
+.touchevents .custom-slider__volume {
+    top: 210px !important;
+    bottom: auto !important;
+    right: 25px !important;
+    width: 25px !important;
+    height: 22.5px !important;
+}
+
+.btn-checkout {
+    color: #F7F5EC !important;
+}

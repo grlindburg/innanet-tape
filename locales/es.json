@@ -1,0 +1,171 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "tn7d8e379f": "02\/22\/2023",
+  "t589b2285": "2:22PM",
+  "t4c641ebb": "Contraseña",
+  "tn5ac62c12": "Off-White c\/o Virgil Abloh™ se embarca en una nueva narrativa donde el pensamiento libre inspira un formato pionero para el futuro, donde la era de la imaginación es el producto de la realidad.",
+  "tn5ecce4ba": "Inspirado por la visión de Virgil y su enfoque hacia su arte, Off-White™ nutre a un colectivo de mentes creativas que representan lo mejor en su categoría y tienen una fuerte y personal conexión con Virgil. La relación de Ibrahim con Virgil y Off-White™, nacida y nutrida a través de mensajes directos en Instagram, floreció tanto personal como profesionalmente en los últimos 3 años, creando un fuerte vínculo basado en el respeto mutuo y valores compartidos.",
+  "t65b2da83": "“Crear una marca de lujo exitosa en nueve años es genialidad. Es una hazaña que admiro y espero seguir construyendo sobre un legado rico. Revolucionó el streetwear y el lujo que cruza generaciones y décadas. Mostró al mundo que los no representados, los desvalidos y, en particular, las personas negras, tienen mentes brillantes y pueden avanzar y competir de igual manera en el establecimiento. Inspiró esperanza y trajo cambio.” - Ibrahim Kamara, Director de Arte e Imagen de Off-White™",
+  "tn3c849388": "Volver a Casa",
+  "t5a0ea5a1": "¡Gracias! ¡Tu envío ha sido recibido!",
+  "tnc0d2788": "Volver a Casa",
+  "t4b47dc54": "+ Menú",
+  "t1fef40": "Carrito",
+  "tn77ee8913": "Tu Carrito",
+  "tn76f396dc": "Subtotal",
+  "tn7941186e": "Continuar a la Compra",
+  "t3d503d2b": "No se encontraron artículos.",
+  "tn1c765d0d": "El producto no está disponible en esta cantidad.",
+  "tn118a2ab5": "Volver a Inicio",
+  "t58": "X",
+  "tn25f00e18": "EN VENTA",
+  "t290691": "Era:",
+  "t71bb9a1c": "Comprar ahora",
+  "tn11f7e1": "Agotado",
+  "t43e13c3e": "Siguiente Artículo >",
+  "tn33c4345d": "Seguir Comprando",
+  "tn437bd530": "Primavera\/Verano 23",
+  "t502cc34d": "Creemos en usar prácticas sostenibles y éticas en todos los aspectos de nuestro negocio, desde la obtención de materiales hasta la fabricación y el envío de nuestros productos.",
+  "tn10d26d54": "Comprar Ahora",
+  "tn54cb6016": "Información del Cliente",
+  "t3ff5b7c": "Correo Electrónico",
+  "tn35b49c7e": "Dirección de Envío",
+  "t12d3df93": "Método de Envío",
+  "tn175ec138": "Información de Pago",
+  "t7df1": " \/ ",
+  "t789bff0f": "Dirección de Facturación",
+  "tn3eedfb0d": "Artículos en el Pedido",
+  "tn77079b6c": "Resumen del Pedido",
+  "t4d3eb24": "Total",
+  "tn65f5fa1c": "ENVÍO GRATUITO EN EE.UU. EN TODOS LOS PEDIDOS SUPERIORES A $200 USD",
+  "tn40b0787c": "Página No Encontrada",
+  "t556d64d8": "La página que buscas no existe o ha sido movida",
+  "general": {
+    "accessibility": {
+      "unit_price_separator": "por"
+    },
+    "meta": {
+      "tags": "Etiquetado \"{{ tags }}\"",
+      "page": "Página {{ page }}"
+    },
+    "contact": {
+      "submit": "Enviar",
+      "message": "Mensaje",
+      "subject": "Asunto",
+      "order_number": "Número de Pedido",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "email": "Correo Electrónico"
+    },
+    "search": {
+      "no_results_html": "Tu búsqueda de \"{{ terms }}\" no arrojó ningún resultado.",
+      "results_with_count": {
+        "one": "{{ count }} resultado para \"{{ terms }}\"",
+        "other": "{{ count }} resultados para \"{{ terms }}\""
+      },
+      "heading": "Buscar en nuestro sitio",
+      "placeholder": "Buscar",
+      "submit": "Enviar",
+      "close": "Cerrar búsqueda",
+      "show_all_results": "Mostrar todos los resultados para "
+    }
+  },
+  "account": {
+    "form": {
+      "reset_password": "Restablecer Contraseña",
+      "reset_password_desc": "Te enviaremos un correo electrónico para restablecer tu contraseña.",
+      "email_placeholder": "Correo Electrónico",
+      "password_placeholder": "Contraseña",
+      "reset_password_success": "Las instrucciones para restablecer la contraseña han sido enviadas a tu correo electrónico.",
+      "first_name": "Nombre",
+      "last_name": "Apellido",
+      "company": "Empresa",
+      "address_1": "Dirección 1",
+      "address_2": "Dirección 2",
+      "city": "Ciudad",
+      "country_region": "País\/Región",
+      "state_province": "Estado\/Provincia",
+      "zip": "Código Postal",
+      "phone": "Teléfono",
+      "make_default_address": "¿Hacer esta la Dirección Predeterminada?",
+      "update": "Actualizar Dirección",
+      "cancel": "Cancelar",
+      "or": "O",
+      "add_address": "Agregar Dirección",
+      "delete": "Eliminar"
+    },
+    "orders": {
+      "order": "Pedido",
+      "date": "Fecha",
+      "payment_status": "Estado del Pago",
+      "fulfillment_status": "Estado del Cumplimiento",
+      "total": "Total",
+      "no_orders": "Aún no has realizado ningún pedido.",
+      "subtotal": "Subtotal",
+      "discount": "Descuento",
+      "shipping": "Envío",
+      "tax": "Impuesto",
+      "placed_on": "Realizado el",
+      "billing_address": "Dirección de Facturación",
+      "shipping_address": "Dirección de Envío",
+      "product": "Producto",
+      "quantity": "Cantidad",
+      "price": "Precio",
+      "fulfilled": "Cumplido",
+      "sku": "SKU"
+    }
+  },
+  "article": {
+    "by": "Por:",
+    "next_article": "Siguiente Artículo >"
+  },
+  "products": {
+    "product": {
+      "on_sale": "En Venta",
+      "sku": "SKU",
+      "was": "Era",
+      "adding_to_cart": "Añadiendo...",
+      "add_to_cart": "Añadir al Carrito",
+      "sold_out": "Agotado",
+      "next_product": "Siguiente Artículo >",
+      "keep_shopping": "Seguir Comprando",
+      "sort_by": "Ordenar Por",
+      "menu": "Menú"
+    }
+  },
+  "password": {
+    "countdown": {
+      "days": "DÍAS",
+      "hours": "HORAS",
+      "minutes": "MINUTOS",
+      "seconds": "SEGUNDOS"
+    },
+    "form": {
+      "submit": "UNIRSE",
+      "email_placeholder": "Ingresa Correo Electrónico"
+    }
+  },
+  "customer": {
+    "account_link": "Cuenta",
+    "log_in": "Iniciar Sesión"
+  },
+  "cart": {
+    "general": {
+      "title": "Carrito",
+      "checkout": "Pagar"
+    }
+  },
+  "footer": {
+    "email": {
+      "placeholder": "Ingresa Correo Electrónico"
+    }
+  }
+}

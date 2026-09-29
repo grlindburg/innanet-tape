@@ -1,0 +1,223 @@
+<section class="pop-up-details" style="background-color: {{ section.settings.bg_color }}; padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="pop-up-details__grid">
+    {% for block in section.blocks %}
+      <div class="pop-up-details__item" {{ block.shopify_attributes }}>
+        {% if block.settings.label != blank %}
+          <span class="pop-up-details__label" style="color: {{ section.settings.label_color }};">{{ block.settings.label }}</span>
+        {% endif %}
+        {% if block.settings.value != blank %}
+          <span class="pop-up-details__value" style="color: {{ section.settings.text_color }};">{{ block.settings.value }}</span>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if section.settings.description != blank %}
+    <p class="pop-up-details__description" style="color: {{ section.settings.text_color }};">{{ section.settings.description }}</p>
+  {% endif %}
+</section>
+
+<style>
+  .pop-up-details {
+    width: 100%;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .pop-up-details__grid {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .pop-up-details__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pop-up-details__label {
+    font-family: var(--font_body), sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .pop-up-details__value {
+    font-family: var(--font_header), sans-serif;
+    font-size: {{ section.settings.value_size_desktop }}px;
+    font-weight: 400;
+  }
+
+  .pop-up-details__description {
+    font-family: var(--font_body), sans-serif;
+    font-size: 15px;
+    text-align: center;
+    max-width: 600px;
+    margin: 24px auto 0;
+    line-height: 1.6;
+    opacity: 0.8;
+  }
+
+  @media screen and (max-width: 768px) {
+    .pop-up-details {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .pop-up-details__grid {
+      flex-direction: column;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .pop-up-details__value {
+      font-size: {{ section.settings.value_size_mobile }}px;
+    }
+
+    .pop-up-details__description {
+      font-size: 14px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Pop-Up Details",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "description",
+      "label": "Description",
+      "default": "Merch, music, and more. Walk-ins welcome."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f7f5ec"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#191818"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label Color",
+      "default": "#191818"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top Padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom Padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "value_size_desktop",
+      "label": "Value Size (Desktop)",
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "value_size_mobile",
+      "label": "Value Size (Mobile)",
+      "min": 14,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    }
+  ],
+  "blocks": [
+    {
+      "type": "detail",
+      "name": "Detail",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Date"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "TBA"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pop-Up Details",
+      "category": "Pop-Up Shop",
+      "blocks": [
+        {
+          "type": "detail",
+          "settings": {
+            "label": "Date",
+            "value": "TBA"
+          }
+        },
+        {
+          "type": "detail",
+          "settings": {
+            "label": "Time",
+            "value": "12 — 6 PM"
+          }
+        },
+        {
+          "type": "detail",
+          "settings": {
+            "label": "Location",
+            "value": "Los Angeles, CA"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,74 @@
+{{ 'predictive-search.css' | asset_url | stylesheet_tag }}
+
+{%- if predictive_search.performed -%}
+  <div id="predictive-search-results" style="">
+    {%- if predictive_search.resources.products.size > 0 -%}
+      <div class="predictive-search-container-1">
+
+        <ul
+          class="predictive-search-product-list"
+          role="listbox"
+          aria-labelledby="predictive-search-products">
+          {%- for product in predictive_search.resources.products limit: 4 -%}
+            <li class="predictive-search-product" role="option">
+              <a class="predictive-search-resource-link-1" href="{{ product.url }}">
+                {% if product.featured_image %}
+                  {{ product | image_url: width: 50 | image_tag: width: 50, alt: '' }}
+                {% else %}
+                  <div style="width: 50px"></div>
+                {% endif %}
+                <span class="predictive-search-resource-span-1" style="">{{ product.title }}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+          {%- for product in predictive_search.resources.products offset: 4 limit: 4 -%}
+            <li class="predictive-search-product-1 predictive-search-product-mobile" role="option">
+              <a
+                class="predictive-search-resource-link-2"
+                style=""
+                href="{{ product.url }}">
+                {% if product.featured_image %}
+                  {{ product | image_url: width: 50 | image_tag: width: 50, alt: '' }}
+                {% else %}
+                  <div style="width: 50px"></div>
+                {% endif %}
+                <span class="predictive-search-resource-span-2" style="">{{ product.title }}</span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+      {%- if predictive_search.resources.products.size > 4 -%}
+        <div class="predictive-search-container-2">
+          <ul
+            class="predictive-search-product-list-2"
+            role="listbox"
+            aria-labelledby="predictive-search-products">
+            {%- for product in predictive_search.resources.products offset: 4 limit: 4 -%}
+              <li class="predictive-search-product" role="option">
+                <a
+                  class="predictive-search-resource-link-3"
+                  style=""
+                  href="{{ product.url }}">
+                  {% if product.featured_image %}
+                    {{ product | image_url: width: 50 | image_tag: width: 50, alt: '' }}
+                  {% else %}
+                    <div style="width: 50px"></div>
+                  {% endif %}
+                  <span class="predictive-search-resource-span-3" style="">{{ product.title }}</span>
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {% endif %}
+    {%- endif -%}
+  </div>
+  <div class="search-divider"></div>
+  <a
+    class="show-results-link"
+    href="{{ routes.search_url }}?q={{ predictive_search.terms }}&type=product"
+    style="color: inherit;">
+    {{ 'general.search.show_all_results' | t }} "{{ predictive_search.terms }}"
+  </a>
+{%- endif -%}

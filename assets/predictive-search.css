@@ -1,0 +1,105 @@
+#predictive-search{
+    border-radius: 4px;
+    position: relative;
+    z-index: 1;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-direction: column;
+    align-items: center;
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+    max-height: 0;
+}
+
+#predictive-search.open {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+    color: var(--search-box-results-txt-color);
+    max-height: 500px;
+}
+
+#predictive-search-results{
+    display: flex;
+    max-height: 360px;
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-left: 0px;
+}
+
+#predictive-search.open #predictive-search-results {
+    opacity: 1;
+}
+
+.predictive-search-product-list{
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+    margin-bottom: 0;
+}
+
+.predictive-search-product{
+    margin: 18px 0;
+    width: 100%;
+}
+
+.predictive-search-product-mobile{
+    display: none;
+    margin: 18px 0;
+}
+
+.search-divider{
+    width: 250px;
+    height: 1px;
+    margin: 14px 0;
+    background-color: var(--search-box-results-line-color);
+}
+
+.show-results-link{
+    margin-top: 10px;
+    margin-bottom: 40px;
+    text-decoration: none;
+    width: 200px;
+    text-align: center;
+    display: block;
+    word-break: break-word;
+}
+
+.predictive-search-container-1{
+    overflow-y: scroll;
+    margin-top: 10px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.predictive-search-container-1::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+}
+
+.predictive-search-container-2{
+    /*overflow-y: scroll;*/
+    margin-top: 10px;
+}
+.predictive-search-resource-link-1, .predictive-search-resource-link-2, .predictive-search-resource-link-3{
+    width: 200px; align-items: center; display: flex; text-decoration: none; color: inherit; text-align: left;
+    justify-content: start;
+}
+.predictive-search-resource-span-1, .predictive-search-resource-span-2, .predictive-search-resource-span-3{
+    padding: 0 15px;
+    overflow-wrap: anywhere;
+}
+
+
+@media screen and (max-width: 767px) {
+    .predictive-search-container-2{
+        display: none;
+    }
+    .predictive-search-product-mobile{
+        display: block;
+    }
+
+}

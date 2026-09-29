@@ -1,0 +1,58 @@
+<div class="logo-container" style="background-color: {{ section.settings.background_color }};">
+    <a href="{{ routes.root_url }}" aria-label="Return to home" class="logo-link w-inline-block">
+      {% if settings.show_default_logo %}
+    {% if settings.shop_screen_logo %}
+            <img
+                    src="{{ settings.shop_screen_logo | image_url }}"
+                    style="width: {{ settings.shop_screen_logo_size }}px"
+                    loading="lazy"
+                    alt=""
+                    class="logo"
+            >
+        {% else %}
+            <img src="{{ 'Supreme-dummy.png' | asset_url }}"
+                style="width: {{ settings.shop_screen_logo_size }}px"
+                loading="lazy"
+                alt=""
+                class="logo">
+        {% endif %}
+      {% endif %}
+    </a>
+    {% if settings.show_date_time %}
+        <div class="date-time-container">
+            <div class="date" style="color: {{ section.settings.index_date_color }}">{{ 'tn7d8e379f' | t }}</div>
+            <div class="time" style="color: {{ section.settings.index_time_color }}">{{ 't589b2285' | t }}</div>
+        </div>
+    {% endif %}
+</div>
+
+
+        
+{% schema %}
+{
+  "name": "Logo & Clock",
+  "tag": "div",
+  "settings": [
+    
+
+   {
+      "type": "color",
+      "id": "index_date_color",
+      "label": "Date Color",
+      "default": "#000"
+    },
+     {
+      "type": "color",
+      "id": "index_time_color",
+      "label": "Time Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section Background Color",
+      "default": "transparent"
+    }
+  ]
+}
+{% endschema %}

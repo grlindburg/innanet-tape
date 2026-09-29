@@ -1,0 +1,334 @@
+<section class="article-container">
+
+
+  {% comment %}ARTICLE HEADER{% endcomment %}
+  <h1 class="article-title" style="color:{{ section.settings.article_title_txt_color }}; text-align:{{ section.settings.article_title_alignment }}">
+    {{ article.title }}
+  </h1>
+  {% if section.settings.show_divider %}
+    <div class="article-divider" style="background-color:{{ section.settings.article_divider_color }}"></div>
+  {% endif %}
+  <div class="article-metadata-container" style="flex-direction:{{ section.settings.article_metadata_alignment }}">
+    {% if section.settings.show_author %}
+      <p style="color:{{ section.settings.article_author_txt_color }};">{{ 'article.by' | t }} {{ article.author }}</p>
+    {% endif %}
+    {% if section.settings.show_create_date %}
+      <P style="color:{{ section.settings.article_date_txt_color }};">
+        {{- article.created_at | date: format: 'abbreviated_date' -}}
+      </P>
+    {% endif %}
+
+    {% if section.settings.show_next_btn %}
+      {% if blog.previous_article.url == null %}
+        {% assign firstArticleArray = blog.articles | limit: 1 %}
+        {% assign url = firstArticleArray[0].url %}
+      {% else %}
+        {% assign url = blog.previous_article.url %}
+      {% endif %}
+      <a style="text-decoration:none; color:black;" href="{{ url }}">
+        <p class="article-next-button" style="{% if settings.disable_highlight_animation %} animation-duration: 0s; {% endif %} --article-next-btn-hover-txt-color: {{ section.settings.article_next_highlight_txt_color }}; --article-next-btn-hover-bg-color:{{ section.settings.article_next_highlight_color }}; --article-next-txt-color:{{ section.settings.article_next_txt_color }};">
+          {{ 'article.next_article' | t }}
+        </p>
+      </a>
+    {% endif %}
+  </div>
+  {% comment %}ARTICLE HEADER END{% endcomment %}
+
+
+  {% comment %}ARTICLE TAGS{% endcomment %}
+  {% if section.settings.show_article_tags %}
+    <div class="article-tags" style="justify-content: {{ section.settings.article_tags_alignment }};">
+      {% for tag in article.tags %}
+        <div class="article-tag" style="background-color: {{ section.settings.article_tag_bg_color }};">
+          <p style="color: {{ section.settings.article_tag_txt_color }}">{{ tag }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% comment %}ARTICLE TAGS END{% endcomment %}
+
+
+  <div class="article-images">
+    <img
+      class="article-image"
+      src="{{ article.image | img_url: 'master' }}"
+      alt="Article Image">
+
+
+    {% comment %}ARTICLE SIDEBAR{% endcomment %}
+    {% if section.settings.show_article_side_bar %}
+
+      {% assign blogArticles = blog.articles | limit: 500 %}
+      {%- assign articleIndex = 1 -%}
+      {%- assign articlesSize = blog.articles_count -%}
+      {% for x in blog.articles limit: 500 %}
+        {% if x.title == article.title %}
+          {% break %}
+        {% else %}
+          {%- assign articleIndex = articleIndex | plus: 1 -%}
+        {% endif %}
+      {% endfor %}
+
+      {% if articleIndex == blog.articles_count %}
+        {%- assign articleIndex = 0 -%}
+      {% endif %}
+
+      <section style="
+                    {% if settings.disable_highlight_animation %} animation-duration: 0s; {% endif %}
+                            --side-article-hover-txt-color: {{ section.settings.side_article_highlight_txt_color }};
+                            --side-article-hover-bg-color:{{ section.settings.side_article_highlight_color }};
+                            --side-article-txt-color:{{ section.settings.side_article_txt_color }};
+                            --side-article-radius:{{ section.settings.img_radius }}px;" class="other-articles">
+        {% if blog.articles_count >= 2 %}
+          <a href="{{ blogArticles[articleIndex].url }}">
+            <div style="animation: fadeIn {{ section.settings.fade_duration }}s forwards;" class="other-article">
+              <img
+                class="other-article-image"
+                src="{{ blogArticles[articleIndex].image | img_url: 'master' }}"
+                alt="Article Image">
+              <h3 class="other-article-title">{{ blogArticles[articleIndex].title }}</h3>
+            </div>
+          </a>
+        {% endif %}
+        {% if blog.articles_count >= 3 %}
+          {%- assign articleIndex2 = articleIndex | plus: 1 -%}
+          {% if articleIndex2 == blog.articles_count %}
+            {%- assign articleIndex2 = 0 -%}
+          {% endif %}
+          <a href="{{ blogArticles[articleIndex2].url }}">
+            <div style="animation: fadeIn {{ section.settings.fade_duration }}s forwards;" class="other-article">
+              <img
+                class="other-article-image"
+                src="{{ blogArticles[articleIndex2].image | img_url: 'master' }}"
+                alt="Article Image">
+              <h3 class="other-article-title">{{ blogArticles[articleIndex2].title }}</h3>
+            </div>
+          </a>
+        {% endif %}
+        {% if blog.articles_count >= 4 %}
+          {%- assign articleIndex3 = articleIndex2 | plus: 1 -%}
+          {% if articleIndex3 == blog.articles_count %}
+            {%- assign articleIndex3 = 0 -%}
+          {% endif %}
+          <a href="{{ blogArticles[articleIndex3].url }}">
+            <div style="animation: fadeIn {{ section.settings.fade_duration }}s forwards;" class="other-article">
+              <img
+                class="other-article-image"
+                src="{{ blogArticles[articleIndex3].image | img_url: 'master' }}"
+                alt="Article Image">
+              <h3 class="other-article-title">{{ blogArticles[articleIndex3].title }}</h3>
+            </div>
+          </a>
+        {% endif %}
+      </section>
+
+    {% endif %}
+  {% comment %}ARTICLE SIDEBAR END{% endcomment %}
+
+
+  </div>
+  <p class="article-content" style="margin-bottom: 60px;">{{ article.content }}</p>
+
+</section>
+
+
+{% schema %}
+  {
+    "name": "Article Section",
+    "tag": "div",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Alignment"
+      },
+      {
+        "type": "radio",
+        "id": "article_title_alignment",
+        "label": "Article Title Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "center",
+            "label": "Centered"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+
+      {
+        "type": "color",
+        "id": "article_title_txt_color",
+        "label": "Article Title Text Color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "article_divider_color",
+        "label": "Article Divider Text Color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "article_author_txt_color",
+        "label": "Article Author Color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "article_date_txt_color",
+        "label": "Article Date Color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "article_next_txt_color",
+        "label": "Next Article Color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "article_next_highlight_color",
+        "label": "Next Article Hover Color",
+        "default": "#FE0000"
+      }, {
+        "type": "color",
+        "id": "article_next_highlight_txt_color",
+        "label": "Next Article Hover Text Color",
+        "default": "#FFF"
+      }, {
+        "type": "checkbox",
+        "id": "show_divider",
+        "label": "Show Article Divider",
+        "default": true
+      }, {
+        "type": "checkbox",
+        "id": "show_next_btn",
+        "label": "Show \"Next Article\" Link",
+        "default": true
+      }, {
+        "type": "checkbox",
+        "id": "show_create_date",
+        "label": "Show Article Date",
+        "default": true
+      }, {
+        "type": "checkbox",
+        "id": "show_author",
+        "label": "Show Article Author",
+        "default": true
+      }, {
+        "type": "header",
+        "content": "Metadata"
+      }, {
+        "type": "paragraph",
+        "content": "Note: On mobile, metadata alignment is vertical only"
+      }, {
+        "type": "radio",
+        "id": "article_metadata_alignment",
+        "label": "Article Metadata Alignment",
+        "options": [
+          {
+            "value": "row",
+            "label": "Horizontal"
+          }, {
+            "value": "column",
+            "label": "Vertical"
+          }
+        ],
+        "default": "row"
+      }, {
+        "type": "color",
+        "id": "article_tag_bg_color",
+        "label": "Tag Background Color",
+        "default": "#FE0000"
+      }, {
+        "type": "color",
+        "id": "article_tag_txt_color",
+        "label": "Tag Text Color",
+        "default": "#FFF"
+      }, {
+        "type": "radio",
+        "id": "article_tags_alignment",
+        "label": "Tags Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "center",
+            "label": "Centered"
+          }, {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      }, {
+        "type": "checkbox",
+        "id": "show_article_tags",
+        "label": "Display Article Tags",
+        "default": true
+      }, {
+        "type": "checkbox",
+        "id": "show_article_side_bar",
+        "label": "Display Article Side Bar",
+        "default": true
+      }, {
+        "type": "color",
+        "id": "side_article_txt_color",
+        "label": "Related Article Title Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "side_article_highlight_color",
+        "label": "Related Article Hover BG Color",
+        "default": "#FE0000"
+      }, {
+        "type": "color",
+        "id": "side_article_highlight_txt_color",
+        "label": "Related Article Hover Text Color",
+        "default": "#FFF"
+      }, {
+        "type": "header",
+        "content": "Fade Animation"
+      }, {
+        "type": "paragraph",
+        "content": "This settings affects how long it takes the articles to fade-in to the page."
+      }, {
+        "type": "range",
+        "id": "fade_duration",
+        "min": 0,
+        "max": 8,
+        "step": 1,
+        "unit": "sec",
+        "label": "Fade-In Duration",
+        "default": 2
+      }, {
+        "type": "header",
+        "content": "Article Card Corners"
+      }, {
+        "type": "paragraph",
+        "content": "This settings affects the curve of the article cards corners."
+      }, {
+        "type": "range",
+        "id": "img_radius",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "label": "Card Curve",
+        "default": 0
+      }, {
+        "type": "color",
+        "id": "article_btn_bg_color",
+        "label": "Buttons Background Color",
+        "default": "#FE0000"
+      }, {
+        "type": "color",
+        "id": "article_btn_txt_color",
+        "label": "Buttons Text Color",
+        "default": "#FFF"
+      }
+    ]
+  }
+{% endschema %}

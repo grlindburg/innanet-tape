@@ -1,0 +1,71 @@
+{%- assign dates_url = section.settings.dates_url | default: 'https://innanetape.com/tour' -%}
+<section class="inn-tour{% if section.blocks.size > 0 %} inn-tour--cities{% endif %}"{% if section.blocks.size == 0 %} data-inn-href="{{ dates_url }}"{% endif %}>
+  <picture class="inn-tour__bg">
+    {%- if section.settings.image_mobile -%}
+      <source media="(max-width: 749px)" srcset="{{ section.settings.image_mobile | image_url: width: 1600 }}">
+    {%- elsif section.settings.image == blank -%}
+      <source media="(max-width: 749px)" srcset="{{ 'inn-tour-mobile.jpg' | asset_url }}">
+    {%- endif -%}
+    {%- if section.settings.image -%}
+      <img src="{{ section.settings.image | image_url: width: 3840 }}" alt="" loading="lazy">
+    {%- else -%}
+      <img src="{{ 'inn-tour-desktop.jpg' | asset_url }}" alt="" loading="lazy">
+    {%- endif -%}
+  </picture>
+  <a class="inn-label" href="{{ dates_url }}" target="_blank" rel="noopener">{{ section.settings.label | default: 'Shows' }}&gt;</a>
+  <div class="inn-tour__inner">
+    <a class="inn-tour__logo" href="{{ dates_url }}" target="_blank" rel="noopener">
+      <img src="{{ 'inn-logo-tour.svg' | asset_url }}" alt="Innanetour" width="830" height="152" loading="lazy">
+    </a>
+    {%- if section.blocks.size == 0 -%}
+      <a class="inn-btn inn-tour__btn" href="{{ dates_url }}" target="_blank" rel="noopener" aria-label="View dates">{% render 'inn-btn-dates' %}</a>
+    {%- endif -%}
+  </div>
+  {%- if section.blocks.size > 0 -%}
+    <div class="inn-tour__tickets">
+      <span class="inn-tour__cta">{{ section.settings.cta | default: 'Get tickets' }}</span>
+      <div class="inn-tour__cities">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.sold_out -%}
+            <span class="inn-city inn-city--sold" {{ block.shopify_attributes }}>
+              <span class="inn-city__name">{{ block.settings.city }}</span>
+              <span class="inn-city__date">Sold out</span>
+            </span>
+          {%- else -%}
+            <a class="inn-city" href="{{ block.settings.url | default: dates_url }}" target="_blank" rel="noopener" {{ block.shopify_attributes }}>
+              <span class="inn-city__name">{{ block.settings.city }}</span>
+              <span class="inn-city__date">{{ block.settings.date }}</span>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Innanet tour banner",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "Shows" },
+    { "type": "image_picker", "id": "image", "label": "Background (desktop)" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Background (mobile)" },
+    { "type": "url", "id": "dates_url", "label": "Tour page link", "info": "Used by the logo, and by any city without its own ticket link." },
+    { "type": "text", "id": "cta", "label": "Call to action", "default": "Get tickets" }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "city",
+      "name": "City",
+      "settings": [
+        { "type": "text", "id": "city", "label": "City", "default": "London" },
+        { "type": "text", "id": "date", "label": "Date", "default": "Oct 12" },
+        { "type": "url", "id": "url", "label": "Ticket link" },
+        { "type": "checkbox", "id": "sold_out", "label": "Sold out", "default": false }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Innanet tour banner" }]
+}
+{% endschema %}

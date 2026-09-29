@@ -1,0 +1,73 @@
+{%- liquid
+  assign stream_url = section.settings.stream_url | default: 'https://vicmensa.sym.fm/innanetape'
+  assign shop_url = section.settings.shop_url | default: routes.all_products_collection_url
+  if section.settings.shop_collection != blank
+    assign shop_url = section.settings.shop_collection.url
+  endif
+-%}
+<section class="inn-hero{% if section.settings.capture %} inn-hero--capture{% endif %}{% if section.settings.capture and section.settings.capture_desktop %} inn-hero--capture-desktop{% endif %}">
+  <picture class="inn-hero__bg">
+    {%- if section.settings.image_mobile -%}
+      <source media="(max-width: 749px)" srcset="{{ section.settings.image_mobile | image_url: width: 1600 }}">
+    {%- else -%}
+      <source media="(max-width: 749px)" srcset="{{ 'inn-hero-mobile.jpg' | asset_url }}">
+    {%- endif -%}
+    {%- if section.settings.image -%}
+      <img src="{{ section.settings.image | image_url: width: 3840 }}" alt="" fetchpriority="high">
+    {%- else -%}
+      <img src="{{ 'inn-hero-desktop.jpg' | asset_url }}" alt="" fetchpriority="high">
+    {%- endif -%}
+  </picture>
+  <div class="inn-hero__inner">
+    <a class="inn-btn inn-hero__stream" href="{{ stream_url }}" target="_blank" rel="noopener" aria-label="Stream Innanetape">{% render 'inn-btn-stream' %}</a>
+    <h1 class="inn-hero__mark">
+      <img src="{{ 'inn-mark-ivm.svg' | asset_url }}" alt="Innanetape — Vic Mensa" width="590" height="320">
+    </h1>
+    <a class="inn-btn inn-hero__shop" href="{{ shop_url }}" aria-label="Shop merch">{% render 'inn-btn-shop' %}</a>
+    {%- if section.settings.capture -%}
+      <div class="inn-capture" id="inn-capture" data-inn-signup="hero" data-success="{{ section.settings.capture_success | escape }}">
+        {%- form 'customer', id: 'inn-capture-form', class: 'inn-capture__form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="inn-capture__head" role="status">{{ section.settings.capture_success }}</p>
+          {%- else -%}
+            <p class="inn-capture__head">{{ section.settings.capture_heading }}</p>
+            <p class="inn-capture__sub">{{ section.settings.capture_sub }}</p>
+            <input type="hidden" name="contact[tags]" value="waitlist,{{ section.settings.capture_tag | handleize }}">
+            <input type="hidden" name="return_to" value="{{ routes.root_url }}?inn_joined=hero#inn-capture">
+            <div class="inn-capture__field">
+              <label class="visually-hidden" for="inn-capture-email">Email</label>
+              <input id="inn-capture-email" type="email" name="contact[email]" placeholder="{{ section.settings.capture_placeholder }}" autocomplete="email" required>
+              <button type="submit">{{ section.settings.capture_button }}</button>
+            </div>
+            {%- if form.errors -%}<p class="inn-capture__fine" role="alert">That email did not go through. Try again.</p>{%- endif -%}
+            <p class="inn-capture__fine">{{ section.settings.capture_consent }}</p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Innanet hero",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Background (desktop)" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Background (mobile)" },
+    { "type": "url", "id": "stream_url", "label": "Stream link" },
+    { "type": "collection", "id": "shop_collection", "label": "Shop merch collection" },
+    { "type": "url", "id": "shop_url", "label": "Shop merch link (used when no collection is picked)" },
+    { "type": "header", "content": "Email sign-up" },
+    { "type": "checkbox", "id": "capture", "label": "Show email sign-up", "default": true, "info": "On phones it takes the place of the Shop Merch button." },
+    { "type": "checkbox", "id": "capture_desktop", "label": "Also show on desktop, under the logo", "default": false },
+    { "type": "text", "id": "capture_heading", "label": "Heading", "default": "INNANET merch loading..." },
+    { "type": "text", "id": "capture_sub", "label": "Line under heading", "default": "Be the first to access" },
+    { "type": "text", "id": "capture_placeholder", "label": "Field placeholder", "default": "Email" },
+    { "type": "text", "id": "capture_button", "label": "Button", "default": "Submit" },
+    { "type": "text", "id": "capture_consent", "label": "Consent line", "default": "By signing up you agree to get emails from Vic Mensa. Unsubscribe any time." },
+    { "type": "text", "id": "capture_success", "label": "Success message", "default": "You're on the list." },
+    { "type": "text", "id": "capture_tag", "label": "Tag for these sign-ups", "default": "waitlist-innanet-merch" }
+  ],
+  "presets": [{ "name": "Innanet hero" }]
+}
+{% endschema %}

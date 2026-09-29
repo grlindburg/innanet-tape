@@ -1,0 +1,120 @@
+<style>
+{% assign logo_top = '30px' %}
+{% assign logo_right = '0px' %}
+{% assign logo_left = '0px' %}
+{% assign menu_right = '0px' %}
+{% assign menu_left = '0px' %}
+
+
+
+
+
+{% comment %}TOP LOGIC{% endcomment %}
+{% if settings.show_announcement_bar %}
+    {% if settings.show_announcement_bar_on_home %}
+        {% if settings.enable_large_announcement_bar and settings.enable_announcement_floater %}
+            {% assign logo_top = '89px' %}
+    {% elsif settings.enable_announcement_floater %}
+        {% assign logo_top = '69px' %}
+    {% elsif settings.enable_large_announcement_bar %}
+        {% assign logo_top = '69px' %}
+    {% else %}
+        {% assign logo_top = '59px' %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+{% comment %}SIDE LOGIC{% endcomment %}
+{% if settings.enable_announcement_floater and section.settings.logo-alignment == 'left'
+    and settings.show_announcement_bar and settings.show_announcement_bar_on_home %}
+    {% assign logo_right = 'auto' %}
+    {% assign logo_left = '4.16%' %}
+    {% assign menu_left = '3.6%' %}
+    {% assign menu_right = 'auto' %}
+{% elsif settings.enable_announcement_floater and section.settings.logo-alignment == 'right' 
+    and settings.show_announcement_bar and settings.show_announcement_bar_on_home %}
+    {% assign logo_right = '4.16%' %}
+    {% assign logo_left = 'auto' %}
+    {% assign menu_right = 'auto' %}
+    {% assign menu_left = '3.6%' %}
+{% elsif settings.enable_announcement_floater and section.settings.logo-alignment == 'center'
+    and settings.show_announcement_bar and settings.show_announcement_bar_on_home %}
+    {% assign logo_right = 'auto' %}
+    {% assign logo_left = 'auto' %}
+    {% assign menu_left = '3.6%' %}
+    {% assign menu_right = 'auto' %}
+{% elsif section.settings.logo-alignment == 'left' %}
+    {% assign logo_right = 'auto' %}
+    {% assign logo_left = '2rem' %}
+    {% assign menu_left = '2rem' %}
+    {% assign menu_right = 'auto' %}
+{% elsif section.settings.logo-alignment == 'right' %}
+    {% assign logo_right = '2rem' %}
+    {% assign logo_left = 'auto' %}
+    {% assign menu_right = 'auto' %}
+    {% assign menu_left = '2rem' %}
+{% elsif section.settings.logo-alignment == 'center' %}
+    {% assign logo_right = 'auto' %}
+    {% assign logo_left = 'auto' %}
+    {% assign menu_left = '2rem' %}
+    {% assign menu_right = 'auto' %}
+{% endif %}
+.enter-layouts{
+    display: flex;
+    z-index: 2;
+    flex-direction: column;
+    justify-content: center;
+    align-items: {% if section.settings.logo-alignment == 'center' %}center{% elsif section.settings.logo-alignment == 'right' %}flex-end{% else %}flex-start{% endif %};
+    position: absolute;
+    top: {{ logo_top }};
+    right: {{ logo_right }};
+    left: {{ logo_left }};
+    {% if section.settings.logo-alignment == 'center' %}
+        width: 100%;
+        padding: 0 20px;
+        pointer-events: none;
+    {% endif %}
+}
+.global-menu{
+    left: {{ menu_left }};
+    right: {{ menu_right }};
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+.pulse {
+    animation: pulse 0.3s ease-in-out;
+}
+
+</style>
+
+
+<div class="enter-layouts">
+    {% if settings.show_home_logo %}
+        <a href="{{ routes.root_url }}" aria-current="page" class="side-index-logo" style="
+            {% if section.settings.align_date_time == 'left' %}
+                            margin-left: 0; 
+                            margin-right: auto; 
+                text-align: left;
+            {% endif %}
+            {% if section.settings.align_date_time == 'right' %}
+                margin-left: auto; 
+                            margin-right: 0; 
+                            text-align: right;
+                        {% endif %}" 
+            >
+            {% if settings.enter_screen_logo %}
+                <img src="{{ settings.enter_screen_logo | image_url }}"
+                     height="auto"
+                     style="width: {{ settings.enter_screen_logo_size }}px;"
+                     alt="{{ shop.name | escape }}"
+                     class="logo">
+            {% else %}
+                <img style="width: {{ settings.enter_screen_logo_size }}px;" src="{{ 'Supreme-dummy.png' | asset_url }}" alt="{{ shop.name | escape }}" class="logo">
+            {% endif %}
+        </a>
+    {% endif %}
+</div>

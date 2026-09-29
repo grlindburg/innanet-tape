@@ -1,0 +1,98 @@
+<div class="logo-container" style="z-index: 2; position: relative; padding: 25px 0 10px 0; ">
+  {% if settings.show_product_logo %}
+      <a href="{{ routes.root_url }}" aria-label="Return to home" class="logo-link w-inline-block" style="margin: 5px 0 10px 0;">
+              {% if settings.product_screen_logo %}
+              <img src="{{ settings.product_screen_logo | image_url }}" style="width: {{ settings.product_screen_logo_size }}px" alt="" class="logo">
+              {% else %}
+              <img src="{{ 'Supreme-dummy.png' | asset_url }}" style="width: {{ settings.product_screen_logo_size }}px" alt="" class="logo">
+              {% endif %}
+            </a> 
+  {% endif %}
+      <!--   PRODUCT TIMEZONE SECTION     -->
+      {% if section.settings.show_date_time %}
+      <div class="date-time-container">
+        <div class="date" style="color: {{ section.settings.index_date_color }}">{{ 'tn7d8e379f' | t }}</div>
+        <div class="time" style="color: {{ section.settings.index_time_color }}">{{ 't589b2285' | t }}</div>
+      </div>
+      {% endif %}
+      <!-- CART -->
+      {% render 'cart-count', 
+        cart_text_margin_top: 10, 
+        cart_text_color: section.settings.cart_text_color,
+        cart_bg_color: section.settings.cart_number_bg_color,
+        cart_count_color: section.settings.cart_number_color
+      %}
+      <!-- END CART -->
+    </div>
+    <!-- END LOGO CONTAINER -->
+
+
+{% schema %}
+  {
+    "name": "Logo, Cart, & Clock",
+    "settings": [
+       {
+      "type": "color",
+      "id": "cart_text_color",
+      "label": "Cart Text Color",
+      "default": "#000000"
+    },
+     {
+      "type": "color",
+      "id": "cart_number_color",
+      "label": "Cart Quantiy Color",
+      "default": "#FFF"
+    },
+    {
+      "type": "color",
+      "id": "cart_number_bg_color",
+      "label": "Cart Quantity Background Color",
+      "default": "#000"
+    },
+      {
+      "type": "checkbox",
+      "id": "show_date_time",
+      "label": "Show Date/Time",
+      "default": true
+      },
+      {
+      "type": "color",
+      "id": "index_date_color",
+      "label": "Date Color",
+      "default": "#000"
+    },
+     {
+      "type": "color",
+      "id": "index_time_color",
+      "label": "Time Color",
+      "default": "#000"
+    },
+      {
+      "type": "select",
+      "id": "align_date_time",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "right"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,179 @@
+
+
+
+{% schema %}
+{
+"name": "Social Media Links",
+"blocks": [
+{
+"name": "Social Media",
+"type": "social_media_block",
+"settings": [
+
+]
+},
+
+{
+"name": "Interactive Point",
+"type": "interactive_point",
+"settings": [
+{
+"type": "text",
+"id": "dialog_box_title",
+"label": "Dialog Box Title",
+"default": "Example Product"
+},
+{
+"type": "color",
+"id": "ip_color",
+"label": "Point Color",
+"default": "#fff"
+},
+{
+"type": "color",
+"id": "dialog_box_color",
+"label": "Dialog Box Color",
+"default": "#fff"
+},
+{
+"type": "color",
+"id": "dialog_word_color",
+"label": "Dialog Words Color",
+"default": "#000"
+},
+{
+"type": "color",
+"id": "ring_pulse_color",
+"label": "Ring Pulse Color",
+"default": "#fff"
+},
+{
+"type": "range",
+"id": "ip_x_coordinate",
+"label": "X Coordinate",
+"min": 0,
+"max": 100,
+"unit": "px",
+"step": 1,
+"default": 50
+},
+{
+"type": "range",
+"id": "ip_y_coordinate",
+"label": "Y Coordinate",
+"min": 0,
+"max": 100,
+"unit": "px",
+"step": 1,
+"default": 50
+},
+{
+"type": "url",
+"id": "ip_link",
+"label": "Link"
+}
+]
+},
+{
+"name": "Transition Arrow",
+"type": "transition_mark",
+"settings": [
+{
+"type": "radio",
+"id": "direction",
+"label": "Direction",
+"options": [
+{
+"value": "left",
+"label": "Left"
+},
+{
+"value": "right",
+"label": "Right"
+}
+],
+"default": "right"
+},
+{
+"type": "text",
+"id": "transition_title",
+"label": "Transition Title",
+"default": "Example Room"
+},
+{
+"type": "color",
+"id": "background_color",
+"label": "Background Color",
+"default": "#000"
+},
+{
+"type": "color",
+"id": "border_color",
+"label": "Border Color",
+"default": "#fff"
+},
+{
+"type": "color",
+"id": "transition_word_color",
+"label": "Word Color",
+"default": "#fff"
+},
+{
+"type": "color",
+"id": "arrow_color",
+"label": "Arrow Color",
+"default": "#fff"
+},
+{
+"type": "range",
+"id": "ip_x_coordinate",
+"label": "X Coordinate",
+"min": 0,
+"max": 100,
+"unit": "px",
+"step": 1,
+"default": 50
+},
+{
+"type": "range",
+"id": "ip_y_coordinate",
+"label": "Y Coordinate",
+"min": 0,
+"max": 100,
+"unit": "px",
+"step": 1,
+"default": 50
+},
+{
+"type": "range",
+"id": "transition_width",
+"label": "Transition Width",
+"min": 50,
+"max": 350,
+"unit": "px",
+"step": 5,
+"default": 200
+},
+{
+"type": "url",
+"id": "ip_link",
+"label": "Link"
+},
+{
+"type": "checkbox",
+"id": "enable_transparent_bg",
+"label": "Make Background Transparent",
+"default": false
+},
+{
+"type": "checkbox",
+"id": "enable_transparent_border",
+"label": "Make Border Transparent",
+"default": false
+}
+]
+}
+]
+}
+
+{% endschema %}

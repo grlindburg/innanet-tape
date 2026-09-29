@@ -1,0 +1,15 @@
+{%- comment -%} Product card. Params: product {%- endcomment -%}
+<a class="inn-card" href="{{ product.url }}">
+  <div class="inn-card__media">
+    {%- if product.featured_media -%}
+      {{ product.featured_media | image_url: width: 1600 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 22vw, 45vw', widths: '300,450,600,900,1200,1600', alt: product.title }}
+    {%- endif -%}
+    {%- unless product.available -%}<span class="inn-card__flag">Sold out</span>{%- endunless -%}
+  </div>
+  <div class="inn-card__title">{{ product.title }}</div>
+  {%- if product.price > 0 -%}
+    <div class="inn-card__price">
+      {%- if product.price_varies -%}From {% endif -%}{{ product.price | money }}
+    </div>
+  {%- endif -%}
+</a>

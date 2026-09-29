@@ -1,0 +1,122 @@
+{% if settings.show_music %}
+<div  
+  style="{% if settings.show_music_mobile == false %} --no-mobile-music: none; {% else %} --no-mobile-music: flex; {% endif %}"
+  countdown-music="{{ settings.countdown_music }}"
+  class="music-container {% if settings.show_music_mobile == false %} disable-music {% endif %}" data-file-url="{{ settings.music_url }}" music-image-url="{{ settings.music_img | img_url: 'master' }}">
+        <div id="title" class="music-info">
+            <h4>Rideaux</h4>
+            <div class="progress-container">
+                <div class="progress"></div>
+            </div>
+        </div>
+
+        <audio preload="none" autoplay preload="metadata" id="audio"></audio>
+
+  {% if settings.show_disk %}
+        <div class="img-container">
+            <img src="{{ settings.music_img | img_url: '70x70' }}" width="70" height="70" alt="" id="cover">
+        </div>
+  {% endif %}
+
+  {% assign mobile-play-alignment = "" %}
+  {% if settings.show_disk == false %}
+  {% assign mobile-play-alignment = "play-alignment" %}
+  {% endif %}
+  
+
+        <div class="navigation {{ mobile-play-alignment }}">
+            <button id="play" aria-label="Play music" style="width: 38px; color: {{ settings.music_btn_color }}" class=" action-btn action-btn-big">
+                <i class="fas fa-play" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+  {% endif %}
+
+<div id="song-bar" class="song-bar">
+    <span id="current-track-name"></span>
+</div>
+
+
+<script>
+  
+</script>
+
+<style>
+  #cover {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    display: block;
+  }
+
+  #cover:hover {
+    transform: scale(1.1);
+  }
+
+  .song-bar {
+    position: fixed;
+    bottom: 47px;
+    right: {% if settings.show_disk == false %}-15px{% else %}80px{% endif %};
+    transform: translateX(-50%);
+    background: {{ settings.sound_bar_color }};
+    color: {{ settings.song_bar_text_color }};
+    padding: 4px 0;
+    border-radius: 5px;
+    display: none;
+    width: 170px;
+    height: 30px;
+    font-size: {{ settings.song_bar_font_size }}px;
+    overflow: hidden;
+    white-space: nowrap;
+    align-items: center;
+    z-index: 2;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .song-bar.visible {
+    opacity: 1;
+  }
+
+  .song-bar span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 8s linear infinite;
+    text-align: right;
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(-100%, 0);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .song-bar {
+      display: flex;
+      visibility: hidden;
+    }
+  }
+
+  @media (max-width: 950px) {
+    .song-bar {
+        display: none !important;
+    }
+  }
+
+  @media screen and (max-width: 479px) {
+  .navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    position: absolute;
+    margin-bottom: {% if settings.show_disk == false %}0px{% else %}45px{% endif %};
+    left: 23px;
+  }
+}
+</style>

@@ -1,0 +1,169 @@
+{% assign pj = section.settings %}
+{{ 'account.css' | asset_url | stylesheet_tag }}
+
+<div class="flex-container">
+
+
+  <div id="customer_sidebar">
+    <div id="customer_detail" class="group">
+      <div class="account-name-section">
+        <p style="color:{{ pj.welcome_txt_color }};" class="name">{{ pj.welcome_txt }}
+          <b>{{ customer.name }}</b>
+        </p>
+        <a style="color:{{ pj.logout_color }};" href="{{ routes.account_logout_url }}">Logout</a>
+      </div>
+
+      <p style="color: {{ pj.email_txt_color }}" class="account-email note">{{ pj.email_txt }} {{ customer.email }}</p>
+      <div class="address note">
+        <a
+          style="color: {{ pj.addy_txt_color }}"
+          id="view_address"
+          href="/account/addresses">{{ pj.view_addy_txt }} ({{ customer.addresses_count }})</a>
+      </div>
+      <a
+        class="logout-link-mobile"
+        style=" color: #777;"
+        href="{{ routes.account_logout_url }}">{{ pj.logout_txt }}</a>
+
+    </div>
+  </div>
+
+  {% if pj.remove_account_hero_img == false %}
+    <img
+      src="{% if pj.account_hero_img %}{{ pj.account_hero_img | image_url }}{% else %}{{ 'ow-2.jpg' | asset_img_url: 'master' }}{% endif %}"
+      alt=""
+      class="account-hero-image"
+      style="{% if pj.curve_account_hero_img %} border-radius: 12px; {% endif %}">
+  {% endif %}
+
+  <div id="customer_orders">
+    {% if customer.orders.size != 0 %}
+      <table style="color: {{ pj.acc_table_txt_color }};
+                --table-color: {{ pj.acc_table_color }};
+                ">
+        <thead>
+          <tr>
+            <th class="order_number">{{ 'account.orders.order' | t }}</th>
+            <th class="date_account_page">{{ 'account.orders.date' | t }}</th>
+            <th class="payment_status">{{ 'account.orders.payment_status' | t }}</th>
+            <th class="fulfillment_status">{{ 'account.orders.fulfillment_status' | t }}</th>
+            <th class="total">{{ 'account.orders.total' | t }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in customer.orders %}
+            <tr class="{% cycle 'odd', 'even' %} {% if order.cancelled %}cancelled_order{% endif %}">
+              <td>{{ order.name | link_to: order.customer_url }}</td>
+              <td>
+                <span class="note">{{ order.created_at | date: "%b %d, %Y" }}</span>
+              </td>
+              <td>
+                <span class="status_{{ order.financial_status }}">{{ order.financial_status }}</span>
+              </td>
+              <td>
+                <span class="status_{{ order.fulfillment_status }}">{{ order.fulfillment_status }}</span>
+              </td>
+              <td>
+                <span class="total money">{{ order.total_price | money }}</span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p style="color: {{ pj.no_orders_color }};">{{ 'account.orders.no_orders' | t }}</p>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+
+  {
+    "name": "Account Details",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Account Hero Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "account_hero_img",
+        "label": "Pick a Hero Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_account_hero_img",
+        "label": "Remove Account Hero Image",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "curve_account_hero_img",
+        "label": "Curve Account Hero Image",
+        "default": false
+      }, {
+        "type": "header",
+        "content": "Text Settings"
+      }, {
+        "type": "text",
+        "id": "welcome_txt",
+        "label": "Welcome Text",
+        "default": "Welcome"
+      }, {
+        "type": "text",
+        "id": "email_txt",
+        "label": "Email Text",
+        "default": "Email:"
+      }, {
+        "type": "text",
+        "id": "view_addy_txt",
+        "label": "View Addresses Text",
+        "default": "View Addresses"
+      }, {
+        "type": "text",
+        "id": "logout_txt",
+        "label": "Logout Text",
+        "default": "Logout"
+      }, {
+        "type": "header",
+        "content": "Color Settings"
+      }, {
+        "type": "color",
+        "id": "welcome_txt_color",
+        "label": "Welcome Text Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "logout_color",
+        "label": "Logout Text Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "email_txt_color",
+        "label": "Email Text Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "addy_txt_color",
+        "label": "View Addresses Text Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "acc_table_color",
+        "label": "Account Table Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "acc_table_txt_color",
+        "label": "Account Table Text Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "no_orders_color",
+        "label": "No Orders Text Color",
+        "default": "#777"
+      }
+    ]
+  }
+
+{% endschema %}

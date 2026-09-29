@@ -1,0 +1,104 @@
+   <div id="preloader" 
+         data-duration="{{ section.settings.preloader_duration }}"
+         style="background-color:{{ section.settings.preloader_color }};">
+    {% if section.settings.preloader_logo_type == 'image' %}
+            {% if section.settings.preloader_logo %}
+             <img src="{{ section.settings.preloader_logo | image_url: width: 300 }}"
+              height="auto"
+              style="width: 300px;"
+              alt="Logo"
+              class="preloader-logo"  
+            >
+            {% else %}        
+            <img src="{{ 'Supreme-dummy.png' | asset_url }}" alt="" class="preloader-logo">
+            {% endif %} 
+    {% elsif section.settings.preloader_logo_type == 'text' %}
+      <div class="preloader-logo" style="color: {{ section.settings.preloader_txt_color }}; font-size: {{ section.settings.preloader_txt_size }}px; letter-spacing: 0.1em; font-weight: 400; font-family: 'Xheighter', sans-serif;">{{ section.settings.preloader_text }}</div>
+    {% endif %}
+    </div>
+
+
+
+
+
+{{ 'preloader.css' | asset_url | stylesheet_tag }}
+{{ 'preloader.js' | asset_url | script_tag }}
+
+
+{% schema %}
+    {
+      "name": "Preloader",
+      "presets": [
+        {
+          "name": "Preloader"
+        }
+      ],
+      "settings": [
+         {
+        "type": "header",
+        "content":"Preloader Settings"
+        },
+        {
+        "type": "color",
+        "id": "preloader_color",
+        "label": "Preloader Background Color",
+        "default": "#fff"
+        },
+        {
+          "type": "select",
+          "id": "preloader_logo_type",
+            "label": "Preloader Logo Type",
+          "options": [
+            {
+              "value": "text",
+              "label": "Text"
+            },
+            {
+              "value": "image",
+              "label": "Image"
+            }
+          ],
+          "default": "text"
+        },
+        {
+          "type": "richtext",
+          "id": "preloader_text",
+          "label": "Preloader Text",
+          "default": "<p>Plain Jane 3.0</p>"
+        },
+         {
+        "type": "color",
+        "id": "preloader_txt_color",
+        "label": "Preloader Text Color",
+        "default": "#000"
+        },
+        {
+        "type": "range",
+        "id": "preloader_txt_size",
+        "min": 10,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Preloader Text Size",
+        "default": 12
+      },
+        {
+          "type": "image_picker",
+          "id": "preloader_logo",
+          "label": "Preloader Image"
+        },
+        {
+          "type": "range",
+          "id": "preloader_duration",
+          "min": 1,
+          "max": 5,
+          "step": 0.5,
+          "unit": "sec",
+          "label": "Preloader Duration",
+          "default": 1,
+          "info": "How long the preloader will show before fading out"
+        }
+      ]
+    }
+  {% endschema %}
+

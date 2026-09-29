@@ -1,0 +1,22 @@
+{%- if image != blank -%}
+  {%- assign focal_point = image.presentation.focal_point -%}
+  <img
+    class="{{ image_class }}"
+    src="{{ image | img_url: '1800x' }}"
+    srcset="
+      {{ image | img_url: '400x' }} 400w,
+      {{ image | img_url: '800x' }} 800w,
+      {{ image | img_url: '1200x' }} 1200w,
+      {{ image | img_url: '1600x' }} 1600w,
+      {{ image | img_url: '2000x' }} 2000w,
+      {{ image | img_url: '2400x' }} 2400w"
+    sizes="100vw"
+    loading="lazy"
+    alt="{{ alt | escape }}"
+    width="{{ image.width }}"
+    height="{{ image.height }}"
+    style="object-position: {{ focal_point.x }}% {{ focal_point.y }}%"
+  >
+{%- else -%}
+  {{ 'image' | placeholder_svg_tag: image_class }}
+{%- endif -%} 

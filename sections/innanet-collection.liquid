@@ -1,0 +1,94 @@
+{%- liquid
+  assign groups = 'Apparel:tees,outerwear,accs|Music:vinyl,cd,tape' | split: '|'
+  assign current = current_tags | first | handleize
+-%}
+<section class="inn-shop">
+  <h1 class="inn-label inn-shop__title">
+    {%- if collection.handle == 'all' -%}Shop{%- else -%}{{ collection.title }}{%- endif -%}&gt;
+  </h1>
+
+  <div class="inn-shop__body">
+    <aside class="inn-shop__side" aria-label="Browse">
+      <div class="inn-side__group">
+        <span class="inn-side__head">Collections</span>
+        {%- if section.settings.collections != blank -%}
+          {%- for c in section.settings.collections -%}
+            <a class="inn-side__link{% if c.handle == collection.handle %} is-active{% endif %}" href="{{ c.url }}">{% if c.handle == 'all' %}All{% else %}{{ c.title }}{% endif %}</a>
+          {%- endfor -%}
+        {%- else -%}
+          {%- if collections['innanetape'] != blank and collections['innanetape'].products.size > 0 -%}
+            <a class="inn-side__link{% if collection.handle == 'innanetape' %} is-active{% endif %}" href="{{ collections['innanetape'].url }}">Innanetape</a>
+          {%- endif -%}
+          <a class="inn-side__link{% if collection.handle == 'all' %} is-active{% endif %}" href="{{ routes.all_products_collection_url }}">All</a>
+          {%- for c in collections -%}
+            {%- if c.handle == 'all' or c.handle == 'innanetape' or c.handle == 'frontpage' or c.products.size == 0 -%}{%- continue -%}{%- endif -%}
+            <a class="inn-side__link{% if c.handle == collection.handle %} is-active{% endif %}" href="{{ c.url }}">{{ c.title }}</a>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      {%- for group in groups -%}
+        {%- liquid
+          assign parts = group | split: ':'
+          assign tags = parts[1] | split: ','
+          assign any = false
+          for t in tags
+            for ct in collection.all_tags
+              assign h = ct | handleize
+              if h == t
+                assign any = true
+              endif
+            endfor
+          endfor
+        -%}
+        {%- if any -%}
+          <div class="inn-side__group">
+            <span class="inn-side__head">{{ parts[0] }}</span>
+            {%- for t in tags -%}
+              {%- for ct in collection.all_tags -%}
+                {%- assign h = ct | handleize -%}
+                {%- if h == t -%}
+                  <a class="inn-side__link{% if current == t %} is-active{% endif %}" href="{{ collection.url }}/{{ h }}">{{ ct }}</a>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if current_tags -%}
+        <a class="inn-side__link inn-side__clear" href="{{ collection.url }}">&lt; Clear</a>
+      {%- endif -%}
+    </aside>
+
+    <div class="inn-shop__main">
+      {%- paginate collection.products by section.settings.per_page -%}
+        {%- if collection.products.size == 0 -%}
+          <p class="inn-empty">Nothing here yet.</p>
+        {%- else -%}
+          <div class="inn-grid">
+            {%- for product in collection.products -%}
+              {% render 'inn-card', product: product %}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        {%- if paginate.pages > 1 -%}
+          <nav class="inn-pager" aria-label="Pagination">
+            {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">&lt; Prev</a>{%- endif -%}
+            <span>{{ paginate.current_page }} / {{ paginate.pages }}</span>
+            {%- if paginate.next -%}<a href="{{ paginate.next.url }}">Next &gt;</a>{%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Innanet shop grid",
+  "settings": [
+    { "type": "collection_list", "id": "collections", "label": "Sidebar collections", "info": "Leave empty to list every collection that has products." },
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 }
+  ]
+}
+{% endschema %}

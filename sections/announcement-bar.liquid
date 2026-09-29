@@ -1,0 +1,244 @@
+{% comment %}ANOUNCEMENT BAR LOGIC{% endcomment %}
+{% if template.name != 'password' %}
+
+  {%- if settings.show_announcement_bar -%}
+    {%- assign show_on_page = true -%}
+
+    {%- if template == 'index' and settings.show_announcement_bar_on_home != true -%}
+      {%- assign show_on_page = false -%}
+    {%- elsif template == 'collection' and settings.show_announcement_bar_on_collection != true -%}
+      {%- assign show_on_page = false -%}
+    {%- elsif template == 'product' and settings.show_announcement_bar_on_product != true -%}
+      {%- assign show_on_page = false -%}
+    {%- endif -%}
+
+    {% if template.suffix contains 'space' %}
+      {%- assign show_on_page = false -%}
+    {%- endif -%}
+
+    {%- if show_on_page -%}
+      <section aria-label="Site announcement" class="text-block {% if settings.enable_announcement_floater %} announcement-floater-enabled {% endif %}"
+                        style="
+                        padding: 0px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        position: relative;
+                        z-index: 2;
+                {% if settings.enable_announcement_shadow %}
+                        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                {% endif %}
+                {% if settings.enable_large_announcement_bar %}
+                        height: 52px;
+                {% endif %}
+                {% if settings.enable_announcement_floater %}
+                    {% if template == 'index' %}
+                            position: absolute !important;
+                            left: 50%;
+                            transform: translateX(-50%);
+                    {% endif %}
+                    {% if settings.enable_announcement_floater_radius %}
+                        {% if template != 'collection' %}
+                                border-radius: 4px;
+                        {% endif %}
+                    {% endif %}
+                    {% if template == 'collection' %}
+                    {% elsif page.template_suffix contains 'about' %}
+                    {% elsif page.template_suffix contains 'lookbook' %}
+                    {% elsif template == 'page' %}
+                    {% else %}
+                        {% unless settings.enable_moving_announcement %}
+                            width: 92%;
+                            margin-left: auto;
+                            margin-right: auto;
+                            margin-top: 20px;
+                            margin-bottom: 20px;
+                        {% endunless %}
+                    {% endif %}
+                {% endif %}
+                {% if template == 'index' %}
+                        position: absolute;
+                {% endif %}
+                {% if settings.enable_moving_announcement == false %}
+                        text-align: center;
+                {% endif %}
+                        font-size: {{ settings.announcement_text_size }}px;
+                {% if template == 'index' %}
+                        background-color: {{ settings.announcement_background_color_home_page }};
+                        color: {{ settings.announement-text-color-home-page }};
+                {% elsif template == 'collection' %}
+                        background-color: {{ settings.announcement_background_color_collection_page }};
+                        color: {{ settings.announement-text-color-collection-page }};
+                {% elsif template == 'product' %}
+                        background-color: {{ settings.announcement_background_color_product_page }};
+                        color: {{ settings.announement-text-color-product-page }};
+                {% else %}
+                        background-color: {{ settings.announcement_background_color }};
+                        color: {{ settings.announement-text-color }};
+                {% endif %}
+                        ">
+        {%- comment -%}
+          When a section URL is set, the whole bar becomes one link. Any <a> tags inside the
+          rich text are flattened to plain text first, since nesting <a> inside <a> is invalid
+          HTML and browsers split the outer link apart.
+        {%- endcomment -%}
+        {%- assign announcement_html = settings.announcement_text -%}
+        {%- assign wrap_in_link = false -%}
+        {%- if section.settings.announcement_url != blank -%}
+          {%- assign wrap_in_link = true -%}
+          {%- if settings.announcement_text contains '<a ' -%}
+            {%- assign link_parts = settings.announcement_text | split: '<a ' -%}
+            {%- capture announcement_html -%}
+              {{- link_parts[0] -}}
+              {%- for part in link_parts offset: 1 -%}
+                {%- assign open_tag_attrs = part | split: '>' | first -%}
+                {{- part | remove_first: open_tag_attrs | remove_first: '>' | remove_first: '</a>' -}}
+              {%- endfor -%}
+            {%- endcapture -%}
+          {%- endif -%}
+        {%- endif -%}
+
+        {% if wrap_in_link %}
+          <a href="{{ section.settings.announcement_url }}"
+             class="announcement-bar__link"
+             {% if section.settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>
+        {% endif %}
+
+        {% if settings.enable_moving_announcement %}
+          <div class="marquee-container" style="overflow: hidden; width: 100%; position: relative;">
+            <div class="marquee-wrapper" style="display: flex; width: fit-content;">
+              <div class="marquee-group" style="display: flex; flex-shrink: 0; animation: marquee-scroll {{ settings.marquee_speed }}s linear infinite;">
+                <div class="marquee-content announcement-bar__text" style="white-space: nowrap; padding-right: 100px;">{{ announcement_html }}</div>
+              </div>
+              <div class="marquee-group" style="display: flex; flex-shrink: 0; animation: marquee-scroll {{ settings.marquee_speed }}s linear infinite;" aria-hidden="true">
+                <div class="marquee-content announcement-bar__text" style="white-space: nowrap; padding-right: 100px;">{{ announcement_html }}</div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="announcement-bar__text">{{ announcement_html }}</div>
+        {% endif %}
+
+        {% if wrap_in_link %}
+          </a>
+        {% endif %}
+
+      </section>
+    {% endif %}
+  {% endif %}
+{% endif %}
+{% comment %}ANOUNCEMENT BAR LOGIC END{% endcomment %}
+
+<style>
+  /* Rich text renders <p> tags; keep them inline so the bar stays a single line. */
+  #shopify-section-announcement-bar .announcement-bar__text p {
+    margin: 0;
+    display: inline;
+  }
+
+  /* Everything inside the bar (rich text <p>, links, wrappers) inherits the bar's text color.
+     custom-grant.css paints p/span/div/a dark gray globally, which otherwise blocks inheritance. */
+  #shopify-section-announcement-bar .text-block * {
+    color: inherit !important;
+  }
+
+  #shopify-section-announcement-bar .announcement-bar__text a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  #shopify-section-announcement-bar .announcement-bar__text a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  /* Fill the bar's full width and height so every pixel of it is clickable,
+     including the padding above and below the text on the tall bar. */
+  #shopify-section-announcement-bar .announcement-bar__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    align-self: stretch;
+    text-decoration: none !important;
+    cursor: pointer;
+  }
+
+  @keyframes marquee-scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .marquee-container:hover .marquee-group {
+    animation-play-state: paused;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const marqueeGroups = document.querySelectorAll('.marquee-group');
+
+    marqueeGroups.forEach(function(group) {
+      const container = group.closest('.marquee-container');
+      if (!container) return;
+
+      const containerWidth = container.offsetWidth;
+      const content = group.querySelector('.marquee-content');
+      if (!content) return;
+
+      const contentWidth = content.offsetWidth;
+
+      // Clone content until the group is wider than the container
+      // This ensures text is always visible from the right edge
+      while (group.offsetWidth < containerWidth + contentWidth) {
+        const clone = content.cloneNode(true);
+        group.appendChild(clone);
+      }
+    });
+  });
+</script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var announcementBar = document.querySelector('.text-block');
+    var collectionDisplay1 = document.getElementById('collection-products-display-1');
+    var isMarqueeEnabled = {{ settings.enable_moving_announcement | default: false }};
+
+    console.log(collectionDisplay1);
+    console.log(announcementBar);
+
+    if (collectionDisplay1 && announcementBar.classList.contains('announcement-floater-enabled') && !isMarqueeEnabled) {
+      // The collection-products-display-2 section is present and marquee is disabled
+      announcementBar.style.width = '92%';
+      announcementBar.style.marginLeft = 'auto';
+      announcementBar.style.marginRight = 'auto';
+      announcementBar.style.marginTop = '20px';
+      announcementBar.style.marginBottom = '20px';
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "url",
+      "id": "announcement_url",
+      "label": "Announcement URL",
+      "info": "Makes the entire announcement bar clickable. Any links inside the announcement text (Theme settings > Announcement Bar) are replaced by this one."
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open link in new tab",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

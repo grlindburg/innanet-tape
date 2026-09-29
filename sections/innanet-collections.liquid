@@ -1,0 +1,19 @@
+<section class="inn-shop">
+  <h1 class="inn-label inn-shop__title">Shop&gt;</h1>
+  <div class="inn-grid">
+    {%- for c in collections -%}
+      {%- if c.handle == 'frontpage' or c.products.size == 0 -%}{%- continue -%}{%- endif -%}
+      <a class="inn-card" href="{{ c.url }}">
+        <div class="inn-card__media">
+          {%- assign cover = c.featured_image | default: c.products.first.featured_media -%}
+          {%- if cover -%}{{ cover | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 22vw, 45vw', widths: '300,450,600,900,1200', alt: c.title }}{%- endif -%}
+        </div>
+        <div class="inn-card__title">{% if c.handle == 'all' %}All{% else %}{{ c.title }}{% endif %}</div>
+      </a>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Innanet collection list", "settings": [] }
+{% endschema %}

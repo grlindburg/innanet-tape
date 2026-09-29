@@ -1,0 +1,626 @@
+{%- style -%}
+  .lookbook-{{ section.id }} {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh; 
+    overflow: hidden;
+    background: {{ section.settings.background_color }};
+  }
+  .lookbook-{{ section.id }} nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    padding: 1.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .lookbook-{{ section.id }} .img-preview-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 75%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lookbook-{{ section.id }} .img-preview {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lookbook-{{ section.id }} .img-link {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 10px;
+    text-align: center;
+    color: {{ section.settings.link_color }};
+    font-size: {{ section.settings.title_size_desktop }}px;
+    text-decoration: none;
+    font-weight: {{ section.settings.title_weight }};
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .lookbook-{{ section.id }} .img-preview img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .lookbook-{{ section.id }} .minimap {
+    position: absolute;
+    top: 50%;
+    right: 8em;
+    width: 80px;
+  }
+
+  .lookbook-{{ section.id }} .indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    border: 1px solid {{ section.settings.indicator_border_color }};
+    z-index: 2;
+  }
+
+  .lookbook-{{ section.id }} .items {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    will-change: transform;
+  }
+
+  .lookbook-{{ section.id }} .item {
+    width: 100%;
+    height: 60px;
+    padding: 5px;
+    cursor: pointer;
+  }
+
+  .lookbook-{{ section.id }} .item media-loader {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: block;
+  }
+
+  .lookbook-{{ section.id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.2s;
+    user-select: none;
+  }
+
+  @media (max-width: 900px) {
+    .lookbook-{{ section.id }} {
+      height: 100vh; /* Fallback */
+      height: 100dvh;
+      overflow: visible;
+      touch-action: auto;
+    }
+
+    .lookbook-{{ section.id }} .minimap {
+      top: auto;
+      right: auto;
+      bottom: 5em;
+      left: 50%;
+      width: auto;
+      height: 80px;
+      touch-action: none;
+    }
+
+    .lookbook-{{ section.id }} .indicator {
+      top: 0;
+      left: 0;
+      width: 60px;
+      height: 100%;
+    }
+
+    .lookbook-{{ section.id }} .items {
+      flex-direction: row;
+      width: max-content;
+      height: 100%;
+      touch-action: none;
+    }
+
+    .lookbook-{{ section.id }} .item {
+      width: 60px;
+      height: 100%;
+      padding: 5px;
+    }
+
+    .lookbook-{{ section.id }} .img-preview-wrapper {
+      top: 45%;
+      width: 75%;
+      height: 50%;
+    }
+
+    .lookbook-{{ section.id }} .img-link {
+      font-size: {{ section.settings.title_size_mobile }}px;
+    }
+  }
+{%- endstyle -%}
+<div class="lookbook-{{ section.id }} container">
+  <div class="img-preview-wrapper">
+    <div class="img-preview">
+      {% if section.blocks.size > 0 and section.blocks[0].settings.image != blank %}
+        <img src="{{ section.blocks[0].settings.image | img_url: 'master' }}" alt="image-selector-image" />
+      {% else %}
+        {{ 'lifestyle-1' | placeholder_svg_tag }}
+      {% endif %}
+    </div>
+    <div class="img-link-container">
+      {% if section.blocks.size > 0 and section.blocks[0].settings.link_text != blank %}
+        {% if section.blocks[0].settings.link_url != blank %}
+          <a href="{{ section.blocks[0].settings.link_url }}" class="img-link">{{ section.blocks[0].settings.link_text }}</a>
+        {% else %}
+          <div class="img-link">{{ section.blocks[0].settings.link_text }}</div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+  <div class="minimap">
+    <div class="indicator"></div>
+    <div class="items">
+      {% for block in section.blocks %}
+        {% if block.type == 'slide' %}
+          <div class="item" {{ block.shopify_attributes }}>
+            {% if block.settings.image != blank %}
+                <img 
+                src="{{ block.settings.image | img_url: '100x' }}" 
+                data-src="{{ block.settings.image | img_url: '400x' }}"
+                data-full="{{ block.settings.image | img_url: 'master' }}"
+                data-placeholder="{{ 'lifestyle-1' | placeholder_svg_url }}"
+                alt="image-selector-image" 
+                />
+            {% else %}
+              {{ 'lifestyle-1' | placeholder_svg_tag }}
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<script>
+  (function() {
+    const container = document.querySelector(".lookbook-{{ section.id }}");
+    const minimap = container.querySelector(".minimap");
+    const items = container.querySelector(".items");
+    const indicator = container.querySelector(".indicator");
+    const itemElements = container.querySelectorAll(".item");
+    const previewImage = container.querySelector(".img-preview img");
+    const itemImages = container.querySelectorAll(".item img");
+    const imgLinkContainer = container.querySelector(".img-link-container");
+    let isHorizontal = window.innerWidth <= 900;
+    let dimensions = {
+      itemSize: 0,
+      containerSize: 0,
+      indicatorSize: 0,
+    };
+    //pjs-os
+    let maxTranslate = 0;
+    let currentTranslate = 0;
+    let targetTranslate = 0;
+    let isClickMove = false;
+    let currentImageIndex = 0;
+    const activeItemOpacity = 0.3;
+    const TOUCH_SENSITIVITY = 1.25;
+    const slideLinks = [
+      {% for block in section.blocks %}
+        {% if block.type == 'slide' %}
+          {
+            text: {{ block.settings.link_text | json }},
+            url: {{ block.settings.link_url | json }}
+          },
+        {% endif %}
+      {% endfor %}
+    ];
+    function lerp(start, end, factor) {
+      return start + (end - start) * factor;
+    }
+    function updateDimensions() {
+      isHorizontal = window.innerWidth <= 900;
+      if (isHorizontal) {
+        dimensions = {
+          itemSize: itemElements[0]?.getBoundingClientRect().width || 0,
+          containerSize: items.scrollWidth,
+          indicatorSize: indicator.getBoundingClientRect().width,
+        };
+      } else {
+        dimensions = {
+          itemSize: itemElements[0]?.getBoundingClientRect().height || 0,
+          containerSize: items.getBoundingClientRect().height,
+          indicatorSize: indicator.getBoundingClientRect().height,
+        };
+      }
+      return dimensions;
+    }
+    //pj
+    if (itemElements.length > 0) {
+      dimensions = updateDimensions();
+      maxTranslate = dimensions.containerSize - dimensions.indicatorSize;
+      function getItemInIndicator() {
+        itemImages.forEach((img) => (img.style.opacity = "1"));
+        const indicatorStart = -currentTranslate;
+        const indicatorEnd = indicatorStart + dimensions.indicatorSize;
+        let maxOverlap = 0;
+        let selectedIndex = 0;
+        itemElements.forEach((item, index) => {
+          const itemStart = index * dimensions.itemSize;
+          const itemEnd = itemStart + dimensions.itemSize;
+          const overlapStart = Math.max(indicatorStart, itemStart);
+          const overlapEnd = Math.min(indicatorEnd, itemEnd);
+          const overlap = Math.max(0, overlapEnd - overlapStart);
+          if (overlap > maxOverlap) {
+            maxOverlap = overlap;
+            selectedIndex = index;
+          }
+        });
+        if (selectedIndex < itemImages.length) {
+          itemImages[selectedIndex].style.opacity = activeItemOpacity;
+        }
+        return selectedIndex;
+      }
+      function updatePreviewImage(index) {
+        if (currentImageIndex !== index && index < itemElements.length) {
+          currentImageIndex = index;
+          const targetItem = itemElements[index].querySelector("img");
+          
+          if (targetItem) {
+            // Use the high-quality version for the main preview
+            const newSrc = targetItem.dataset.full || targetItem.dataset.src || targetItem.getAttribute("src");
+            
+            // Update the preview image
+            previewImage.setAttribute("src", newSrc);
+            
+            // Update link and click behavior
+            updateLinkForIndex(index);
+            setupImageClick(index);
+          }
+        }
+      }
+      function setupImageClick(index) {
+        const imgPreview = container.querySelector(".img-preview");
+        if (index < slideLinks.length && slideLinks[index].url) {
+          imgPreview.style.cursor = "pointer";
+          imgPreview.onclick = function() {
+            window.location.href = slideLinks[index].url;
+          };
+        } else {
+          imgPreview.style.cursor = "default";
+          imgPreview.onclick = null;
+        }
+      }
+      function updateLinkForIndex(index) {
+        imgLinkContainer.innerHTML = '';
+        
+        if (index < slideLinks.length) {
+          const linkData = slideLinks[index];
+          
+          if (linkData.text) {
+            let linkElement;
+            
+            if (linkData.url) {
+              linkElement = document.createElement('a');
+              linkElement.href = linkData.url;
+              linkElement.style.cursor = 'pointer';
+            } else {
+              linkElement = document.createElement('div');
+              linkElement.style.cursor = 'default';
+            }
+            
+            linkElement.className = 'img-link';
+            linkElement.textContent = linkData.text;
+            imgLinkContainer.appendChild(linkElement);
+          }
+        }
+      }
+      function animate() {
+        const lerpFactor = isClickMove ? 0.05 : 0.075;
+        currentTranslate = lerp(currentTranslate, targetTranslate, lerpFactor);
+        if (Math.abs(currentTranslate - targetTranslate) > 0.01) {
+          const transform = isHorizontal
+            ? `translateX(${currentTranslate}px)`
+            : `translateY(${currentTranslate}px)`;
+          items.style.transform = transform;
+          const activeIndex = getItemInIndicator();
+          updatePreviewImage(activeIndex);
+        } else {
+          isClickMove = false;
+        }
+        requestAnimationFrame(animate);
+      }
+      updateLinkForIndex(0);
+      minimap.addEventListener(
+        "wheel",
+        (e) => {
+          e.preventDefault();
+          isClickMove = false;
+          let delta;
+          delta = e.deltaY;
+          const scrollVelocity = Math.min(Math.max(delta * 0.5, -20), 20);
+          //pj
+          targetTranslate = Math.min(
+            Math.max(targetTranslate - scrollVelocity, -maxTranslate),
+            0
+          );
+        },
+        { passive: false }
+      );
+      let touchStartY = 0;
+      let touchStartX = 0;
+      //cGxhaW5qYW5lbGljZW5zZQ==
+      let isTouchActive = false;
+      minimap.addEventListener("touchstart", (e) => {
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+        isTouchActive = true;
+        e.preventDefault();
+      }, { passive: false });
+      minimap.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!isTouchActive) return;
+          //cGxhaW5qYW5lbGljZW5zZQ==
+          const touchY = e.touches[0].clientY;
+          const touchX = e.touches[0].clientX;
+          let delta;
+          if (isHorizontal) {
+            delta = touchStartX - touchX;
+          } else {
+            delta = touchStartY - touchY;
+          }
+
+          const scrollVelocity = Math.min(Math.max(delta * TOUCH_SENSITIVITY, -30), 30);
+
+          targetTranslate = Math.min(
+            Math.max(targetTranslate - scrollVelocity, -maxTranslate),
+            0
+          );
+
+          touchStartY = touchY;
+          touchStartX = touchX;
+          e.preventDefault();
+        },
+        { passive: false }
+      );
+      
+      minimap.addEventListener("touchend", (e) => {
+        isTouchActive = false;
+      }, { passive: false });
+
+      itemElements.forEach((item, index) => {
+        item.addEventListener("click", () => {
+          isClickMove = true;
+          targetTranslate =
+            -index * dimensions.itemSize +
+            (dimensions.indicatorSize - dimensions.itemSize) / 2;
+
+          targetTranslate = Math.max(Math.min(targetTranslate, 0), -maxTranslate);
+        });
+      });
+
+      window.addEventListener("resize", () => {
+        dimensions = updateDimensions();
+        const newMaxTranslate = dimensions.containerSize - dimensions.indicatorSize;
+
+        targetTranslate = Math.min(Math.max(targetTranslate, -newMaxTranslate), 0);
+        currentTranslate = targetTranslate;
+
+        const transform = isHorizontal
+          ? `translateX(${currentTranslate}px)`
+          : `translateY(${currentTranslate}px)`;
+        items.style.transform = transform;
+      });
+
+      if (itemImages.length > 0) {
+        itemImages[0].style.opacity = activeItemOpacity;
+      }
+      
+      // Initialize the first image click functionality
+      if (slideLinks.length > 0 && slideLinks[0].url) {
+        setupImageClick(0);
+      }
+      
+      updatePreviewImage(0);
+      animate();
+
+      // Initialize virtualized loading
+      if (itemElements.length > 0) {
+        setupVirtualizedLoading();
+        
+        // Preload the first image at high quality
+        if (previewImage && itemElements[0]) {
+          const firstImg = itemElements[0].querySelector("img");
+          if (firstImg && firstImg.dataset.full) {
+            previewImage.setAttribute("src", firstImg.dataset.full);
+          }
+        }
+      }
+    }
+
+    function setupVirtualizedLoading() {
+      // Only fully load images within this range of the current position
+      const ACTIVE_RANGE = 5;
+      
+      function updateVisibleImages(currentIndex) {
+        // Calculate which images should be fully loaded
+        const startIndex = Math.max(0, currentIndex - ACTIVE_RANGE);
+        const endIndex = Math.min(itemElements.length - 1, currentIndex + ACTIVE_RANGE);
+        
+        // Process all images
+        itemElements.forEach((item, index) => {
+          const img = item.querySelector('img');
+          if (!img) return;
+          
+          if (index >= startIndex && index <= endIndex) {
+            // This image is in active range - ensure it's fully loaded
+            if (img.dataset.src && img.getAttribute('src') !== img.dataset.src) {
+              img.setAttribute('src', img.dataset.src);
+            }
+          } else {
+            // This image is outside active range - use placeholder
+            if (itemElements.length > 10 && img.getAttribute('src') !== img.src.includes('100x')) {
+              img.setAttribute('src', img.src.replace(/\d+x/, '100x'));
+            }
+          }
+        });
+      }
+      
+      // Hook into the existing image selection mechanism
+      const originalGetItemInIndicator = getItemInIndicator;
+      getItemInIndicator = function() {
+        const selectedIndex = originalGetItemInIndicator.apply(this, arguments);
+        updateVisibleImages(selectedIndex);
+        return selectedIndex;
+      };
+    }
+  })();
+</script>
+
+{% if settings.enable_lazy_loading %}
+  <script src="{{ 'lazyloadz.js' | asset_url }}" type="text/javascript"></script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Image Selector",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color_background",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "linear-gradient(#ffffff, #ffffff)"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "indicator_border_color",
+      "label": "Indicator Border Color",
+      "default": "#000000"
+    },
+    
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Link Text Size (Desktop)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Link Text Size (Mobile)",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Link Text Weight",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Regular"
+        },
+        {
+          "value": "bold",
+          "label": "Bold"
+        }
+      ],
+      "default": "normal"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Link Text",
+          "info": "Text will appear below the image. Leave blank for no text."
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL",
+          "info": "Optional. If provided, the link text will be clickable."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image Selector",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %} 

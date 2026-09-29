@@ -1,0 +1,34 @@
+/* 360 turnaround viewer (snippets/inn-spin.liquid) */
+.inn-spin { display: none; }
+.inn-spin.is-active { display: block; }
+/* While the viewer is showing, the still product photo steps aside. */
+.inn-product__main:has(.inn-spin.is-active) > [data-inn-main] { display: none; }
+
+.inn-spin__stage { position: relative; display: block; aspect-ratio: 2 / 3; max-height: 76vh; margin: 0 auto; background: var(--inn-tile, #efefef); overflow: hidden; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; outline: none; }
+.inn-spin__stage.is-dragging { cursor: grabbing; }
+.inn-spin__stage:focus-visible { box-shadow: 0 0 0 2px var(--inn-orange, #f8981d); }
+.inn-spin__poster, .inn-spin__canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; max-height: none !important; object-fit: contain; display: block; opacity: 1 !important; pointer-events: none; -webkit-user-drag: none; }
+.inn-spin__canvas { visibility: hidden; }
+.inn-spin.is-live .inn-spin__canvas { visibility: visible; }
+.inn-spin.is-live .inn-spin__poster { visibility: hidden; }
+
+.inn-spin__hint { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); padding: 7px 14px; border-radius: 999px; background: rgba(0, 0, 0, .72); color: #fff; font-family: var(--inn-font, sans-serif); font-weight: 600; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; pointer-events: none; transition: opacity .3s ease; }
+.inn-spin.is-touched .inn-spin__hint { opacity: 0; }
+.inn-spin.is-waiting .inn-spin__hint { pointer-events: auto; cursor: pointer; }
+
+.inn-spin__bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: transparent; pointer-events: none; transition: opacity .4s ease; }
+.inn-spin__bar i { display: block; height: 100%; width: 0; background: var(--inn-orange, #f8981d); transition: width .15s linear; }
+.inn-spin.is-loaded .inn-spin__bar { opacity: 0; }
+
+.inn-spin__modes { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
+.inn-spin__modes[hidden] { display: none; }
+.inn-spin__mode { padding: 6px 14px; border: 1px solid #000; border-radius: 999px; background: transparent; color: #000; font-family: var(--inn-font, sans-serif); font-weight: 600; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; }
+.inn-spin__mode.is-active { background: #000; color: #fff; }
+
+@media (max-width: 749px) {
+  .inn-spin__stage { max-height: none; }
+  .inn-spin__hint { bottom: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .inn-spin__hint, .inn-spin__bar, .inn-spin__bar i { transition: none; }
+}

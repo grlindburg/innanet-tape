@@ -1,0 +1,73 @@
+
+
+
+{% schema %}
+{
+  "name": "Logo & Clock",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "select",
+      "id": "logo-alignment",
+      "label": "Logo Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Clock"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date_time",
+      "label": "Show Date/Time",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "align_date_time",
+      "label": "Date/Time Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "index_date_color",
+      "label": "Date Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "index_time_color",
+      "label": "Time Color",
+      "default": "#000"
+    }
+  ]
+}
+{% endschema %}

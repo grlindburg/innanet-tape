@@ -1,0 +1,818 @@
+{% if settings.cart_drawer_enabled %}
+  {% if template != 'cart' %}
+    <!-- Add this line for the overlay -->
+    <div id="cart-drawer-overlay" class="cart-drawer-overlay" aria-hidden="true"></div>
+
+    <div
+      id="cart-drawer"
+      class="cart-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-drawer-title"
+      aria-hidden="true">
+      <div class="cart-drawer-header">
+        <h2 id="cart-drawer-title">{{ 'cart.general.title' | t }}</h2>
+        <button id="close-cart" type="button" aria-label="{{ 'general.accessibility.close_cart' | t }}">
+          <span aria-hidden="true">x</span>
+        </button>
+      </div>
+      {% if settings.show_fomo_timer %}
+        <div id="fomo-timer" class="fomo-timer">
+          <span id="fomo-timer-text">
+            <span>{{ settings.fomo_timer_text }}</span>
+            <span id="timer-countdown"></span>
+          </span>
+        </div>
+      {% endif %}
+      <div class="cart-drawer-content">
+        <div id="cart-items"></div>
+        <div
+          id="empty-cart-message"
+          class="empty-cart-message"
+          style="display: none;">
+          {{ 'cart.general.empty' | t }}
+        </div>
+        <div
+          id="cart-skeleton"
+          class="cart-skeleton"
+          style="display: none;">
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+          <div class="skeleton-item"></div>
+        </div>
+      </div>
+      <div id="cart-drawer-footer" class="cart-drawer-footer">
+        <div id="cart-total"></div>
+        {% if content_for_additional_checkout_buttons %}
+          <div class="additional-checkout-buttons additional-checkout-buttons--vertical">
+            {{ content_for_additional_checkout_buttons }}
+          </div>
+        {% endif %}
+          <a href="/checkout" class="btn-checkout">{{ 'cart.general.checkout' | t }}</a>
+      </div>
+    </div>
+
+    <style>
+      .cart-drawer {
+        position: fixed;
+        top: 0;
+        right: -{{ settings.cart_drawer_width }}px;
+        width: {{ settings.cart_drawer_width }}px;
+        height: 100%;
+        background-color: {{ settings.cart_drawer_background }};
+        color: {{ settings.cart_drawer_text_color }};
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease-in-out;
+        z-index: 10001;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .cart-text {
+        cursor: pointer;
+      }
+
+      .cart-drawer.open {
+        right: 0;
+      }
+
+      /* Add this media query for desktop sizes */
+      @media screen and (min-width: 768px) {
+        .cart-drawer {
+          right: -{{ settings.cart_drawer_width }}px;
+          width: {{ settings.cart_drawer_width }}px;
+        }
+
+        .cart-drawer.open {
+          right: 0;
+        }
+      }
+
+      .cart-drawer-header {
+        padding: 20px;
+        flex-shrink: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      } 
+
+      .cart-drawer-header h2 {
+        margin: 0;
+        font-weight: 500;
+      }
+
+      #close-cart {
+        background: none;
+        border: none;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        color: {{ settings.cart_drawer_text_color }};
+        /* a11y: ensure an adequate tap/click target (WCAG 2.5.8). */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      .cart-drawer-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      #cart-items {
+        border-radius: 4px;
+        margin-bottom: 20px;
+        {% if settings.cart_items_background_image %}
+          background-image: url('{{ settings.cart_items_background_image | img_url: 'master' }}');
+          background-size: {{ settings.cart_items_background_size }};
+          background-position: {{ settings.cart_items_background_position }};
+          background-repeat: no-repeat;
+        {% endif %}
+      }
+
+      .cart-drawer-footer {
+        padding: 20px;
+        border-top: 1px solid #e0e0e0;
+        flex-shrink: 0;
+        display: none;
+      }
+
+      .btn-checkout {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: {{ settings.cart_drawer_button_color }};
+        color: {{ settings.cart_drawer_button_text_color }};
+        text-align: center;
+        text-decoration: none;
+        margin-top: 10px;
+        font-family: var(--btn_font), sans-serif;
+      }
+
+      .cart-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 20px 9px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .cart-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+      }
+
+      .cart-item a {
+        flex-shrink: 0;
+        width: 60px;
+        margin-right: 10px;
+      }
+
+      .cart-item img {
+        width: 100%;
+        height: auto;
+      }
+
+      .cart-item-details {
+        flex-grow: 1;
+        flex-basis: 70%;
+        min-width: 0;
+        overflow: hidden;
+        padding-right: 15px;
+      }
+
+      .cart-item-title {
+        font-weight: bold;
+        margin-bottom: 5px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .cart-item-price {
+        font-size: 14px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-all;
+        hyphens: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .cart-item-quantity {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 60px;
+        margin-left: auto;
+      }
+
+      .quantity-input {
+        width: 100%;
+        max-width: 50px;
+        text-align: center;
+        border: 1px solid #e0e0e0;
+        margin-bottom: 5px;
+        padding: 4px 0;
+        font-size: 14px;
+        color: #000000;
+        /* This ensures the text is always black */
+      }
+
+      .quantity-buttons {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+
+      .quantity-btn {
+        background: none;
+        padding: 4px 0;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        width: 50%;
+      }
+
+      .quantity-btn.minus {
+        border-right: none;
+      }
+
+      .quantity-btn.plus {
+        border-left: none;
+      }
+
+      .cart-item a {
+        text-decoration: none;
+      }
+
+      .cart-item-loading {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+      }
+
+      .cart-item-loading::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: linear-gradient(90deg, rgba(240, 240, 240, 0.3) 25%, rgba(224, 224, 224, 0.3) 50%, rgba(240, 240, 240, 0.3) 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        pointer-events: none;
+        border-radius: 8px;
+      }
+
+      @keyframes loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      .additional-checkout-buttons {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .additional-checkout-buttons .shopify-cleanslate ul {
+        width: 100% !important;
+        gap: 0px !important;
+      }
+
+      body .shopify-cleanslate ul li[data-testid] {
+        flex-basis: 100% !important;
+        margin-bottom: 6px !important;
+      }
+
+      .additional-checkout-buttons .shopify-cleanslate ul li {
+        width: 100% !important;
+      }
+
+      .additional-checkout-buttons .shopify-cleanslate .kqsiVA9Jf8LJAbxw8Bau {
+        width: 100% !important;
+        height: 50px !important;
+        max-width: none !important;
+      }
+
+      .fomo-timer {
+        background-color: {{ settings.fomo_timer_background }};
+        color: {{ settings.fomo_timer_text_color }};
+        text-align: center;
+        padding: 10px;
+        font-weight: bold;
+      }
+
+      #timer-countdown {
+        margin-left: 5px;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .fomo-timer-expired {
+        animation: pulse 1s infinite;
+        color: red;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        50% {
+          transform: translateX(5px);
+        }
+        75% {
+          transform: translateX(-5px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      .fomo-timer-shake {
+        display: inline-block;
+        animation: shake 0.5s ease-in-out infinite;
+      }
+
+      .cart-skeleton {
+        padding: 20px;
+      }
+
+      .skeleton-item {
+        height: 80px;
+        margin-bottom: 10px;
+        background: linear-gradient(90deg, rgba(240, 240, 240, 0.3) 25%, rgba(224, 224, 224, 0.3) 50%, rgba(240, 240, 240, 0.3) 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 8px;
+      }
+
+      .cart-drawer-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        display: none;
+      }
+
+      .cart-drawer-overlay.active {
+        display: block;
+      }
+
+      .cart-drawer {
+        z-index: 10001;
+      }
+
+      .empty-cart-message {
+        text-align: center;
+        padding: 20px;
+        font-size: 16px;
+        color: {{ settings.cart_drawer_text_color }};
+      }
+    </style>
+<script>
+  // Add Shopify money formatting function
+  Shopify.formatMoney = function(cents, format) {
+    if (typeof cents === 'string') { cents = cents.replace('.',''); }
+    var value = '';
+    var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+    var formatString = format || this.money_format;
+
+    function defaultOption(opt, def) {
+      return (typeof opt == 'undefined' ? def : opt);
+    }
+
+    function formatWithDelimiters(number, precision, thousands, decimal) {
+      precision = defaultOption(precision, 2);
+      thousands = defaultOption(thousands, ',');
+      decimal = defaultOption(decimal, '.');
+
+      if (isNaN(number) || number == null) { return 0; }
+
+      number = (number/100.0).toFixed(precision);
+
+      var parts = number.split('.'),
+          dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+          cents = parts[1] ? (decimal + parts[1]) : '';
+
+      return dollars + cents;
+    }
+
+    switch(formatString.match(placeholderRegex)[1]) {
+      case 'amount':
+        value = formatWithDelimiters(cents, 2);
+        break;
+      case 'amount_no_decimals':
+        value = formatWithDelimiters(cents, 0);
+        break;
+      case 'amount_with_comma_separator':
+        value = formatWithDelimiters(cents, 2, '.', ',');
+        break;
+      case 'amount_no_decimals_with_comma_separator':
+        value = formatWithDelimiters(cents, 0, '.', ',');
+        break;
+    }
+
+    return formatString.replace(placeholderRegex, value);
+  };
+
+  window.theme = window.theme || {};
+  window.theme.settings = {
+      show_fomo_timer: {{ settings.show_fomo_timer | json }},
+      fomo_timer_duration: {{ settings.fomo_timer_duration | json }},
+      moneyFormat: {{ shop.money_format | json }},
+      moneyFormatWithCurrency: {{ shop.money_with_currency_format | json }}
+  };
+</script>
+
+<script>
+    (function() {
+    document.addEventListener('DOMContentLoaded', function() {
+      const cartTextElements = document.querySelectorAll('.cart-text');
+      const cartDrawer = document.getElementById('cart-drawer');
+      const closeCart = document.getElementById('close-cart');
+      const cartItems = document.getElementById('cart-items');
+      const cartSkeleton = document.getElementById('cart-skeleton');
+      const cartTotal = document.getElementById('cart-total');
+      const cartDrawerOverlay = document.getElementById('cart-drawer-overlay');
+      const mainContainer = document.getElementById('container');
+    
+      // Only proceed if we have the necessary elements
+      if (!cartDrawer) {
+        return;
+      }
+    
+      function closeGlobalMenu() {
+        const body = document.body;
+        if (body.classList.contains('pushy-open-left')) {
+          body.classList.remove('pushy-open-left');
+        } else if (body.classList.contains('pushy-open-right')) {
+          body.classList.remove('pushy-open-right');
+        }
+      }
+    
+      function openCartDrawer() {
+        cartDrawer.classList.add('open');
+        cartDrawerOverlay.classList.add('active');
+        cartDrawer.setAttribute('aria-hidden', 'false');
+        cartDrawerOverlay.setAttribute('aria-hidden', 'false');
+        // Trap keyboard focus inside the drawer (a11y-helpers.js).
+        if (typeof window.trapFocus === 'function') {
+          window.trapFocus(cartDrawer, closeCart);
+        }
+        // Apply overflow hidden to container instead of body
+       // if (mainContainer) {
+          //mainContainer.style.overflow = 'hidden';
+        //}
+        showCartSkeleton();
+        updateCart();
+        closeGlobalMenu();
+        initFomoTimer();
+      }
+    
+      function showCartSkeleton() {
+        cartItems.style.display = 'none';
+        cartSkeleton.style.display = 'block';
+      }
+    
+      function hideCartSkeleton() {
+        cartItems.style.display = 'block';
+        cartSkeleton.style.display = 'none';
+      }
+    
+      function closeCartDrawer() {
+        cartDrawer.classList.remove('open');
+        cartDrawerOverlay.classList.remove('active');
+        cartDrawer.setAttribute('aria-hidden', 'true');
+        cartDrawerOverlay.setAttribute('aria-hidden', 'true');
+        // Release the focus trap and return focus to the trigger.
+        if (typeof window.removeTrapFocus === 'function') {
+          window.removeTrapFocus();
+        }
+        // Reset overflow on container instead of body
+         //if (mainContainer) {
+          //mainContainer.style.overflow = '';
+        //}
+      }
+    
+      function updateCart() {
+        fetch('/cart.js')
+          .then(response => response.json())
+          .then(cart => {
+            const emptyCartMessage = document.getElementById('empty-cart-message');
+            const cartDrawerFooter = document.getElementById('cart-drawer-footer');
+            
+            if (cart.item_count === 0) {
+              cartItems.innerHTML = ''; // Clear the cart items
+              cartItems.style.display = 'none';
+              emptyCartMessage.style.display = 'block';
+              cartDrawerFooter.style.display = 'none'; // Hide footer
+              cartTotal.innerHTML = `{{ 'cart.general.total' | t }}: ${Shopify.formatMoney(cart.total_price, 
+                {{ settings.show_price_with_currency }} ? window.theme.settings.moneyFormatWithCurrency : window.theme.settings.moneyFormat
+              )}`;
+            } else {
+              cartItems.style.display = 'block';
+              emptyCartMessage.style.display = 'none';
+              cartDrawerFooter.style.display = 'block'; // Show footer
+              
+              cartItems.innerHTML = cart.items.map(item => `
+                <div class="cart-item" data-variant-id="${item.variant_id}">
+                  <a href="${item.url}">
+                    <img src="${item.image.replace(/(\.[^.]*)$/, '_500x$1')}" alt="${item.title}" width="500">
+                  </a>
+                  <div class="cart-item-details">
+                    <div class="cart-item-title">${item.title}</div>
+                    <div class="cart-item-price">${Shopify.formatMoney(item.price, 
+                      {{ settings.show_price_with_currency }} ? window.theme.settings.moneyFormatWithCurrency : window.theme.settings.moneyFormat
+                    )}</div>
+                  </div>
+                  <div class="cart-item-quantity">
+                    <input type="number" class="quantity-input" value="${item.quantity}" min="0" max="${item.variant_inventory_quantity || 9999}">
+                    <div class="quantity-buttons">
+                      <button class="quantity-btn minus" aria-label="Decrease quantity">-</button>
+                      <button class="quantity-btn plus" aria-label="Increase quantity">+</button>
+                    </div>
+                  </div>
+                </div>
+              `).join('');
+              cartTotal.innerHTML = `{{ 'cart.general.total' | t }}: ${Shopify.formatMoney(cart.total_price, 
+                {{ settings.show_price_with_currency }} ? window.theme.settings.moneyFormatWithCurrency : window.theme.settings.moneyFormat
+              )}`;
+              addQuantityListeners();
+            }
+            
+            hideCartSkeleton();
+    
+            // Add this check to toggle a class on the cart drawer
+            if (cart.items.length > 3) {
+              cartDrawer.classList.add('scrollable');
+            } else {
+              cartDrawer.classList.remove('scrollable');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            hideCartSkeleton();
+          });
+      }
+    
+      function addQuantityListeners() {
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        quantityInputs.forEach(input => {
+          const minusBtn = input.nextElementSibling.querySelector('.minus');
+          const plusBtn = input.nextElementSibling.querySelector('.plus');
+          const variantId = input.closest('.cart-item').dataset.variantId;
+    
+          minusBtn.addEventListener('click', () => updateQuantity(variantId, parseInt(input.value) - 1));
+          plusBtn.addEventListener('click', () => updateQuantity(variantId, parseInt(input.value) + 1));
+          input.addEventListener('change', () => updateQuantity(variantId, parseInt(input.value)));
+        });
+      }
+    
+      function updateQuantity(variantId, newQuantity) {
+        if (newQuantity < 0) return;
+    
+        const cartItem = document.querySelector(`.cart-item[data-variant-id="${variantId}"]`);
+        const quantityInput = cartItem.querySelector('.quantity-input');
+        const originalQuantity = parseInt(quantityInput.value);
+    
+        quantityInput.value = newQuantity;
+    
+        cartItem.classList.add('cart-item-loading');
+    
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: newQuantity
+          })
+        })
+        .then(response => response.json())
+        .then(cart => {
+          // Update cart count first
+          const cartCountElements = document.querySelectorAll('.cart-count');
+          cartCountElements.forEach(element => {
+            element.textContent = cart.item_count;
+            element.classList.add('pulse');
+            setTimeout(() => element.classList.remove('pulse'), 300);
+          });
+    
+          // Dispatch cart:change event
+          document.dispatchEvent(new CustomEvent('cart:change', { 
+            detail: cart 
+          }));
+    
+          if (cart.item_count === 0) {
+            // If the cart is now empty, clear the cart items immediately
+            cartItems.innerHTML = '';
+          }
+          updateCart();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Revert the quantity if there's an error
+          quantityInput.value = originalQuantity;
+        })
+        .finally(() => {
+          setTimeout(() => {
+            cartItem.classList.remove('cart-item-loading');
+          }, 300); // Remove the loading class after a short delay
+        });
+      }
+    
+      // Add click event listener to all cart text elements
+      if (cartTextElements.length > 0) {
+        cartTextElements.forEach(cartText => {
+          cartText.addEventListener('click', function(e) {
+            e.preventDefault();
+            openCartDrawer();
+          });
+        });
+      }
+    
+      // Only add close cart listener if the button exists
+      if (closeCart) {
+        closeCart.addEventListener('click', closeCartDrawer);
+      }
+    
+      // Close cart when clicking outside
+      if (cartDrawer) {
+        document.addEventListener('click', function(e) {
+          if (cartDrawer.classList.contains('open') && !cartDrawer.contains(e.target) && !Array.from(cartTextElements).some(el => el.contains(e.target))) {
+            closeCartDrawer();
+          }
+        });
+
+        // Close cart on Escape (WCAG 2.1.2).
+        document.addEventListener('keydown', function(e) {
+          if ((e.key === 'Escape' || e.keyCode === 27) && cartDrawer.classList.contains('open')) {
+            closeCartDrawer();
+          }
+        });
+      }
+    
+      // Expose these functions globally
+      window.openCartDrawer = openCartDrawer;
+      window.updateCart = updateCart;
+    
+      // FOMO Timer functionality
+      function startFomoTimer(endTime, display) {
+        const timerText = document.getElementById('fomo-timer-text');
+        
+        function updateTimer() {
+          const now = new Date().getTime();
+          const distance = endTime - now;
+    
+          if (distance < 0) {
+            clearInterval(window.fomoTimerInterval);
+            display.textContent = "Offer expired!";
+            timerText.classList.add('fomo-timer-shake');
+            
+            // Show message for 3 seconds, then restart timer
+            setTimeout(() => {
+              timerText.classList.remove('fomo-timer-shake');
+              initFomoTimer(); // Reinitialize the timer
+            }, 3000);
+            
+            return;
+          }
+    
+          const hours = Math.floor(distance / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+          display.textContent = `${hours}h ${minutes}m ${seconds}s`;
+        }
+    
+        updateTimer(); // Call once immediately to avoid delay
+        window.fomoTimerInterval = setInterval(updateTimer, 1000);
+      }
+    
+      function initFomoTimer() {
+        const display = document.querySelector('#timer-countdown');
+        if (display && window.theme.settings.show_fomo_timer) {
+          clearInterval(window.fomoTimerInterval);
+          
+          const now = new Date().getTime();
+          let endTime = localStorage.getItem('fomoTimerEnd');
+          const duration = window.theme.settings.fomo_timer_duration * 60 * 60 * 1000; // Convert hours to milliseconds
+          
+          if (!endTime || now > parseInt(endTime)) {
+            endTime = now + duration;
+            localStorage.setItem('fomoTimerEnd', endTime.toString());
+          } else {
+            // If the timer hasn't expired, but the duration has changed, adjust the end time
+            const remainingTime = parseInt(endTime) - now;
+            if (remainingTime > duration) {
+              endTime = now + duration;
+              localStorage.setItem('fomoTimerEnd', endTime.toString());
+            }
+          }
+          
+          startFomoTimer(parseInt(endTime), display);
+        }
+      }
+    
+      // Call initFomoTimer when the cart drawer is opened
+      document.addEventListener('cart:open', function() {
+        initFomoTimer();
+      });
+    
+      // Also initialize the timer when the page loads
+      initFomoTimer();
+    
+      const cartItemsContainer = document.getElementById('cart-items');
+      if (cartItemsContainer) {
+        cartItemsContainer.scrollTop = cartItemsContainer.scrollHeight;
+      }
+
+      function removeItem(variantId) {
+        showCartSkeleton();
+        
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: 0
+          })
+        })
+        .then(response => response.json())
+        .then(cart => {
+          // Dispatch cart:change event after successful removal
+          document.dispatchEvent(new CustomEvent('cart:change', { 
+            detail: cart 
+          }));
+          
+          updateCart();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          hideCartSkeleton();
+        });
+      }
+
+      // Also in the quantity change function
+      function updateItemQuantity(variantId, quantity) {
+        showCartSkeleton();
+        
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: quantity
+          })
+        })
+        .then(response => response.json())
+        .then(cart => {
+          // Dispatch cart:change event after quantity update
+          document.dispatchEvent(new CustomEvent('cart:change', { 
+            detail: cart 
+          }));
+          
+          updateCart();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          hideCartSkeleton();
+        });
+      }
+    });
+  })();
+</script>
+    
+  {% endif %}
+{% endif %}

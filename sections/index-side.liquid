@@ -1,0 +1,238 @@
+{{ 'index-side.css' | asset_url | stylesheet_tag }}
+{% render 'index-side-logo' %}
+{% render 'index-side-menu' %}
+{% schema %}
+  {
+    "name": "Side Aligned Menu",
+    "tag": "div",
+    "limit": 1,
+    "presets": [
+      {
+        "name": "Side Aligned Menu [ARCHIVED]"
+      }
+    ],
+    "disabled_on": {
+      "templates": [
+        "404",
+        "article",
+        "blog",
+        "cart",
+        "collection",
+        "list-collections",
+        "customers/account",
+        "customers/activate_account",
+        "customers/addresses",
+        "customers/login",
+        "customers/order",
+        "customers/register",
+        "customers/reset_password",
+        "gift_card",
+        "product",
+        "page",
+        "password",
+        "search"
+      ]
+    },
+    "settings": [
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "select",
+        "id": "logo-alignment",
+        "label": "Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+
+      {
+        "type": "header",
+        "content": "Menu"
+      },
+      {
+        "type": "link_list",
+        "id": "side-menu",
+        "label": "Choose a menu"
+      }, {
+        "type": "select",
+        "id": "link-alignment",
+        "label": "Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      }, {
+        "type": "select",
+        "id": "display_login_link",
+        "label": "Show Login Link",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          }, {
+            "value": "bottom",
+            "label": "Bottom"
+          }, {
+            "value": "hide",
+            "label": "Hide"
+          }
+        ],
+        "default": "top"
+      }, {
+        "type": "paragraph",
+        "content": "Link Colors"
+      }, {
+        "type": "color",
+        "id": "nav_link_color",
+        "label": "Link Text Colors",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "navlink_hover_color",
+        "label": "Link Text Colors (On Hover)",
+        "default": "#FFF"
+      }, {
+        "type": "color",
+        "id": "navlink_background_color",
+        "label": "Link Background Colors (On Hover)",
+        "default": "#FE0100"
+      }, {
+        "type": "range",
+        "id": "font-size",
+        "min": 10,
+        "max": 40,
+        "step": 1,
+        "unit": "px",
+        "label": "Link Font Size",
+        "default": 14
+      }, {
+        "type": "range",
+        "id": "menu-spacing",
+        "min": 12,
+        "max": 45,
+        "step": 1,
+        "unit": "px",
+        "label": "Link Vertical Spacing",
+        "default": 21
+      }, {
+        "type": "header",
+        "content": "Misc"
+      }, {
+        "type": "checkbox",
+        "id": "disable_highlight_effect",
+        "label": "Disable Highlight Effect",
+        "default": false
+      }, {
+        "type": "checkbox",
+        "id": "enable_nav_scaling",
+        "label": "Enable Nav Scaling",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "name": "Social Media Link",
+        "type": "social_media_link",
+        "limit": 17,
+        "settings": [
+          {
+            "type": "url",
+            "id": "link",
+            "label": "Link URL"
+          }, {
+            "type": "select",
+            "id": "social_media_selection",
+            "label": "Social Media Icon",
+            "options": [
+              {
+                "value": "show_apple",
+                "label": "Apple Music"
+              },
+              {
+                "value": "show_discord",
+                "label": "Discord"
+              },
+              {
+                "value": "show_facebook",
+                "label": "Facebook"
+              },
+              {
+                "value": "show_instagram",
+                "label": "Instagram"
+              }, {
+                "value": "show_pinterest",
+                "label": "Pinterest"
+              }, {
+                "value": "show_reddit",
+                "label": "Reddit"
+              }, {
+                "value": "show_snapchat",
+                "label": "Snapchat"
+              }, {
+                "value": "show_spotify",
+                "label": "Spotify"
+              }, {
+                "value": "show_soundcloud",
+                "label": "Soundcloud"
+              }, {
+                "value": "show_telegram",
+                "label": "Telegram"
+              }, {
+                "value": "show_threads",
+                "label": "Threads"
+              }, {
+                "value": "show_tiktok",
+                "label": "TikTok"
+              }, {
+                "value": "show_tumblr",
+                "label": "Tumblr"
+              }, {
+                "value": "show_twitter",
+                "label": "X"
+              }, {
+                "value": "show_twitch",
+                "label": "Twitch"
+              }, {
+                "value": "show_whatsapp",
+                "label": "Whatsapp"
+              }, {
+                "value": "show_youtube",
+                "label": "Youtube"
+              }
+            ],
+            "default": "show_apple"
+          }, {
+            "type": "color",
+            "id": "icon_color",
+            "label": "Icon Color",
+            "default": "#fff"
+          }, {
+            "type": "range",
+            "id": "social_media_size",
+            "min": 15,
+            "max": 26,
+            "step": 1,
+            "unit": "px",
+            "label": "Choose a size",
+            "default": 18
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

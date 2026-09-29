@@ -1,0 +1,159 @@
+{% for media in product.media %}
+  <div class="gallery-image-container" id="product-image-{{ forloop.index }}">
+    {% case media.media_type %}
+      {% when 'model' %}
+        <div class="model-viewer-container" style="position: relative;">
+          {{ media | image_url: width: 1200 | image_tag: 
+            loading: 'lazy', 
+            class: 'product-image model-preview-image'
+          }}
+          
+          <button 
+            class="model-viewer-button"
+            id="ModelViewerButton-{{ media.id }}"
+            aria-label="Open 3D model viewer"
+            style="
+              position: absolute;
+              top: 12px;
+              right: 12px;
+              background: rgba(255, 255, 255, 0.95);
+              border: none;
+              border-radius: 50%;
+              padding: 10px;
+              cursor: pointer;
+              z-index: 2;
+              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+              transition: all 0.2s ease;
+            "
+            onmouseover="this.style.transform='scale(1.1)';this.style.boxShadow='0 4px 15px rgba(0, 0, 0, 0.15)'"
+            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 2px 10px rgba(0, 0, 0, 0.1)'"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: block;">
+              <path d="M12 19.7L5 15.2V8.7L12 13.2V19.7Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M19 15.2L12 19.7V13.2L19 8.7V15.2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M12 12.2L5 7.7L12 3.2L19 7.7L12 12.2Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M12 13.2V19.7" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M5 8.7V15.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M19 8.7V15.2" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            </svg>
+          </button>
+        </div>
+
+        <script>
+          document.getElementById('ModelViewerButton-{{ media.id }}').addEventListener('click', function() {
+            const container = document.getElementById('ModelViewerContainer-Product-Section-3');
+            const viewer = document.getElementById('ModelViewer-Product-Section-3');
+            
+            if (!container.hasAttribute('data-loaded')) {
+              container.innerHTML = `
+                {{ media | model_viewer_tag: 
+                  class: 'product-media model-viewer',
+                  style: 'width: 100%; height: 100%;',
+                  reveal: 'auto',
+                  loading: 'eager',
+                  camera-controls: true,
+                  auto-rotate: true,
+                  rotation-per-second: "30deg",
+                  interaction-prompt: "auto",
+                  ar: true,
+                  toggleable: true,
+                  data-model-id: media.id
+                | json }}
+              `;
+              container.setAttribute('data-loaded', 'true');
+            }
+            
+            viewer.style.visibility = 'visible';
+            viewer.style.opacity = '1';
+            document.body.style.overflow = 'hidden';
+          });
+
+          document.querySelector('#ModelViewer-Product-Section-3 .close-button').addEventListener('click', function() {
+            const viewer = document.getElementById('ModelViewer-Product-Section-3');
+            viewer.style.opacity = '0';
+            setTimeout(() => {
+              viewer.style.visibility = 'hidden';
+            }, 300);
+            document.body.style.overflow = '';
+          });
+        </script>
+
+      {% when 'image' %}
+        {% if settings.enable_lazy_loading %}
+          <img 
+            src="{{ media | preview_image | img_url: '200x' }}"
+            data-srcset="
+            {{ media | preview_image | img_url: '325x' }} 325w,
+            {{ media | preview_image | img_url: '400x' }} 500w,
+            {{ media | preview_image | img_url: '500x' }} 500w,
+            {{ media | preview_image | img_url: '600x' }} 500w,
+            {{ media | preview_image | img_url: '700x' }} 500w,
+            {{ media | preview_image | img_url: '1024x' }} 1524w"
+            data-sizes="auto"
+            class="lazyload product-image"
+            alt="{{ media.alt | escape }}"
+          >
+          {% else %}
+            {{ media | image_url: width: 1200 | class: 'product-image' }} 
+          {% endif %}
+      {% when 'video' %}
+        <div class="video-container" style="position: relative;">
+          {{ media | video_tag: 
+            controls: false, 
+            image_size: '1200x',
+            style: 'width: 100%; height: auto; max-height: 80vh; position:relative;'
+          }}
+          <button class="play-button" aria-label="Play video" data-video-id="{{ media.id }}">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="11.5" stroke="currentColor"/>
+              <path d="M9.5 7.5v9l7-4.5-7-4.5z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      {% when 'external_video' %}
+        <div class="video-container" style="position: relative;">
+          {{ media | external_video_tag: 
+            controls: false, 
+            image_size: '1200x',
+            style: 'width: 100%; height: auto; max-height: 80vh; position:relative;'
+          }}
+          <button class="play-button" aria-label="Play video" data-video-id="{{ media.id }}">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="11.5" stroke="currentColor"/>
+              <path d="M9.5 7.5v9l7-4.5-7-4.5z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      {% else %}
+        {{ media | media_tag }}
+    {% endcase %}
+  </div>
+{% endfor %}
+
+<script defer src="{{ 'lazyloadz.js' | asset_url }}" type="text/javascript"></script>
+
+<style>
+  .video-container .play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: white;
+    opacity: 0.9;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 2;
+  }
+
+  .video-container .play-button:hover {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  .video-container video {
+    cursor: pointer;
+  }
+</style>
+

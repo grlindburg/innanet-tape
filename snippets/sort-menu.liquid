@@ -1,0 +1,372 @@
+<style>
+  .sort-menu {
+    transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)
+    , opacity 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    transform-origin: top left;
+    backface-visibility: hidden;
+    will-change: transform
+    , opacity;
+  }
+  .sort-menu.closing {
+    pointer-events: none;
+  }
+  @media (max-width: 991px) {
+    .sort-menu.closing {
+      transform: scale(0.9) translateY(20px) !important;
+    }
+  }
+</style>
+
+{% if section.settings.show_filter_icon %}
+  <div class="filter-container" style="position: relative; z-index: 1;">
+    <svg
+      id="filter-icon"
+      class="filter-icon"
+      width="26"
+      height="26"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style="{% if section.settings.swap_refine_buttons %} margin-right: 10px; {% else %} margin-left: 10px; {% endif %} margin-bottom: 23px; cursor: pointer;">
+      <path
+        d="M22 3H2L10 12.46V19L14 21V12.46L22 3Z"
+        stroke="{{ section.settings.filter_icon_color }}"
+        stroke-width="1.1"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none" />
+    </svg>
+  </div>
+{% endif %}
+
+<div
+  id="sort-menu"
+  class="sort-menu"
+  style="border-radius: 9px; display: none; position: fixed; background-color: transparent; width: 240px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 9999; overflow: hidden;">
+  <div id="sort-menu-handle" style="border-radius: 9px 9px 0 0; cursor: move; padding: 10px; color: {{section.settings.sort_menu_handle_text_color}}; background-color: {{section.settings.sort_menu_handle_background_color}}; text-align: center; position: relative;">
+    {{ 'products.product.sort_by' | t }}
+    <span id="sort-menu-close" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 24px; line-height: 1;">×</span>
+  </div>
+  {% for block in section.blocks %}
+    {% if block.type == 'sort_option' %}
+      <a
+        href="#"
+        data-sort="{{ block.settings.sort_by }}"
+        style="color: {{ section.settings.sort_option_text_color }}; background-color: {{ section.settings.sort_option_background_color }}; padding: 12px 16px; text-decoration: none; display: block; white-space: nowrap; text-align: left; {% if forloop.last %}border-radius: 0 0 9px 9px;{% endif %}">{{ block.settings.title }}</a>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var filterIconDesktop = document.querySelector('.filter-container .filter-icon');
+    var filterIconMobile = document.querySelector('.filter-container-mobile .filter-icon');
+    var sortMenu = document.getElementById('sort-menu');
+    var sortMenuHandle = document.getElementById('sort-menu-handle');
+    var collectionGrid = document.querySelector('.collection-list');
+    var isMobile = window.innerWidth <= 991;
+    var currentSort = new URLSearchParams(window.location.search).get('sort_by') || 'manual';
+    var sortMenuClose = document.getElementById('sort-menu-close');
+
+    function showSortMenuOnMobile() {
+      if (isMobile) {
+        var overlay = document.createElement('div');
+        overlay.id = 'sort-menu-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        overlay.style.zIndex = '9998';
+        document.body.appendChild(overlay);
+
+        sortMenu.style.position = 'fixed';
+        sortMenu.style.top = '50%';
+        sortMenu.style.left = '50%';
+        sortMenu.style.transform = 'translate(-50%, -50%) scale(0.9)';
+        sortMenu.style.opacity = '0';
+        sortMenu.style.maxHeight = '80vh';
+        sortMenu.style.overflowY = 'auto';
+        sortMenu.style.zIndex = '9999';
+        sortMenu.style.width = '80%';
+        sortMenu.style.maxWidth = '300px';
+
+        sortMenu.style.display = 'block';
+        
+        requestAnimationFrame(() => {
+          sortMenu.style.transform = 'translate(-50%, -50%) scale(1)';
+          sortMenu.style.opacity = '1';
+        });
+
+        overlay.addEventListener('click', function() {
+          hideSortMenuOnMobile();
+        });
+      }
+    }
+
+    function hideSortMenuOnMobile() {
+      closeMenuWithAnimation();
+      removeOverlay();
+    }
+
+    function closeMenuWithAnimation() {
+      console.log("Closing menu");
+      sortMenu.classList.add('closing');
+      sortMenu.style.transform = 'scale(0.8)';
+      sortMenu.style.opacity = '0';
+      
+      setTimeout(function() {
+        console.log("Menu closed");
+        sortMenu.style.display = 'none';
+        sortMenu.classList.remove('closing');
+        sortMenu.style.transform = '';
+        sortMenu.style.opacity = '';
+      }, 300); // This duration should match the transition duration in CSS
+    }
+
+    function removeOverlay() {
+      var overlay = document.getElementById('sort-menu-overlay');
+      if (overlay) {
+        document.body.removeChild(overlay);
+      }
+    }
+
+    function resetMenuForDesktop() {
+      removeOverlay();
+      sortMenu.style.position = 'fixed';
+      sortMenu.style.top = 'auto';
+      sortMenu.style.left = 'auto';
+      sortMenu.style.transform = 'none';
+      sortMenu.style.maxHeight = 'none';
+      sortMenu.style.overflowY = 'visible';
+      sortMenu.style.width = '240px';
+      sortMenu.style.maxWidth = '240px';
+      sortMenu.style.borderRadius = '9px';
+      sortMenu.style.display = 'none';
+    }
+
+    function toggleSortMenu(event) {
+      event.stopPropagation();
+      if (sortMenu.style.display === 'none' || sortMenu.style.display === '') {
+        if (isMobile) {
+          showSortMenuOnMobile();
+        } else {
+          var rect = event.target.getBoundingClientRect();
+          sortMenu.style.position = 'fixed';
+          
+          if ('{{ section.settings.refine_button_position }}' === 'right') {
+            sortMenu.style.right = (window.innerWidth - rect.right) + 'px';
+            sortMenu.style.left = 'auto';
+          } else {
+            sortMenu.style.left = rect.left + 'px';
+            sortMenu.style.right = 'auto';
+          }
+          
+          sortMenu.style.top = (rect.bottom + window.pageYOffset) + 'px';
+          sortMenu.style.transform = 'scale(0.9)';
+          sortMenu.style.opacity = '0';
+          sortMenu.style.display = 'block';
+          
+          requestAnimationFrame(() => {
+            sortMenu.style.transform = 'scale(1)';
+            sortMenu.style.opacity = '1';
+          });
+        }
+      } else {
+        closeSortMenu();
+      }
+    }
+
+    function closeSortMenu() {
+      if (isMobile) {
+        hideSortMenuOnMobile();
+      } else {
+        closeMenuWithAnimation();
+      }
+    }
+
+    if (filterIconDesktop) {
+      filterIconDesktop.addEventListener('click', toggleSortMenu);
+    }
+
+    if (filterIconMobile) {
+      filterIconMobile.addEventListener('click', toggleSortMenu);
+    }
+
+    if (sortMenuClose) {
+      sortMenuClose.addEventListener('click', function(event) {
+        event.stopPropagation();
+        closeSortMenu();
+      });
+    }
+
+    function enableDragging() {
+      var isDragging = false;
+      var startX, startY;
+
+      sortMenuHandle.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        startX = e.clientX - sortMenu.offsetLeft;
+        startY = e.clientY - sortMenu.offsetTop;
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', function(e) {
+        if (isDragging) {
+          sortMenu.style.left = (e.clientX - startX) + 'px';
+          sortMenu.style.top = (e.clientY - startY) + 'px';
+        }
+      });
+
+      document.addEventListener('mouseup', function() {
+        isDragging = false;
+      });
+    }
+
+    function updateActiveSortOption() {
+      var sortOptions = sortMenu.querySelectorAll('a[data-sort]');
+      sortOptions.forEach(function(option) {
+        if (option.getAttribute('data-sort') === currentSort) {
+          option.style.color = '{{ section.settings.sort_option_active_text_color }}';
+          option.style.backgroundColor = '{{ section.settings.sort_option_active_background_color }}';
+        } else {
+          option.style.color = '{{ section.settings.sort_option_text_color }}';
+          option.style.backgroundColor = '{{ section.settings.sort_option_background_color }}';
+        }
+      });
+    }
+
+    if (sortMenu) {
+      sortMenu.addEventListener('click', function(event) {
+        if (event.target.tagName === 'A') {
+          event.preventDefault();
+          var sortBy = event.target.getAttribute('data-sort');
+          var url = new URL(window.location.href);
+          url.searchParams.set('sort_by', sortBy);
+
+          // Create a container for the new content
+          var tempContainer = document.createElement('div');
+          tempContainer.style.position = 'absolute';
+          tempContainer.style.left = '-9999px';
+          tempContainer.style.top = '-9999px';
+          document.body.appendChild(tempContainer);
+
+          // Add blur effect to current products
+          var currentProducts = document.querySelectorAll('.collection-product-container');
+          currentProducts.forEach(product => {
+            product.style.transition = 'filter 0.5s ease-out';
+            product.style.filter = 'blur(10px)';
+          });
+
+          fetch(url)
+            .then(response => response.text())
+            .then(html => {
+              var parser = new DOMParser();
+              var doc = parser.parseFromString(html, 'text/html');
+              var newCollectionGrid = doc.querySelector('.collection-list');
+              if (newCollectionGrid && collectionGrid) {
+                // Set initial blur on new products
+                newCollectionGrid.querySelectorAll('.collection-product-container').forEach(product => {
+                  product.style.filter = 'blur(10px)';
+                });
+                
+                // Add the new content to the temporary container
+                tempContainer.appendChild(newCollectionGrid);
+
+                // Prepare the new content off-screen
+                tempContainer.style.display = 'block';
+                
+                // Force a reflow to ensure styles are applied
+                void tempContainer.offsetWidth;
+
+                // Swap the content
+                collectionGrid.parentNode.replaceChild(newCollectionGrid, collectionGrid);
+                collectionGrid = newCollectionGrid;
+
+                // Add this after replacing the grid:
+                document.dispatchEvent(new CustomEvent('collection:sorted', {
+                    detail: {
+                        newGrid: newCollectionGrid
+                    }
+                }));
+
+                // Remove the temporary container
+                document.body.removeChild(tempContainer);
+
+                // Remove blur effect from new products
+                setTimeout(() => {
+                  var newProducts = collectionGrid.querySelectorAll('.collection-product-container');
+                  newProducts.forEach(product => {
+                    product.style.transition = 'filter 0.5s ease-in';
+                    product.style.filter = 'blur(0)';
+                  });
+                }, 50);
+              }
+              history.pushState({}, '', url);
+              
+              currentSort = sortBy;
+              updateActiveSortOption();
+
+              // Reinitialize the product hover functionality
+              if (typeof window.initializeProductHover === 'function') {
+                window.initializeProductHover();
+              }
+
+              if (isMobile) {
+                hideSortMenuOnMobile();
+              }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+      });
+    }
+
+    document.addEventListener('click', function(event) {
+      if (sortMenu.style.display !== 'none' && !sortMenu.contains(event.target) && !event.target.closest('.filter-container')) {
+        if (isMobile) {
+          hideSortMenuOnMobile();
+        } else {
+          closeMenuWithAnimation();
+        }
+      }
+    });
+
+    window.addEventListener('resize', function() {
+      var wasMobile = isMobile;
+      isMobile = window.innerWidth <= 991;
+
+      if (wasMobile && !isMobile) {
+        resetMenuForDesktop();
+        enableDragging();
+      } else if (!wasMobile && isMobile) {
+        if (sortMenu.style.display !== 'none') {
+          hideSortMenuOnMobile();
+        }
+      }
+
+      if (isMobile) {
+        if (sortMenuHandle) {
+          sortMenuHandle.style.cursor = 'default';
+          sortMenuHandle.textContent = '{{ 'products.product.sort_by' | t }}';
+        }
+      } else {
+        if (sortMenuHandle) {
+          sortMenuHandle.style.cursor = 'move';
+          sortMenuHandle.textContent = '{{ 'products.product.sort_by' | t }}';
+        }
+      }
+    });
+
+    if (!isMobile) {
+      enableDragging();
+    } else {
+      if (sortMenuHandle) {
+        sortMenuHandle.style.cursor = 'default';
+        sortMenuHandle.textContent = '{{ 'products.product.sort_by' | t }}';
+      }
+    }
+
+    updateActiveSortOption();
+  });
+</script>

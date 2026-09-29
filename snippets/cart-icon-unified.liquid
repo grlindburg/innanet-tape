@@ -1,0 +1,252 @@
+{%- comment -%}
+  Universal cart icon that works on all pages
+  Mirrors the global menu icon positioning but on the right side
+
+  Parameters:
+  - cart_margin_top (optional): Vertical adjustment in pixels
+  - override_z_index (optional): Custom z-index value
+{%- endcomment -%}
+
+{% if template != 'cart' %}
+
+{% assign additional_margin = cart_margin_top | default: 0 %}
+{% assign icon_z_index = override_z_index | default: 3 %}
+{% assign cart_top = '30px' %}
+{% assign cart_right = '0px' %}
+{% assign cart_left = 'auto' %}
+
+{%- comment -%} Calculate top position based on announcement bar {%- endcomment -%}
+{% if settings.show_announcement_bar %}
+  {%- assign show_on_page = true -%}
+
+  {%- if template == 'index' and settings.show_announcement_bar_on_home != true -%}
+    {%- assign show_on_page = false -%}
+  {%- elsif template == 'collection' and settings.show_announcement_bar_on_collection != true -%}
+    {%- assign show_on_page = false -%}
+  {%- elsif template == 'product' and settings.show_announcement_bar_on_product != true -%}
+    {%- assign show_on_page = false -%}
+  {%- endif -%}
+
+  {% if show_on_page %}
+    {% if settings.enable_large_announcement_bar and settings.enable_announcement_floater %}
+      {% assign cart_top = '80px' %}
+    {% elsif settings.enable_announcement_floater %}
+      {% assign cart_top = '59px' %}
+    {% elsif settings.enable_large_announcement_bar %}
+      {% assign cart_top = '59px' %}
+    {% else %}
+      {% assign cart_top = '50px' %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+{%- comment -%} Calculate left/right position based on announcement floater {%- endcomment -%}
+{% if settings.enable_announcement_floater and settings.show_announcement_bar %}
+  {% assign cart_right = '4.1%' %}
+  {% assign cart_left = 'auto' %}
+{% else %}
+  {% assign cart_right = '20px' %}
+  {% assign cart_left = 'auto' %}
+{% endif %}
+
+{%- comment -%} Template-specific positioning overrides {%- endcomment -%}
+{% if page.template_suffix contains "lookbook" %}
+  {% assign cart_top = '30px' %}
+  {% assign cart_right = '20px' %}
+  {% assign cart_left = 'auto' %}
+{% endif %}
+
+{% if page.template_suffix contains "space" %}
+  {% assign cart_top = '30px' %}
+  {% assign cart_right = '20px' %}
+  {% assign cart_left = 'auto' %}
+{% endif %}
+
+<style>
+  .cart-icon-header {
+    position: fixed;
+    bottom: auto;
+    left: {{ cart_left }};
+    right: {{ cart_right }};
+    width: 45px;
+    height: 45px;
+    margin-left: auto;
+    margin-right: 0;
+    {% if additional_margin != 0 %}
+    margin-top: {{ additional_margin }}px;
+    {% endif %}
+    cursor: pointer;
+    z-index: {{ icon_z_index }};
+    top: {{ cart_top }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  {% if settings.global_menu_inverse_color %}
+    .cart-icon-header {
+      mix-blend-mode: difference;
+    }
+
+    .cart-icon-header svg path,
+    .cart-icon-header svg circle {
+      stroke: white;
+    }
+  {% else %}
+    .cart-icon-header svg path,
+    .cart-icon-header svg circle {
+      stroke: {{ settings.global_menu_btn_color }};
+    }
+  {% endif %}
+
+  .cart-icon-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background-color: {{ settings.global_cart_number_bg_color | default: '#000' }};
+    color: {{ settings.global_cart_number_color | default: '#fff' }};
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: {% if cart.item_count == 0 %}none{% else %}flex{% endif %};
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 1;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .cart-icon-badge.pulse {
+    animation: pulse 0.3s ease-in-out;
+  }
+</style>
+
+<a class="cart-icon-header cart-text" aria-label="Open shopping cart, {{ cart.item_count }} item{% if cart.item_count != 1 %}s{% endif %}" role="button" tabindex="0">
+  <svg
+    width="100%"
+    height="100%"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg">
+    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+    <g
+      id="SVGRepo_tracerCarrier"
+      stroke-linecap="round"
+      stroke-linejoin="round"></g>
+    <g id="SVGRepo_iconCarrier">
+      <circle cx="9" cy="21" r="1" stroke-width="1"></circle>
+      <circle cx="20" cy="21" r="1" stroke-width="1"></circle>
+      <path
+        d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6"
+        stroke-width="1"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </g>
+  </svg>
+  <span class="cart-icon-badge cart-count">{{ cart.item_count }}</span>
+</a>
+
+{% if settings.global_menu_inverse_color %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const cartIcon = document.querySelector('.cart-icon-header');
+      if (cartIcon) {
+        const paths = cartIcon.querySelectorAll('path, circle');
+
+        function getBackgroundColor(element) {
+          let bg = window.getComputedStyle(element).backgroundColor;
+          if (bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') {
+            return element.parentElement ? getBackgroundColor(element.parentElement) : 'rgb(255, 255, 255)';
+          }
+          return bg;
+        }
+
+        function updateCartIconColor() {
+          const elementUnderCart = document.elementFromPoint(
+            cartIcon.offsetLeft + cartIcon.offsetWidth / 2,
+            cartIcon.offsetTop + cartIcon.offsetHeight / 2
+          );
+
+          if (elementUnderCart) {
+            const bgColor = getBackgroundColor(elementUnderCart);
+            const rgb = bgColor.match(/\d+/g);
+
+            if (rgb) {
+              const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
+              const strokeColor = brightness > 128 ? '#000000' : '#FFFFFF';
+
+              paths.forEach(path => {
+                path.setAttribute('stroke', strokeColor);
+              });
+            }
+          }
+        }
+
+        window.addEventListener('scroll', updateCartIconColor);
+        window.addEventListener('resize', updateCartIconColor);
+
+        setTimeout(updateCartIconColor, 100);
+        setInterval(updateCartIconColor, 1000);
+      }
+    });
+  </script>
+{% endif %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    let previousCount = {{ cart.item_count }};
+
+    function updateCartIconCount(cart) {
+      const cartIconBadge = document.querySelector('.cart-icon-badge');
+      if (cartIconBadge && cart.item_count !== previousCount) {
+        cartIconBadge.textContent = cart.item_count;
+        // Keep an accessible name on the (otherwise numeric) badge.
+        cartIconBadge.setAttribute('aria-label', cart.item_count + ' item' + (cart.item_count === 1 ? '' : 's') + ' in cart');
+
+        // Show or hide badge based on count
+        if (cart.item_count === 0) {
+          cartIconBadge.style.display = 'none';
+        } else {
+          cartIconBadge.style.display = 'flex';
+          cartIconBadge.classList.add('pulse');
+          setTimeout(() => cartIconBadge.classList.remove('pulse'), 300);
+        }
+
+        // Announce the new cart total for screen readers (covers add paths
+        // that don't announce themselves, e.g. the product page form).
+        if (typeof window.announce === 'function') {
+          window.announce('Cart updated, ' + cart.item_count + ' item' + (cart.item_count === 1 ? '' : 's'));
+        }
+
+        previousCount = cart.item_count;
+      }
+    }
+
+    // Listen for cart changes
+    document.addEventListener('cart:change', function(event) {
+      updateCartIconCount(event.detail);
+    });
+
+    // Initial cart count
+    fetch('/cart.js')
+      .then(response => response.json())
+      .then(cart => updateCartIconCount(cart))
+      .catch(error => console.error('Error fetching cart:', error));
+  });
+</script>
+
+{% endif %}

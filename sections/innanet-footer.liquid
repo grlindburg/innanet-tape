@@ -1,0 +1,57 @@
+{%- liquid
+  assign show_url = section.settings.show_url | default: 'https://thevicmensashow.com'
+  assign boyz_url = section.settings.boyz_url | default: 'https://93boyz.com'
+  assign substack_url = section.settings.substack_url | default: 'https://vicmensa.substack.com'
+-%}
+<footer class="inn-footer" role="contentinfo">
+  <form class="inn-footer__signup" id="inn-signup" method="post" action="/contact#inn-signup" accept-charset="UTF-8" data-inn-signup="footer" data-success="You're on the list.">
+    <input type="hidden" name="return_to" value="{{ routes.root_url }}?inn_joined=footer#inn-signup">
+    <input type="hidden" name="form_type" value="customer">
+    <input type="hidden" name="utf8" value="✓">
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <input type="email" name="contact[email]" placeholder="Email Signup" aria-label="Email" autocomplete="email" required>
+    <button type="submit" aria-label="Sign up">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M0 8h18M11 1l7 7-7 7"/></svg>
+    </button>
+  </form>
+
+  <div class="inn-footer__icons">
+    {%- if settings.social_facebook_link != blank -%}<a href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener" aria-label="Facebook"><span class="inn-icon" style="--inn-icon: url('{{ 'inn-icon-fb.svg' | asset_url }}')"></span></a>{%- endif -%}
+    {%- if settings.social_instagram_link != blank -%}<a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener" aria-label="Instagram"><span class="inn-icon" style="--inn-icon: url('{{ 'inn-icon-ig.svg' | asset_url }}')"></span></a>{%- endif -%}
+    {%- if settings.social_twitter_link != blank -%}<a href="{{ settings.social_twitter_link }}" target="_blank" rel="noopener" aria-label="X"><span class="inn-icon" style="--inn-icon: url('{{ 'inn-icon-x.svg' | asset_url }}')"></span></a>{%- endif -%}
+    {%- if settings.social_tiktok_link != blank -%}<a href="{{ settings.social_tiktok_link }}" target="_blank" rel="noopener" aria-label="TikTok"><span class="inn-icon" style="--inn-icon: url('{{ 'inn-icon-tk.svg' | asset_url }}')"></span></a>{%- endif -%}
+    <a href="{{ substack_url }}" target="_blank" rel="noopener" aria-label="Substack"><span class="inn-icon" style="--inn-icon: url('{{ 'inn-icon-sb.svg' | asset_url }}')"></span></a>
+    {%- if settings.social_twitch_link != blank -%}<a href="{{ settings.social_twitch_link }}" target="_blank" rel="noopener" aria-label="Twitch"><span class="inn-icon" style="--inn-icon: url('{{ 'inn-icon-tw.svg' | asset_url }}')"></span></a>{%- endif -%}
+  </div>
+
+  <nav class="inn-footer__links" aria-label="Footer">
+    <a class="inn-footer__wide" href="{{ show_url }}" target="_blank" rel="noopener">The Vic Mensa Show</a>
+    {%- if shop.privacy_policy -%}<a href="{{ shop.privacy_policy.url }}">Privacy</a>{%- endif -%}
+    {%- if shop.terms_of_service -%}<a href="{{ shop.terms_of_service.url }}">Terms</a>{%- endif -%}
+    {%- if shop.refund_policy -%}<a href="{{ shop.refund_policy.url }}">Refunds</a>{%- endif -%}
+    {%- if shop.shipping_policy -%}<a href="{{ shop.shipping_policy.url }}">Shipping</a>{%- endif -%}
+    {%- if section.settings.faq_url != blank -%}<a href="{{ section.settings.faq_url }}">FAQ</a>{%- endif -%}
+    <a class="inn-footer__wide" href="#inn-signup" data-inn-signup>Email Signup</a>
+    <a class="inn-footer__wide" href="{{ boyz_url }}" target="_blank" rel="noopener">93Boyz</a>
+    {%- if settings.social_facebook_link != blank -%}<a class="inn-footer__wide" href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener">Facebook</a>{%- endif -%}
+    {%- if settings.social_instagram_link != blank -%}<a class="inn-footer__wide" href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener">Instagram</a>{%- endif -%}
+    {%- if settings.social_twitter_link != blank -%}<a class="inn-footer__wide" href="{{ settings.social_twitter_link }}" target="_blank" rel="noopener">X</a>{%- endif -%}
+    {%- if settings.social_tiktok_link != blank -%}<a class="inn-footer__wide" href="{{ settings.social_tiktok_link }}" target="_blank" rel="noopener">TikTok</a>{%- endif -%}
+    {%- if settings.social_youtube_link != blank -%}<a class="inn-footer__wide" href="{{ settings.social_youtube_link }}" target="_blank" rel="noopener">YouTube</a>{%- endif -%}
+    {%- if settings.social_twitch_link != blank -%}<a class="inn-footer__wide" href="{{ settings.social_twitch_link }}" target="_blank" rel="noopener">Twitch</a>{%- endif -%}
+  </nav>
+
+  <p class="inn-footer__copy">&copy; Vic Mensa</p>
+</footer>
+
+{% schema %}
+{
+  "name": "Innanet footer",
+  "settings": [
+    { "type": "url", "id": "show_url", "label": "The Vic Mensa Show link" },
+    { "type": "url", "id": "boyz_url", "label": "93Boyz link" },
+    { "type": "url", "id": "substack_url", "label": "Substack link" },
+    { "type": "url", "id": "faq_url", "label": "FAQ link (hidden when empty)" }
+  ]
+}
+{% endschema %}

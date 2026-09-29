@@ -1,0 +1,828 @@
+{{ 'slider.css' | asset_url | stylesheet_tag }}
+
+{%- if section.settings.password_bg_style == 'slideshow' -%}
+  {{ 'slider.js' | asset_url | script_tag }}
+{%- endif -%}
+
+<style>
+  #shopify-section-{{ section.id }} .background-image-index {
+    position: relative;
+    width: 100%;
+    height: {{ section.settings.section_height }};
+    overflow: hidden;
+    margin-top: {{ section.settings.top_spacing }}px;
+    margin-bottom: {{ section.settings.bottom_spacing }}px;
+    z-index: -1;
+  }
+  
+  .typewriter-text {
+    display: inline-block;
+    white-space: pre-wrap;
+  }
+
+  .background-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: fit-content;
+    max-width: 85%;
+    z-index: 1;
+    line-height: 1.4;
+    will-change: contents;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  @media screen and (max-width: 749px) {
+    .background-text {
+      font-size: {{ section.settings.text_size_mobile }}px !important;
+    }
+
+    #shopify-section-{{ section.id }} .background-image-index {
+      margin-top: {{ section.settings.top_spacing_mobile }}px;
+      margin-bottom: {{ section.settings.bottom_spacing_mobile }}px;
+    }
+  }
+
+  /* Fade Up Animation - Update to remove automatic animation */
+  .background-text[data-animation="fade-up"] {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 20px));
+    /* Remove the automatic animation */
+    will-change: opacity, transform;
+  }
+
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  /* Reveal Animation - Update to remove automatic animation */
+  .background-text[data-animation="reveal"] {
+    opacity: 0;
+    filter: blur(10px);
+    /* Remove the automatic animation */
+    will-change: opacity, filter;
+  }
+
+  @keyframes reveal {
+    to {
+      opacity: 1;
+      filter: blur(0);
+    }
+  }
+
+  .marquee-container {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    z-index: 2;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .marquee-text {
+    white-space: nowrap;
+    will-change: transform;
+    display: flex;
+  }
+
+  /* Section-specific styling */
+  #shopify-section-{{ section.id }} .marquee-text {
+    font-size: {{ section.settings.marquee_text_size }}px;
+    color: {{ section.settings.marquee_text_color }};
+    font-family: var(--marquee_font);
+  }
+
+  .marquee-content {
+    display: flex;
+    white-space: nowrap;
+    margin: 0 2rem;
+  }
+
+  .marquee-content span {
+    white-space: nowrap;
+    margin-right: 2rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .marquee-text {
+      font-size: {{ section.settings.marquee_text_size_mobile }}px;
+    }
+  }
+
+
+
+
+.blaze-track > * {
+  box-sizing: border-box;
+  width: var(--slide-width);
+  flex-shrink: 0;
+}
+.blaze-track > * {
+  box-sizing: border-box;
+  width: var(--slide-width);
+  flex-shrink: 0;
+}
+
+  /* Add loading optimization for images */
+  {% if section.settings.popup_image != blank %}
+    .email-popup__image {
+      content-visibility: auto;
+      contain-intrinsic-size: 0 500px;
+    }
+  {% endif %}
+
+  /* Optimize background images */
+  {% if section.settings.password_bg_style == 'image' %}
+    .bg-image {
+      background-image: url('{{ section.settings.desktop_bg_image | img_url: '1500x' }}');
+    }
+    
+    @media (max-width: 749px) {
+      .bg-image {
+        background-image: url('{{ section.settings.mobile_bg_image | img_url: '800x' }}');
+      }
+    }
+  {% endif %}
+</style>
+
+
+{% assign pjCnfg = section.settings %}
+
+{% if section.settings.show_background_image_mobile %}
+  {% assign display = 'none' %}
+{% else %}
+  {% assign display = 'block' %}
+{% endif %}
+
+
+
+<div id="shopify-section-{{ section.id }}" 
+     class="background-image-index" 
+     data-marquee-speed="{{ section.settings.marquee_speed | default: 10 }}">
+
+{% if pjCnfg.password_bg_style == 'slideshow' %}
+
+  <div id="blaze-slider-section-{{ section.id | replace: '_', '-' }}" class="blaze-slider slider-homepage" style="--hide-slider: {{ display }}; position: relative;">
+    <div class="blaze-container">
+      <div class="blaze-track-container">
+        <div class="blaze-track">
+          {% if pjCnfg.bg_slide_1 %}
+            <div class="slide slide-1" style="background-position: {{ pjCnfg.bg_slide_1.presentation.focal_point.x }}% {{ pjCnfg.bg_slide_1.presentation.focal_point.y }}%; background-image: url({{ pjCnfg.bg_slide_1 | image_url}})"></div>
+          {% endif %}
+          {% if pjCnfg.bg_slide_2 %}
+            <div class="slide slide-2" style="background-position: {{ pjCnfg.bg_slide_2.presentation.focal_point.x  }}% {{ pjCnfg.bg_slide_2.presentation.focal_point.y }}%; background-image: url({{ pjCnfg.bg_slide_2 | image_url}})"></div>
+          {% endif %}
+          {% if pjCnfg.bg_slide_3 %}
+            <div class="slide slide-3" style="background-position: {{ pjCnfg.bg_slide_3.presentation.focal_point.x  }}% {{ pjCnfg.bg_slide_3.presentation.focal_point.y }}%; background-image: url({{ pjCnfg.bg_slide_3 | image_url}})"></div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div
+            class="video-overlay"
+            style="
+                    background-image: linear-gradient(180deg, {{ section.settings.overlay_top_color | color_modify: 'alpha', section.settings.overlay_top_opacity }}, {{ section.settings.overlay_bottom_color | color_modify: 'alpha', section.settings.overlay_bottom_opacity }});
+                    --background-opacity-mobile: linear-gradient(180deg, {{ section.settings.overlay_top_color_mobile | color_modify: 'alpha', section.settings.overlay_top_opacity_mobile }}, {{ section.settings.overlay_bottom_color_mobile | color_modify: 'alpha', section.settings.overlay_bottom_opacity_mobile }});
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    width: 100%;
+                    height: 100%;
+                    margin: 0;
+                    box-sizing: border-box;
+                    padding: 15% 32px;
+                    line-height: 1.5;
+                    text-align: center;
+                    "
+    ></div>
+
+    {{ 'slider.js' | asset_url | script_tag }}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      window.initializeBlazeSlider('#blaze-slider-section-{{ section.id | replace: "_", "-" }}', {
+        all: {
+          enableAutoplay: true,
+          autoplayInterval: 3000,
+          transitionDuration: 1000,
+          slidesToShow: 1,
+          loop: true,
+          stopAutoplayOnInteraction: false,
+          slideGap: '0px'
+        }
+      });
+    });
+    
+    if (Shopify.designMode) {
+      document.addEventListener('shopify:section:load', function(event) {
+        if (event.detail.sectionId === "{{ section.id }}") {
+          window.initializeBlazeSlider('#blaze-slider-section-{{ section.id | replace: "_", "-" }}', {
+            all: {
+              enableAutoplay: true,
+              autoplayInterval: 3000,
+              transitionDuration: 1000,
+              slidesToShow: 1,
+              loop: true,
+              stopAutoplayOnInteraction: false,
+              slideGap: '0px'
+            }
+          });
+        }
+      });
+    }
+  </script>
+
+  {% if section.settings.show_background_image_mobile %}
+    <div
+            class="bg-image enter-screen mobile"
+            style="background-image: linear-gradient(180deg, {{ section.settings.overlay_top_color_mobile | color_modify: 'alpha', section.settings.overlay_top_opacity_mobile }}, {{ section.settings.overlay_bottom_color_mobile | color_modify: 'alpha', section.settings.overlay_bottom_opacity_mobile }}), 
+                   url('{% if section.settings.mobile_bg_image %}{{ section.settings.mobile_bg_image.src | img_url: 'master' }}{% else %}{{ 'dynamic-background.jpg' | asset_img_url: 'master' }}{% endif %}');
+                   background-position: {% if section.settings.mobile_bg_image %}{{ section.settings.mobile_bg_image.presentation.focal_point.x }}% {{ section.settings.mobile_bg_image.presentation.focal_point.y }}%{% else %}center center{% endif %};"
+    ></div>
+  {% endif %}
+
+  {% elsif pjCnfg.password_bg_style == 'video' %}
+
+
+    {{ 'video.css' | asset_url | stylesheet_tag }}
+    {{ 'video.js' | asset_url | script_tag }}
+    {{ 'background-video.js' | asset_url | script_tag }}
+
+  <div style="--hide-video: {{ display }}; position: relative; width: 100%; height: {{ section.settings.section_height }};" class="video-container">
+    <video
+      id="dynamic-video-{{ section.id }}"
+      class="video-js myVideo"
+      playsinline
+      muted
+      loop
+      autoplay
+      data-setup='{}'
+      style="
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        object-fit: cover;
+        transform: none;
+      "
+    >
+      {% for source in section.settings.video.sources %}
+        {% if source.mime_type == 'video/mp4' %}
+          <source src="{{ source.url }}" type="video/mp4">
+        {% endif %}
+      {% endfor %}
+    </video>
+
+    <div
+      class="video-overlay"
+      style="
+        background-image: linear-gradient(180deg, {{ section.settings.overlay_top_color | color_modify: 'alpha', section.settings.overlay_top_opacity }}, {{ section.settings.overlay_bottom_color | color_modify: 'alpha', section.settings.overlay_bottom_opacity }});
+        --background-opacity-mobile: linear-gradient(180deg, {{ section.settings.overlay_top_color_mobile | color_modify: 'alpha', section.settings.overlay_top_opacity_mobile }}, {{ section.settings.overlay_bottom_color_mobile | color_modify: 'alpha', section.settings.overlay_bottom_opacity_mobile }});
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        box-sizing: border-box;
+        padding: 15% 32px;
+        line-height: 1.5;
+        text-align: center;
+      "
+    ></div>
+  </div>
+
+                {% if section.settings.show_background_image_mobile %}
+                  <div
+                          class="bg-image enter-screen mobile"
+                          style="background-image: linear-gradient(180deg, {{ section.settings.overlay_top_color_mobile | color_modify: 'alpha', section.settings.overlay_top_opacity_mobile }}, {{ section.settings.overlay_bottom_color_mobile | color_modify: 'alpha', section.settings.overlay_bottom_opacity_mobile }}), url('{{ section.settings.mobile_bg_image.src | img_url: 'master'}}');
+                         background-position: {{ section.settings.mobile_bg_image.presentation.focal_point.x }}% {{ section.settings.mobile_bg_image.presentation.focal_point.y }}%;"
+                  ></div>
+                  {% endif %}
+
+  {% elsif pjCnfg.password_bg_style == 'image' %}
+
+
+  <div
+    class="bg-image enter-screen desktop"
+    style="background-image: linear-gradient(180deg, {{ section.settings.overlay_top_color | color_modify: 'alpha', section.settings.overlay_top_opacity }}, {{ section.settings.overlay_bottom_color | color_modify: 'alpha', section.settings.overlay_bottom_opacity }}), 
+           url('{% if section.settings.desktop_bg_image %}{{ section.settings.desktop_bg_image.src | img_url: 'master' }}{% else %}{{ 'dynamic-background.jpg' | asset_img_url: 'master' }}{% endif %}');
+           background-position: {% if section.settings.desktop_bg_image %}{{ section.settings.desktop_bg_image.presentation.focal_point.x }}% {{ section.settings.desktop_bg_image.presentation.focal_point.y }}%{% else %}center center{% endif %};"
+  ></div>
+
+  <div
+    class="bg-image enter-screen mobile"
+    style="background-image: linear-gradient(180deg, {{ section.settings.overlay_top_color_mobile | color_modify: 'alpha', section.settings.overlay_top_opacity_mobile }}, {{ section.settings.overlay_bottom_color_mobile | color_modify: 'alpha', section.settings.overlay_bottom_opacity_mobile }}), 
+           url('{% if section.settings.mobile_bg_image %}{{ section.settings.mobile_bg_image.src | img_url: 'master' }}{% else %}{{ 'dynamic-background.jpg' | asset_img_url: 'master' }}{% endif %}');
+           background-position: {% if section.settings.mobile_bg_image %}{{ section.settings.mobile_bg_image.presentation.focal_point.x }}% {{ section.settings.mobile_bg_image.presentation.focal_point.y }}%{% else %}center center{% endif %};"
+  ></div>
+
+
+  {% else %}
+
+<div class="bg-color enter-screen desktop" style="
+        background-color: {{ section.settings.bg_color }};"></div>
+
+
+  {% if section.settings.show_background_image_mobile %}
+    <div
+            class="bg-image enter-screen mobile"
+            style="background-image: linear-gradient(180deg, {{ section.settings.overlay_top_color_mobile | color_modify: 'alpha', section.settings.overlay_top_opacity_mobile }}, {{ section.settings.overlay_bottom_color_mobile | color_modify: 'alpha', section.settings.overlay_bottom_opacity_mobile }}), 
+                   url('{% if section.settings.mobile_bg_image %}{{ section.settings.mobile_bg_image.src | img_url: 'master' }}{% else %}{{ 'dynamic-background.jpg' | asset_img_url: 'master' }}{% endif %}');
+                   background-position: {% if section.settings.mobile_bg_image %}{{ section.settings.mobile_bg_image.presentation.focal_point.x }}% {{ section.settings.mobile_bg_image.presentation.focal_point.y }}%{% else %}center center{% endif %};"
+    ></div>
+    {%  else %}
+    <div class="bg-color enter-screen mobile" style="background-color: {{ section.settings.bg_color_mobile }};"></div>
+  {% endif %}
+
+  {% endif %}
+
+  {% if section.settings.show_marquee %}
+    <div class="marquee-container">
+      <div class="marquee-text">
+        <div class="marquee-content">
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+          <span>{{ section.settings.marquee_text }}&nbsp;&nbsp;&nbsp;</span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  <script defer src="{{ 'g-animate.js' | asset_url }}" type="text/javascript"></script>
+  <script defer src="{{ 'g-scroll.js' | asset_url }}" type="text/javascript"></script>
+</div>
+
+{% schema %}
+  {
+    "name": "Marquee",
+    "tag": "div",
+    "presets": [
+      {
+        "name": "Marquee"
+      }
+    ],
+    "settings": [
+      {
+        "type": "header",
+        "content": "Marquee Settings"
+      },
+      {
+        "type": "text",
+        "id": "marquee_text",
+        "label": "Marquee Text Content",
+        "default": "YOUR SCROLLING TEXT GOES HERE"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_marquee",
+        "label": "Show Marquee Text",
+        "default": true
+      },      
+      {
+        "type": "range",
+        "id": "marquee_text_size",
+        "min": 20,
+        "max": 300,
+        "step": 4,
+        "unit": "px",
+        "label": "Marquee Text Size - Desktop",
+        "default": 200
+      },
+      {
+        "type": "range",
+        "id": "marquee_text_size_mobile",
+        "min": 16,
+        "max": 120,
+        "step": 2,
+        "unit": "px",
+        "label": "Marquee Text Size - Mobile",
+        "default": 120
+      },
+      {
+        "type": "color",
+        "id": "marquee_text_color",
+        "label": "Marquee Text Color",
+        "default": "#4CFF16"
+      },
+      {
+        "type": "range",
+        "id": "marquee_speed",
+        "min": 5,
+        "max": 20,
+        "step": 1,
+        "unit": "x",
+        "label": "Marquee Speed",
+        "default": 10,
+        "info": "Higher values = faster movement"
+      },
+      {
+        "type": "header",
+        "content": "Marquee Background Style"
+      },
+      {
+        "type": "select",
+        "id": "password_bg_style",
+        "label": "Style",
+        "info": "Select the style of the marquee background (Slideshow, Image, Video, Color)",
+        "options": [
+          {
+            "value": "slideshow",
+            "label": "Slideshow"
+          },
+          {
+            "value": "image",
+            "label": "Image"
+          },
+          {
+            "value": "video",
+            "label": "Video"
+          },
+          {
+            "value": "color",
+            "label": "Solid Color"
+          }
+        ],
+        "default": "color"
+      },
+      {
+        "type": "header",
+        "content": "Slideshow Background"
+      },
+      {
+        "type": "image_picker",
+        "id": "bg_slide_1",
+        "label": "Slide 1"
+      },
+      {
+        "type": "image_picker",
+        "id": "bg_slide_2",
+        "label": "Slide 2"
+      },
+      {
+        "type": "image_picker",
+        "id": "bg_slide_3",
+        "label": "Slide 3"
+      },
+      {
+        "type": "header",
+        "content": "Image Background"
+      },
+      {
+        "type": "image_picker",
+        "id": "desktop_bg_image",
+        "label": "Desktop"
+      },
+      {
+        "type": "image_picker",
+        "id": "mobile_bg_image",
+        "label": "Mobile"
+      },
+      {
+        "type": "header",
+        "content": "Video Background"
+      },
+      {
+        "type": "paragraph",
+        "content": "Displays on both desktop and mobile. Note: On iPhones, if 'Low Battery Mode' is enabled, the background will not autoplay. These are guidelines set by Apple."
+      },
+      {
+        "type": "video",
+        "id": "video",
+        "label": "Select video"
+      },
+      {
+        "type": "header",
+        "content": "Color Background"
+      },
+      {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Desktop",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "bg_color_mobile",
+        "label": "Mobile",
+        "default": "#ffffff"
+      },
+  
+      {
+        "type": "header",
+        "content": "Layout & Display"
+      },
+      {
+        "type": "select",
+        "id": "section_height",
+        "label": "Section Height",
+        "options": [
+          {
+            "value": "100vh",
+            "label": "Full Height (100%)"
+          },
+          {
+            "value": "75vh",
+            "label": "75% Height"
+          },
+          {
+            "value": "50vh",
+            "label": "50% Height"
+          },
+          {
+            "value": "40vh",
+            "label": "40% Height"
+          }
+        ],
+        "default": "100vh"
+      },
+      {
+        "type": "header",
+        "content": "Overlays"
+      },
+      {
+        "type": "paragraph",
+        "content": "Use these settings to set a blended color overlay over your background."
+      },
+      {
+        "type": "color",
+        "id": "overlay_top_color",
+        "label": "Overlay Desktop Color (Top)",
+        "default": "#000000"
+      },
+      {
+        "type": "range",
+        "id": "overlay_top_opacity",
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "unit": "px",
+        "label": "Overlay Desktop Opacity (Top)",
+        "default": 0
+      },
+      {
+        "type": "color",
+        "id": "overlay_bottom_color",
+        "label": "Overlay Desktop Color (Bottom)",
+        "default": "#000000"
+      },
+      {
+        "type": "range",
+        "id": "overlay_bottom_opacity",
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "unit": "px",
+        "label": "Overlay Desktop Opacity (Bottom)",
+        "default": 0
+      },
+      {
+        "type": "color",
+        "id": "overlay_top_color_mobile",
+        "label": "Overlay Mobile Color (Top)",
+        "default": "#000000"
+      },
+      {
+        "type": "range",
+        "id": "overlay_top_opacity_mobile",
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "unit": "px",
+        "label": "Overlay Mobile Opacity (Top)",
+        "default": 0
+      },
+      {
+        "type": "color",
+        "id": "overlay_bottom_color_mobile",
+        "label": "Overlay Mobile Color (Bottom)",
+        "default": "#000000"
+      },
+      {
+        "type": "range",
+        "id": "overlay_bottom_opacity_mobile",
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "unit": "px",
+        "label": "Overlay Mobile Opacity (Bottom)",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Spacing"
+      },
+      {
+        "type": "range",
+        "id": "top_spacing",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Top Spacing (Desktop)",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "bottom_spacing",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Bottom Spacing (Desktop)",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "top_spacing_mobile",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Top Spacing (Mobile)",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "bottom_spacing_mobile",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Bottom Spacing (Mobile)",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Misc"
+      },
+      {
+        "type": "paragraph",
+        "content": "If you check this box, you can replace the page's mobile background with an image, even if the main background is a video, slideshow, or color. Ex: If your desktop background is a video, you can check this box to use an image background (or GIF) instead."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_background_image_mobile",
+        "label": "Override Mobile Background with Image",
+        "default": false
+      }
+    ]
+  }
+  {% endschema %}
+
+
+<script>
+  //DYNAMIC-BACKGROUND
+(function() {
+    function horizontalLoop(items, config) {
+      if (!items.length) return; // Exit if no items
+
+      items = gsap.utils.toArray(items);
+      config = config || {};
+      let tl = gsap.timeline({
+        repeat: config.repeat, 
+        paused: config.paused, 
+        defaults: {ease: "none"},
+        onReverseComplete: () => tl.totalTime(tl.rawTime() + tl.duration() * 100)
+      }),
+      length = items.length,
+      startX = items[0].offsetLeft,
+      times = [],
+      widths = [],
+      xPercents = [],
+      curIndex = 0,
+      pixelsPerSecond = (config.speed || 1) * 100,
+      snap = config.snap === false ? v => v : gsap.utils.snap(config.snap || 1);
+      
+      gsap.set(items, {
+        xPercent: (i, el) => {
+          let w = widths[i] = parseFloat(gsap.getProperty(el, "width", "px"));
+          xPercents[i] = snap(parseFloat(gsap.getProperty(el, "x", "px")) / w * 100 + gsap.getProperty(el, "xPercent"));
+          return xPercents[i];
+        }
+      });
+      
+      gsap.set(items, {x: 0});
+      
+      let totalWidth = items[length-1].offsetLeft + xPercents[length-1] / 100 * widths[length-1] - startX + items[length-1].offsetWidth * gsap.getProperty(items[length-1], "scaleX") + (parseFloat(config.paddingRight) || 0);
+      
+      for (let i = 0; i < length; i++) {
+        let item = items[i],
+            curX = xPercents[i] / 100 * widths[i],
+            distanceToStart = item.offsetLeft + curX - startX,
+            distanceToLoop = distanceToStart + widths[i] * gsap.getProperty(item, "scaleX");
+        
+        tl.to(item, {
+          xPercent: snap((curX - distanceToLoop) / widths[i] * 100),
+          duration: distanceToLoop / pixelsPerSecond
+        }, 0)
+        .fromTo(item, 
+          {xPercent: snap((curX - distanceToLoop + totalWidth) / widths[i] * 100)},
+          {xPercent: xPercents[i], duration: (curX - distanceToLoop + totalWidth - curX) / pixelsPerSecond, immediateRender: false}, 
+          distanceToLoop / pixelsPerSecond
+        )
+        .add("label" + i, distanceToStart / pixelsPerSecond);
+        
+        times[i] = distanceToStart / pixelsPerSecond;
+      }
+      
+      function toIndex(index, vars) {
+        vars = vars || {};
+        Math.abs(index - curIndex) > length / 2 && (index += index > curIndex ? -length : length);
+        let newIndex = gsap.utils.wrap(0, length, index),
+            time = times[newIndex];
+        if (time > tl.time() !== index > curIndex) {
+          vars.modifiers = {time: gsap.utils.wrap(0, tl.duration())};
+          time += tl.duration() * (index > curIndex ? 1 : -1);
+        }
+        curIndex = newIndex;
+        vars.overwrite = true;
+        return tl.tweenTo(time, vars);
+      }
+      
+      tl.next = vars => toIndex(curIndex + 1, vars);
+      tl.previous = vars => toIndex(curIndex - 1, vars);
+      tl.current = () => curIndex;
+      tl.toIndex = (index, vars) => toIndex(index, vars);
+      tl.times = times;
+      tl.progress(1, true).progress(0, true);
+      
+      if (config.reversed) {
+        tl.vars.onReverseComplete();
+        tl.reverse();
+      }
+      
+      return tl;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Wait for content to be ready
+      setTimeout(() => {
+        document.querySelectorAll('.background-image-index').forEach(section => {
+          const scrollingText = gsap.utils.toArray(section.querySelectorAll('.marquee-content span'));
+          if (!scrollingText.length) return; // Skip if no marquee content
+          
+          const speed = parseFloat(section.dataset.marqueeSpeed) * 0.1;
+          
+          const tl = horizontalLoop(scrollingText, {
+            repeat: -1,
+            speed: speed
+          });
+          let speedTween;
+
+          ScrollTrigger.create({
+            trigger: section,
+            start: "top bottom",
+            end: "bottom -100%",
+            markers: false,
+            fastScrollEnd: true,
+            preventOverlaps: true,
+            ignoreMobileResize: true,
+            onUpdate: (self) => {
+              const isMobile = window.innerWidth < 768;
+              
+              if (!isMobile) {
+                speedTween && speedTween.kill();
+                const velocityDivisor = 100;
+                const velocity = Math.abs(self.getVelocity()) / velocityDivisor;
+                const scrollSpeed = Math.min(Math.max(velocity, 1), 40);
+                
+                speedTween = gsap.timeline()
+                  .to(tl, {
+                    timeScale: scrollSpeed * self.direction,
+                    duration: 0.05
+                  })
+                  .to(tl, {
+                    timeScale: 1 * self.direction,
+                    duration: 0.3
+                  }, "+=0.1")
+              }
+            }
+          });
+        });
+      }, 100);
+    });
+  })();
+</script>

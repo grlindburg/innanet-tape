@@ -1,0 +1,907 @@
+<style>
+.lookbook-list[data-shopify-id='{{ section.id }}'] {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin-top: {{ section.settings.top_spacing }}px;
+  margin-bottom: {{ section.settings.bottom_spacing }}px;
+  background-color: {{ section.settings.background_color }};
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  height: auto;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__section-title {
+  font-size: {{ section.settings.section_title_size_desktop }}px;
+  margin: 0;
+  color: {{ section.settings.section_title_color }};
+  font-weight: {% if section.settings.section_title_weight %} 700 {% else %} 500 {% endif %};
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__grid {
+  display: flex;
+  gap: 0;
+  overflow: visible;
+  scrollbar-width: none;
+  padding: 0;
+  flex: 1;
+  margin-top: {{ section.settings.header_grid_spacing }}px;
+  position: relative;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__grid::-webkit-scrollbar {
+  height: 4px;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__grid::-webkit-scrollbar-track {
+  margin: 0 2rem;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__grid::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__item {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__image-wrapper {
+  position: relative;
+  display: block;
+  width: auto;
+  height: 600px;
+  overflow: hidden;
+  border-radius: {{ section.settings.image_border_radius }}px;
+  margin: 0;
+  padding: 0;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__image {
+  width: auto;
+  height: 600px;
+  display: block;
+  object-fit: contain;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+  border: 0;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__video {
+  width: auto;
+  height: 600px;
+  display: block;
+  object-fit: contain;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+  border: 0;
+  pointer-events: none;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__content {
+  max-width: var(--image-width);
+  padding: 1rem 0;
+  font-size: 1rem;
+  display: none;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__title {
+  font-size: {{ section.settings.lookbook_title_size_desktop }}px;
+  margin: 0;
+  color: {{ section.settings.title_color }};
+  text-decoration: none;
+  width: auto;
+  max-width: 100%;
+  margin-top: 1rem;
+  font-weight: {% if section.settings.title_weight %} 700 {% else %} 500 {% endif %};
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__description {
+  font-size: {{ section.settings.description_size_desktop }}px;
+  margin: 0.5rem 0 0;
+  color: {{ section.settings.description_color }};
+  width: auto;
+  max-width: 700px;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__image,
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__video {
+  transition: transform 0.3s ease;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__link:hover .lookbook-list__image,
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__link:hover .lookbook-list__video {
+  transform: scale(1.02);
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__item:last-child {
+  padding-right: 5rem;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__carousel-wrapper {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Blaze Slider Integration for Carousel */
+.lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-slider {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-track-container {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-track {
+  display: flex;
+  gap: 0;
+  will-change: transform;
+  font-size: 0;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-track .lookbook-list__item {
+  flex: 0 0 auto;
+  width: auto;
+  padding-right: 0;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-track .lookbook-list__item:last-child {
+  padding-right: 0;
+}
+
+.lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-slider:hover .blaze-track {
+  animation-play-state: paused;
+}
+
+@media screen and (max-width: 768px) {
+  .lookbook-list[data-shopify-id='{{ section.id }}'] {
+    margin-top: {{ section.settings.top_spacing_mobile }}px;
+    margin-bottom: {{ section.settings.bottom_spacing_mobile }}px;
+    height: auto;
+    display: block;
+  }
+  
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__grid {
+    flex-direction: row;
+    gap: 0;
+    padding-right: 0;
+    overflow: visible;
+    height: auto;
+    flex: none;
+  }
+  
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__item {
+    width: 100%;
+    position: relative;
+    overflow: visible;
+  }
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__image-wrapper {
+    height: auto;
+    width: 100%;
+    position: relative;
+    display: block;
+    min-height: 200px;
+  }
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    position: relative;
+  }
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__content {
+    max-width: 100%;
+    padding: 1rem 0;
+  }
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__item:last-child {
+    padding-right: 0;
+  }
+
+  /* Hide items beyond the mobile limit - only when carousel autoplay is disabled */
+  {% if section.settings.mobile_item_limit != 'all' and section.settings.disable_mobile_autoplay %}
+    .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__item:nth-child(n + {{ section.settings.mobile_item_limit | plus: 1 }}) {
+      display: none;
+    }
+  {% endif %}
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__controls {
+    display: none;
+  }
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__title {
+    font-size: {{ section.settings.lookbook_title_size_mobile }}px;
+  }
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__section-title {
+    font-size: {{ section.settings.section_title_size_mobile }}px;
+  }
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__description {
+    font-size: {{ section.settings.description_size_mobile }}px;
+  }
+}
+
+/* Touch device full-height carousel styles */
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__carousel-wrapper,
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-slider,
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-container,
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-track-container,
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .blaze-track {
+  height: 100vh;
+}
+
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__item {
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+}
+
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__image-wrapper {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+}
+
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__image,
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+}
+
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__link {
+  display: block;
+  height: 100vh;
+}
+
+/* Ensure ALL items visible for carousel on touch devices */
+.touchevents .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__item:nth-child(n) {
+  display: flex !important;
+}
+
+@media screen and (min-width: 2000px) {
+  {% if section.settings.section_height == 'auto' %}
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__image-wrapper {
+      height: 750px;
+      margin-left: auto;
+  }
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__image {
+      height: 750px;
+  }
+
+  .lookbook-list[data-shopify-id='{{ section.id }}'] .lookbook-list__video {
+      height: 750px;
+  }
+{% endif %}
+
+}
+
+
+</style>
+
+<div class="lookbook-list" data-shopify-id="{{ section.id }}">
+  <div class="lookbook-list__header">
+    {% if section.settings.title != blank %}
+      <h2 class="lookbook-list__section-title">{{ section.settings.title }}</h2>
+    {% endif %}
+  </div>
+
+  <div class="lookbook-list__carousel-wrapper">
+    <div id="lookbook-carousel-{{ section.id }}" class="blaze-slider">
+      <div class="blaze-container">
+        <div class="blaze-track-container">
+          <div class="blaze-track lookbook-list__grid">{%- for block in section.blocks -%}<div class="lookbook-list__item" {{ block.shopify_attributes }}>{%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}" class="lookbook-list__link" aria-label="{{ block.settings.title | default: 'View lookbook' | escape }}">{%- else -%}<div class="lookbook-list__link" role="img" aria-label="{{ block.settings.title | default: 'Lookbook image' | escape }}">{%- endif -%}<div class="lookbook-list__image-wrapper">{%- if block.settings.video_url != blank -%}<video class="lookbook-list__video" autoplay muted loop playsinline><source src="{{ block.settings.video_url }}" type="video/mp4"></video>{%- elsif block.settings.image != blank -%}<img srcset="{%- if block.settings.image.width >= 200 -%}{{ block.settings.image | image_url: width: 200 }} 200w,{%- endif -%}{%- if block.settings.image.width >= 400 -%}{{ block.settings.image | image_url: width: 400 }} 400w,{%- endif -%}{%- if block.settings.image.width >= 600 -%}{{ block.settings.image | image_url: width: 600 }} 600w,{%- endif -%}{%- if block.settings.image.width >= 850 -%}{{ block.settings.image | image_url: width: 850 }} 850w,{%- endif -%}" src="{{ block.settings.image | image_url: width: 850 }}" loading="lazy" class="lookbook-list__image" alt="{{ block.settings.image.alt | escape }}" width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}">{%- else -%}{%- assign default_image_index = forloop.index | modulo: 4 | plus: 1 -%}<img src="{{ 'lookbook-' | append: default_image_index | append: '.jpg' | asset_img_url: 'master' }}" loading="lazy" class="lookbook-list__image" alt="{{ block.settings.title | escape }}" width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}">{%- endif -%}</div><div class="lookbook-list__content">{%- if block.settings.description != blank -%}<h3 class="lookbook-list__title">{{ block.settings.title }}</h3><p class="lookbook-list__description">{{ block.settings.description }}</p>{%- endif -%}</div>{%- if block.settings.link != blank -%}</a>{%- else -%}</div>{%- endif -%}</div>{%- endfor -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const sectionId = '{{ section.id }}';
+  const track = document.querySelector('#lookbook-carousel-' + sectionId + ' .blaze-track');
+  const container = document.querySelector('#lookbook-carousel-' + sectionId);
+
+  if (!track || !container) {
+    console.warn('Lookbook carousel elements not found');
+    return;
+  }
+
+  // Settings
+  const isTouchDevice = document.documentElement.classList.contains('touchevents');
+  const isMobile = window.innerWidth <= 768;
+  const disableMobileAutoplay = {{ section.settings.disable_mobile_autoplay | default: false }};
+  const shouldAutoplay = {{ section.settings.enable_carousel_autoplay | default: true }} &&
+                         !(isMobile && disableMobileAutoplay);
+  const scrollSpeed = {{ section.settings.scroll_speed | default: 50 }}; // pixels per second
+  const direction = '{{ section.settings.autoplay_direction | default: "to left" }}';
+  const pauseOnHover = {{ section.settings.stop_on_interaction | default: true }};
+
+  let animationId = null;
+  let currentPosition = 0;
+  let isPaused = false;
+  let trackWidth = 0;
+  let originalItemsWidth = 0;
+
+  function init() {
+    // On touch devices, ensure items have full viewport width and are visible
+    if (isTouchDevice || isMobile) {
+      const originalItems = Array.from(track.children);
+      originalItems.forEach(item => {
+        item.style.width = '100vw';
+        item.style.flexShrink = '0';
+        item.style.display = 'flex';
+      });
+    }
+
+    // Clone items for seamless loop
+    const items = Array.from(track.children);
+    const clone = items.map(item => {
+      const clonedItem = item.cloneNode(true);
+      // Ensure cloned items also have proper styling on mobile
+      if (isTouchDevice || isMobile) {
+        clonedItem.style.width = '100vw';
+        clonedItem.style.flexShrink = '0';
+        clonedItem.style.display = 'flex';
+      }
+      return clonedItem;
+    });
+
+    // Append clones to create seamless loop
+    clone.forEach(item => track.appendChild(item));
+
+    // Calculate widths
+    setTimeout(() => {
+      const allItems = Array.from(track.children);
+      originalItemsWidth = 0;
+
+      // Calculate width of original items only
+      for (let i = 0; i < items.length; i++) {
+        originalItemsWidth += allItems[i].offsetWidth;
+      }
+
+      trackWidth = track.scrollWidth;
+
+      // Start animation if enabled
+      if (shouldAutoplay) {
+        startScrolling();
+      }
+    }, 100);
+
+    // Pause on hover
+    if (pauseOnHover) {
+      container.addEventListener('mouseenter', pause);
+      container.addEventListener('mouseleave', resume);
+      container.addEventListener('touchstart', pause, { passive: true });
+      container.addEventListener('touchend', resume);
+    }
+  }
+
+  function startScrolling() {
+    let lastTimestamp = null;
+
+    function animate(timestamp) {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      const delta = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+
+      if (!isPaused) {
+        // Calculate movement based on speed (pixels per second)
+        const movement = (scrollSpeed / 1000) * delta;
+
+        if (direction === 'to left') {
+          currentPosition += movement;
+
+          // Reset position for seamless loop
+          if (currentPosition >= originalItemsWidth) {
+            currentPosition = 0;
+          }
+
+          track.style.transform = `translate3d(-${currentPosition}px, 0, 0)`;
+        } else {
+          currentPosition -= movement;
+
+          // Reset position for seamless loop
+          if (currentPosition <= -originalItemsWidth) {
+            currentPosition = 0;
+          }
+
+          track.style.transform = `translate3d(${currentPosition}px, 0, 0)`;
+        }
+      }
+
+      animationId = requestAnimationFrame(animate);
+    }
+
+    animationId = requestAnimationFrame(animate);
+  }
+
+  function pause() {
+    isPaused = true;
+  }
+
+  function resume() {
+    isPaused = false;
+  }
+
+  function stop() {
+    if (animationId) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
+  }
+
+  function reset() {
+    stop();
+    currentPosition = 0;
+    track.style.transform = 'translate3d(0, 0, 0)';
+
+    // Remove clones
+    const items = Array.from(track.children);
+    const halfLength = items.length / 2;
+    items.forEach((item, index) => {
+      if (index >= halfLength) {
+        item.remove();
+      }
+    });
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // Handle window resize
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(function() {
+      reset();
+      init();
+    }, 250);
+  });
+
+  // Shopify Theme Editor Support
+  if (window.Shopify?.designMode) {
+    document.addEventListener('shopify:section:load', function(event) {
+      if (event.detail.sectionId === sectionId) {
+        setTimeout(() => {
+          reset();
+          init();
+        }, 100);
+      }
+    });
+
+    document.addEventListener('shopify:section:unload', function(event) {
+      if (event.detail.sectionId === sectionId) {
+        stop();
+      }
+    });
+
+    document.addEventListener('shopify:section:rerender', function(event) {
+      if (event.detail.sectionId === sectionId) {
+        setTimeout(() => {
+          reset();
+          init();
+        }, 100);
+      }
+    });
+  }
+})();
+</script>
+
+{% schema %}
+    {
+      "name": "Collection List",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Content & Data"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Section Title",
+          "default": "COLLECTIONS/LOOKBOOKS TITLE"
+        },
+
+        {
+          "type": "header",
+          "content": "Continuous Scroll Settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_carousel_autoplay",
+          "label": "Enable Continuous Scrolling",
+          "default": true,
+          "info": "Automatically scroll through lookbooks continuously"
+        },
+        {
+          "type": "range",
+          "id": "scroll_speed",
+          "min": 10,
+          "max": 400,
+          "step": 10,
+          "unit": "px",
+          "label": "Scroll Speed",
+          "default": 50,
+          "info": "Speed of continuous scrolling (pixels per second)"
+        },
+        {
+          "type": "select",
+          "id": "autoplay_direction",
+          "label": "Scroll Direction",
+          "options": [
+            {
+              "value": "to left",
+              "label": "Left to Right"
+            },
+            {
+              "value": "to right",
+              "label": "Right to Left"
+            }
+          ],
+          "default": "to left"
+        },
+        {
+          "type": "checkbox",
+          "id": "stop_on_interaction",
+          "label": "Pause on Hover/Touch",
+          "default": true,
+          "info": "Pause scrolling when user hovers or touches the carousel"
+        },
+        {
+          "type": "checkbox",
+          "id": "disable_mobile_autoplay",
+          "label": "Disable Scrolling on Mobile",
+          "default": false,
+          "info": "Turn off continuous scrolling for mobile devices"
+        },
+
+        {
+          "type": "header",
+          "content": "Layout & Display"
+        },
+        {
+          "type": "select",
+          "id": "mobile_item_limit",
+          "label": "Number of Items to Show on Mobile",
+          "options": [
+            {
+              "value": "1",
+              "label": "1 Item"
+            },
+            {
+              "value": "2",
+              "label": "2 Items"
+            },
+            {
+              "value": "3",
+              "label": "3 Items"
+            },
+            {
+              "value": "4",
+              "label": "4 Items"
+            },
+            {
+              "value": "6",
+              "label": "6 Items"
+            },
+            {
+              "value": "8",
+              "label": "8 Items"
+            },
+            {
+              "value": "all",
+              "label": "Show All"
+            }
+          ],
+          "default": "all",
+          "info": "Control how many lookbooks appear on mobile devices"
+        },
+    
+        {
+          "type": "header",
+          "content": "Typography"
+        },
+        {
+          "type": "range",
+          "id": "section_title_size_desktop",
+          "min": 12,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Section Title Size - Desktop",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "section_title_size_mobile",
+          "min": 12,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Section Title Size - Mobile",
+          "default": 14
+        },
+        
+        {
+          "type": "range",
+          "id": "lookbook_title_size_desktop",
+          "min": 12,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Lookbook Title Size - Desktop",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "lookbook_title_size_mobile",
+          "min": 12,
+          "max": 30,
+          "step": 1,
+          "unit": "px",
+          "label": "Lookbook Title Size - Mobile",
+          "default": 12
+        },
+        {
+          "type": "range",
+          "id": "description_size_desktop",
+          "min": 12,
+          "max": 24,
+          "step": 1,
+          "unit": "px",
+          "label": "Description Size - Desktop",
+          "default": 14
+        },
+        {
+          "type": "range",
+          "id": "description_size_mobile",
+          "min": 12,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Description Size - Mobile",
+          "default": 12
+        },
+        {
+          "type": "checkbox",
+          "id": "section_title_weight",
+          "label": "Bold Section Title",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "title_weight",
+          "label": "Bold Lookbook Title",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "section_title_color",
+          "label": "Section Title Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "title_color",
+          "label": "Lookbook Title Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "description_color",
+          "label": "Description Color",
+          "default": "#655555"
+        },
+    
+        {
+          "type": "header",
+          "content": "Styling"
+        },
+        {
+          "type": "range",
+          "id": "image_border_radius",
+          "min": 0,
+          "max": 40,
+          "step": 2,
+          "unit": "px",
+          "label": "Round Image Corners",
+          "default": 0,
+          "info": "Rounds the corners of all lookbook images"
+        },
+        {
+          "type": "header",
+          "content": "Spacing"
+        },
+        {
+          "type": "range",
+          "id": "top_spacing",
+          "min": 0,
+          "max": 200,
+          "step": 2,
+          "unit": "px",
+          "label": "Top Spacing (Desktop)",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "bottom_spacing",
+          "min": 0,
+          "max": 200,
+          "step": 2,
+          "unit": "px",
+          "label": "Bottom Spacing (Desktop)",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "top_spacing_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "label": "Top Spacing (Mobile)",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "bottom_spacing_mobile",
+          "min": 0,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "label": "Bottom Spacing (Mobile)",
+          "default": 16
+        },
+        {
+          "type": "range",
+          "id": "header_grid_spacing",
+          "min": 8,
+          "max": 80,
+          "step": 4,
+          "unit": "px",
+          "label": "Space Between Header and Lookbooks",
+          "default": 32,
+          "info": "Adjust the vertical space between section header and lookbook grid"
+        },
+        {
+          "type": "range",
+          "id": "gap",
+          "min": 0,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Gap Between Items - Desktop",
+          "default": 32
+        },
+        {
+          "type": "range",
+          "id": "gap_mobile",
+          "min": 0,
+          "max": 60,
+          "step": 4,
+          "unit": "px",
+          "label": "Gap Between Items - Mobile",
+          "default": 16
+        }
+      ],
+      "blocks": [
+        {
+          "type": "collection",
+          "name": "Collection",
+          "settings": [
+            {
+              "type": "image_picker",
+              "id": "image",
+              "label": "Cover Image"
+            },
+            {
+              "type": "url",
+              "id": "video_url",
+              "label": "Cover Video URL (Optional - overrides image if provided)",
+              "info": "Enter a video URL (MP4, WebM). Video will autoplay, loop, and be muted."
+            },
+            {
+              "type": "text",
+              "id": "title",
+              "label": "Title",
+              "default": "Collection Title"
+            },
+            {
+              "type": "textarea",
+              "id": "description",
+              "label": "Description",
+              "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            },
+            {
+              "type": "url",
+              "id": "link",
+              "label": "Lookbook Link"
+            }
+          ]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Collection List",
+          "blocks": [
+            {
+              "type": "collection"
+            },
+            {
+              "type": "collection"
+            },
+            {
+              "type": "collection"
+            },
+            {
+              "type": "collection"
+            }
+          ]
+        }
+      ]
+    }
+    {% endschema %}

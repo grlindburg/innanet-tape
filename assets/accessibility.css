@@ -1,0 +1,84 @@
+/*
+ * accessibility.css — global accessibility utilities for the Plain Jane theme.
+ * Loaded from snippets/__default-head.liquid. See docs/accessibility-assessment.md.
+ */
+
+/* Screen-reader-only content. Previously defined only locally in
+   sections/product-section-3.liquid; this is the global utility. */
+.visually-hidden,
+.visually-hidden-focusable:not(:focus):not(:focus-within) {
+  position: absolute !important;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Skip-to-content link: off-screen until focused (WCAG 2.4.1). */
+.skip-to-content-link {
+  position: absolute;
+  top: -100px;
+  left: 8px;
+  z-index: 100000;
+  padding: 12px 20px;
+  background: #000;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.2;
+  text-decoration: none;
+  border: 2px solid #fff;
+  border-radius: 0 0 4px 4px;
+  transition: top 0.15s ease-in-out;
+}
+
+.skip-to-content-link:focus {
+  top: 0;
+  outline: 3px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+/*
+ * Global visible focus indicator (WCAG 2.4.7).
+ * The theme removes outlines broadly (outline:none/0) across normalize.css,
+ * components.css, plain-jane.css and account.css with no replacement.
+ * :focus-visible restores a clear ring for keyboard users without showing it
+ * on mouse clicks. !important is required to win against the existing removals.
+ */
+*:focus-visible {
+  outline: 3px solid #1a73e8 !important;
+  outline-offset: 2px !important;
+  border-radius: 1px;
+}
+
+/*
+ * Reduced motion (WCAG 2.3.3 / 2.2.2). The theme ships animations (marquee,
+ * fade-ins, pulse), CSS transitions, and `scroll-behavior: smooth` with no
+ * motion guard. For users who request reduced motion, near-zero the durations
+ * rather than removing them outright so transitionend listeners (e.g. the cart
+ * notification open handler) still fire.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html,
+  body {
+    scroll-behavior: auto !important;
+  }
+
+  .skip-to-content-link {
+    transition: none;
+  }
+}

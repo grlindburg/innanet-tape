@@ -1,0 +1,208 @@
+{{ 'pushy.css' | asset_url | stylesheet_tag }}
+
+  {% if template.name != 'password' %}
+  <!-- Pushy Menu -->
+  <nav aria-label="Main menu" style="
+    --global-text-color: {{ settings.global_nav_txt_color }};
+    background-color: {{ settings.global_menu_bg_color }};
+    " class="pushy pushy-right">
+    <div class="pushy-content">
+      {% if settings.show_global_menu_logo %}
+        <a
+          href="{{ routes.root_url }}"
+          class="logo-link w-inline-block"
+        style="
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 4px;
+            ">
+        {% if settings.global_menu_logo %}
+          <img
+            src="{{ settings.global_menu_logo | image_url }}"
+            style="width: {{ settings.global_menu_logo_size }}px"
+            loading="lazy"
+            alt="{{ shop.name | escape }}"
+            class="logo">
+        {% else %}
+          <img
+            src="{{ 'gm-logo.png' | asset_url }}"
+            style="width: {{ settings.global_menu_logo_size }}px"
+            loading="lazy"
+            alt="{{ shop.name | escape }}"
+            class="logo">
+        {% endif %}
+      </a>
+      {% endif %}
+      {% if settings.show_global_menu_cart %}
+      {% render 'cart-count'
+        , cart_text_margin_top: 10
+        , cart_text_margin_bottom: 10
+        , cart_text_color: settings.global_cart_text_color
+        , cart_bg_color: settings.global_cart_number_bg_color
+        , cart_count_color: settings.global_cart_number_color
+      %}
+      {% endif %}
+      {% if settings.global_search_bar %}
+        <form
+          action="{{ routes.search_url }}"
+          method="get"
+          role="search"
+          class="search-form"
+          style="margin-top: 28px; margin-bottom: 10px; padding: 0 28px; border-radius: 11px;">
+          <input
+            type="search"
+            name="q"
+            placeholder="{{ 'general.search.placeholder' | t }}"
+            aria-label="{{ 'general.search.placeholder' | t }}"
+            style="width: 100%; padding: 8px; border-radius: {% if settings.global_menu_search_radius %} 4px {% else %} 0 {% endif %}; 
+          background-color: {{ settings.global_search_bg_color }}; 
+          border: 1px solid {{ settings.global_search_bg_color }};
+          color: {{ settings.global_search_txt_color }};"
+            class="global-search-input">
+            <input type="hidden" name="type" value="product">
+          <button type="submit" style="display: none;">{{ 'general.search.submit' | t }}</button>
+        </form>
+
+        <!-- Add custom style for placeholder color -->
+        <style>
+          .global-search-input::placeholder {
+            color: {{ settings.global_search_txt_color }};
+          }
+        </style>
+      {% endif %}
+      <ul style="list-style: none; padding: 0; font-size: {{ settings.global_menu_font_size }}px;">
+        {% for link in settings.global_menu.links %}
+          {% if link.links.size > 0 %}
+            <li class="pushy-submenu">
+              <button class="pushy-btn">
+                <p style="width: fit-content; margin: 0; word-break: break-word;">{{ link.title }}</p>
+                <svg
+                  class="pushy-arrow"
+                  width="6"
+                  height="10"
+                  viewBox="0 0 6 10"
+                  fill="none"
+                  aria-hidden="true"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M1 1L5 5L1 9"
+                    stroke="{{ settings.global_arrow_color }}"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </button>
+              <ul style="list-style: none; margin-bottom: 0;">
+                {% for child_link in link.links %}
+                  {% if child_link.links.size > 0 %}
+                    <li class="pushy-submenu">
+                      <button style="color: {{ settings.global_child_link_color }};" class="pushy-btn">
+                        <p style="width: fit-content; margin: 0; word-break: break-word;">{{ child_link.title }}</p>
+                        <svg
+                          class="pushy-arrow"
+                          width="6"
+                          height="10"
+                          viewBox="0 0 6 10"
+                          fill="none"
+                          aria-hidden="true"
+                          focusable="false"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M1 1L5 5L1 9"
+                            stroke="{{ settings.global_arrow_color }}"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        </svg>
+                      </button>
+                      <ul style="list-style: none; margin-bottom: 0;">
+                        {% for grandchild_link in child_link.links %}
+                          <li class="pushy-link">
+                            <a style="color: {{ settings.global_grandchild_link_color }};" href="{{ grandchild_link.url }}"{% render 'menu-link-target', url: grandchild_link.url %}>{{ grandchild_link.title }}</a>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  {% else %}
+                    <li class="pushy-link">
+                      <a style="color: {{ settings.global_child_link_color }};" href="{{ child_link.url }}"{% render 'menu-link-target', url: child_link.url %}>{{ child_link.title }}</a>
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </li>
+          {% else %}
+            {% comment %}GENERATE LINK TAG{% endcomment %}
+            <li class="pushy-link">
+              <a href="{{ link.url }}"{% render 'menu-link-target', url: link.url %}>{{ link.title }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+  {% if shop.customer_accounts_enabled %}
+    {% if settings.hide_global_login_link == false %}
+
+        <div style="   margin-top: 20px; margin-bottom: 20px; height: 1px; background-color: {{ settings.global_line_divider_color }}; width: 136px;
+                        margin-left: 36px;">
+        </div>
+
+        {% if shop.customer_accounts_enabled %}
+          {% if customer %}
+            <li class="pushy-link">
+              <a href="{{ routes.account_url }}" class="pushy-link-content">
+                <span>{{ 'customer.account_link' | t }}</span>
+              </a>
+            </li>
+          {% else %}
+            <li class="pushy-link">
+              <a href="{{ routes.account_login_url }}" class="pushy-link-content">
+                <span>{{ 'customer.log_in' | t }}</span>
+              </a>
+            </li>
+          {% endif %}
+        {% endif %}
+        {% endif %}
+        {% endif %}
+      </ul>
+
+    </div>
+  </nav>
+
+  <!-- Site Overlay -->
+  <div class="site-overlay"></div>
+
+  {% render 'global-menu-icon-unified' %}
+
+  <style>
+    .site-overlay {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 9998;
+      background-color: rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease;
+    }
+
+    /* Disable backdrop-filter for browsers that don't support it */
+    @supports not(backdrop-filter: blur(5px)) {
+      .site-overlay {
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+    }
+
+    /* Simple thin scrollbar */
+    .pushy {
+      /* Firefox */
+      scrollbar-width: thin;
+    }
+
+    /* Chrome, Edge, Safari */
+    .pushy::-webkit-scrollbar {
+      width: 6px;
+    }
+  </style>
+
+{% endif %}

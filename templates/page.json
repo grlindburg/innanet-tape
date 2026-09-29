@@ -1,0 +1,52 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "background": {
+      "type": "default-background",
+      "settings": {
+        "password_bg_style": "color",
+        "bg_color": "#f6b117",
+        "bg_color_mobile": "#f6b117",
+        "overlay_top_color": "#000000",
+        "overlay_top_opacity": 0,
+        "overlay_bottom_color": "#000000",
+        "overlay_bottom_opacity": 0,
+        "overlay_top_color_mobile": "#000000",
+        "overlay_top_opacity_mobile": 0,
+        "overlay_bottom_color_mobile": "#000000",
+        "overlay_bottom_opacity_mobile": 0,
+        "show_background_image_mobile": false
+      }
+    },
+    "clock": {
+      "type": "default-timezone",
+      "settings": {
+        "index_date_color": "#000000",
+        "index_time_color": "#000000",
+        "background_color": "rgba(0,0,0,0)"
+      }
+    },
+    "page-builder": {
+      "type": "page-text",
+      "settings": {
+        "text_alignment": "left",
+        "content_width": 800,
+        "vertical_padding": 40,
+        "horizontal_padding": 20
+      }
+    }
+  },
+  "order": [
+    "background",
+    "clock",
+    "page-builder"
+  ]
+}

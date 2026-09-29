@@ -1,0 +1,101 @@
+{%- liquid
+  assign listen_url = section.settings.listen_url | default: 'https://vicmensa.sym.fm/innanetape'
+  assign tour_url = section.settings.tour_url | default: 'https://innanetape.com/tour'
+  assign shop_url = section.settings.shop_url | default: routes.all_products_collection_url
+  assign show_url = section.settings.show_url | default: 'https://thevicmensashow.com'
+  assign boyz_url = section.settings.boyz_url | default: 'https://93boyz.com'
+-%}
+<header class="inn-header" role="banner">
+  <button class="inn-header__menu-btn" type="button" aria-label="Open menu" aria-controls="inn-menu" aria-expanded="false" data-inn-menu-open>
+    <span class="inn-icon" style="--inn-icon: url('{{ 'inn-menuopen.svg' | asset_url }}')"></span>
+  </button>
+
+  <nav class="inn-header__nav" aria-label="Main">
+    <a href="{{ listen_url }}" target="_blank" rel="noopener">Listen</a>
+    <a href="{{ tour_url }}" target="_blank" rel="noopener">Tour</a>
+    <a href="{{ shop_url }}">Shop</a>
+    <a href="{{ routes.search_url }}">Search</a>
+  </nav>
+
+  <a class="inn-header__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home">
+    <img src="{{ 'inn-logotype.svg' | asset_url }}" alt="Vic Mensa" width="172" height="26">
+  </a>
+
+  <div class="inn-header__tools">
+    {%- if shop.customer_accounts_enabled -%}
+      <a class="inn-header__account" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">
+        <span class="inn-header__label">{% if customer %}Account{% else %}Login{% endif %}</span>
+        <span class="inn-icon inn-header__glyph" style="--inn-icon: url('{{ 'inn-icon-profile.svg' | asset_url }}')" aria-hidden="true"></span>
+      </a>
+    {%- endif -%}
+    <a class="inn-header__cart cart-text" href="{{ routes.cart_url }}" aria-label="Cart">
+      <span class="inn-header__label">Cart (<span class="cart-count">{{ cart.item_count }}</span>)</span>
+      <span class="inn-icon inn-header__glyph" style="--inn-icon: url('{{ 'inn-icon-cart.svg' | asset_url }}')" aria-hidden="true"></span>
+    </a>
+  </div>
+</header>
+
+<div class="inn-menu" id="inn-menu" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true">
+  <div class="inn-menu__top">
+    <button class="inn-menu__close" type="button" aria-label="Close menu" data-inn-menu-close>
+      <span class="inn-icon" style="--inn-icon: url('{{ 'inn-menuclose.svg' | asset_url }}')"></span>
+    </button>
+    <a class="inn-menu__logo" href="{{ routes.root_url }}">
+      <span class="inn-icon" style="--inn-icon: url('{{ 'inn-logotype.svg' | asset_url }}')"></span>
+      <span class="visually-hidden">Vic Mensa</span>
+    </a>
+  </div>
+
+  <nav class="inn-menu__links" aria-label="Menu">
+    <a href="{{ routes.root_url }}">Home</a>
+    <a href="{{ tour_url }}" target="_blank" rel="noopener">Tour</a>
+    <a href="{{ shop_url }}">Shop</a>
+    {%- if section.settings.about_url != blank -%}<a href="{{ section.settings.about_url }}">About</a>{%- endif -%}
+    <a href="{{ section.settings.contact_url | default: '/pages/contact' }}">Contact</a>
+    <a class="inn-menu__alt" href="{{ show_url }}" target="_blank" rel="noopener">The Vic Mensa Show</a>
+    <a class="inn-menu__alt" href="{{ boyz_url }}" target="_blank" rel="noopener">93Boyz</a>
+  </nav>
+
+  <div class="inn-menu__streams">
+    {%- liquid
+      assign stream_keys = 'yt,am,sp,td,sc' | split: ','
+      assign stream_names = 'YouTube,Apple Music,Spotify,Tidal,SoundCloud' | split: ','
+    -%}
+    {%- for key in stream_keys -%}
+      {%- assign setting_id = 'stream_' | append: key -%}
+      {%- assign url = section.settings[setting_id] | default: listen_url -%}
+      {%- assign icon_file = 'inn-icon-' | append: key | append: '.svg' -%}
+      <a href="{{ url }}" target="_blank" rel="noopener" aria-label="{{ stream_names[forloop.index0] }}">
+        <span class="inn-icon" style="--inn-icon: url('{{ icon_file | asset_url }}')"></span>
+      </a>
+    {%- endfor -%}
+  </div>
+
+  <form class="inn-menu__search" action="{{ routes.search_url }}" method="get" role="search">
+    <input type="search" name="q" placeholder="Search" aria-label="Search">
+    <input type="hidden" name="type" value="product">
+  </form>
+
+  <span class="inn-icon inn-menu__mark" style="--inn-icon: url('{{ 'inn-icon-vmnet.svg' | asset_url }}')" aria-hidden="true"></span>
+</div>
+
+{% schema %}
+{
+  "name": "Innanet header",
+  "settings": [
+    { "type": "url", "id": "listen_url", "label": "Listen link" },
+    { "type": "url", "id": "tour_url", "label": "Tour link" },
+    { "type": "url", "id": "shop_url", "label": "Shop link" },
+    { "type": "url", "id": "about_url", "label": "About link (hidden when empty)" },
+    { "type": "url", "id": "contact_url", "label": "Contact link" },
+    { "type": "url", "id": "show_url", "label": "The Vic Mensa Show link" },
+    { "type": "url", "id": "boyz_url", "label": "93Boyz link" },
+    { "type": "header", "content": "Streaming icons (mobile menu)" },
+    { "type": "url", "id": "stream_yt", "label": "YouTube" },
+    { "type": "url", "id": "stream_am", "label": "Apple Music" },
+    { "type": "url", "id": "stream_sp", "label": "Spotify" },
+    { "type": "url", "id": "stream_td", "label": "Tidal" },
+    { "type": "url", "id": "stream_sc", "label": "SoundCloud" }
+  ]
+}
+{% endschema %}

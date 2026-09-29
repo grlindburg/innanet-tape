@@ -1,0 +1,491 @@
+<style>
+  {% if section.settings.enable_custom_subtitle_font %}
+    @font-face {
+      font-family: "{{ section.settings.custom_subtitle_font_name }}";
+      src: url("{{ section.settings.custom_subtitle_font }}") format("woff2")
+      , url("{{ section.settings.custom_subtitle_font }}") format("woff");
+    }
+  {% else %}
+    {{ section.settings.subtitle_font | font_face }}
+  {% endif %}
+
+  {% if section.settings.enable_custom_text_font %}
+    @font-face {
+      font-family: "{{ section.settings.custom_text_font_name }}";
+      src: url("{{ section.settings.custom_text_font }}") format("woff2")
+      , url("{{ section.settings.custom_text_font }}") format("woff");
+    }
+  {% else %}
+    {{ section.settings.text_font | font_face }}
+  {% endif %}
+
+  .minimal-text-banner[data-shopify-id='{{ section.id }}'] {
+    --text_block_subtitle_font: {% if section.settings.enable_custom_subtitle_font %}{{ section.settings.custom_subtitle_font_name }}{% else %}{{ section.settings.subtitle_font.family }}{% endif %};
+    --text_block_text_font: {% if section.settings.enable_custom_text_font %}{{ section.settings.custom_text_font_name }}{% else %}{{ section.settings.text_font.family }}{% endif %};
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: {{ section.settings.vertical_padding }}vh 2rem;
+    margin-top: {{ section.settings.top_spacing }}px;
+    margin-bottom: {{ section.settings.bottom_spacing }}px;
+    min-height: {{ section.settings.section_height }}vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+  }
+
+  .minimal-text-banner[data-shopify-id='{{ section.id }}'] .minimal-text-banner__subtitle {
+    font-size: {{ section.settings.subtitle_size }}px;
+    font-weight: {{ section.settings.subtitle_bold | default: 500 }};
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+    color: {{ section.settings.subtitle_color }};
+    text-align: {{ section.settings.subtitle_alignment }};
+    max-width: 1200px;
+    {% if section.settings.subtitle_alignment == 'center' %}
+      margin-left: auto;
+      margin-right: auto;
+    {% elsif section.settings.subtitle_alignment == 'right' %}
+      margin-left: auto;
+      margin-right: 0;
+    {% else %}
+      margin-left: 0;
+      margin-right: auto;
+    {% endif %}
+    font-family: var(--text_block_subtitle_font), sans-serif;
+    {% if section.settings.subtitle == '' %}
+      margin-bottom: 0;
+    {% endif %}
+    margin-top: 0;
+    padding-top: 10px;
+  }
+
+  .minimal-text-banner[data-shopify-id='{{ section.id }}'] .minimal-text-banner__text {
+    font-size: {{ section.settings.text_size }}px;
+    line-height: 1.4;
+    font-weight: {% if section.settings.text_bold %} 700 {% else %} 400 {% endif %};
+    color: {{ section.settings.text_color }};
+    text-align: {{ section.settings.text_alignment }};
+    will-change: contents;
+    -webkit-font-smoothing: antialiased;
+    max-width: 1200px;
+    {% if section.settings.text_alignment == 'center' %}
+      margin-left: auto;
+      margin-right: auto;
+    {% elsif section.settings.text_alignment == 'right' %}
+      margin-left: auto;
+      margin-right: 0;
+    {% else %}
+      margin-left: 0;
+      margin-right: auto;
+    {% endif %}
+    font-family: var(--text_block_text_font), sans-serif;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .minimal-text-banner__text[data-animation="fade-up"] {
+    opacity: 0;
+    transform: translateY(20px);
+    will-change: opacity, transform;
+  }
+
+  @keyframes textFadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .minimal-text-banner__text[data-animation="reveal"] {
+    opacity: 0;
+    filter: blur(10px);
+    will-change: opacity, filter;
+  }
+
+  @keyframes textReveal {
+    to {
+      opacity: 1;
+      filter: blur(0);
+    }
+  }
+
+  .typewriter-text {
+    display: inline-block;
+    white-space: pre-wrap;
+    min-height: 1em;
+    opacity: 0;
+  }
+
+  .typewriter-text.is-typing {
+    opacity: 1;
+  }
+
+  @media screen and (max-width: 768px) {
+    .minimal-text-banner[data-shopify-id='{{ section.id }}'] {
+      padding: {% if section.settings.remove_padding %}0 2rem{% else %}{{ section.settings.vertical_padding_mobile }}vh 2rem{% endif %};
+      margin-top: {{ section.settings.top_spacing_mobile }}px;
+      margin-bottom: {{ section.settings.bottom_spacing_mobile }}px;
+      min-height: {{ section.settings.section_height_mobile }}vh;
+    }
+    
+    .minimal-text-banner[data-shopify-id='{{ section.id }}'] .minimal-text-banner__text {
+      font-size: {{ section.settings.text_size_mobile }}px;
+    }
+
+    .minimal-text-banner[data-shopify-id='{{ section.id }}'] .minimal-text-banner__subtitle {
+      font-size: {{ section.settings.subtitle_size_mobile }}px;
+    }
+  }
+</style>
+
+<div id="shopify-section-{{ section.id }}"
+     class="minimal-text-banner"
+     data-shopify-id="{{ section.id }}"
+     style="{% if section.settings.background_image %}background-image: url('{{ section.settings.background_image | image_url }}'); background-size: cover; background-position: center;{% else %}background: {{ section.settings.background_color }};{% endif %}">
+  <h3 class="minimal-text-banner__subtitle">{{ section.settings.subtitle }}</h3>
+  {% if section.settings.text_animation_type == 'typewriter' %}
+    <div class="minimal-text-banner__text">
+      <span class="typewriter-text"
+            data-text="{{ section.settings.text | strip_html | escape | replace: '"', '&quot;' }}"
+            data-animation-type="{{ section.settings.text_animation_type }}"></span>
+    </div>
+  {% else %}
+    <div class="minimal-text-banner__text"
+       data-animation="{{ section.settings.text_animation_type }}"
+       data-animation-type="{{ section.settings.text_animation_type }}">
+      {{ section.settings.text }}
+    </div>
+  {% endif %}
+</div>
+
+
+{% schema %}
+  {
+    "name": "Text Block",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content & Data"
+      },
+      {
+        "type": "text",
+        "id": "subtitle",
+        "label": "Subtitle",
+        "default": "TEXT BLOCK SUBTITLE"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Main Text",
+        "default": "<p>OPENSPACES IS A DESIGN TECH STUDIO THAT PROVIDES TECHNOLOGY TO TRUE CREATIVES, EMPOWERING THEM TO BRING THEIR VISION TO LIFE THROUGH INNOVATIVE TOOLS AND SEAMLESS DIGITAL EXPERIENCES.</p>"
+      },
+  
+      {
+        "type": "header",
+        "content": "Layout & Display"
+      },
+      {
+        "type": "select",
+        "id": "subtitle_alignment",
+        "label": "Subtitle Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "select",
+        "id": "text_alignment",
+        "label": "Text Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+  
+      {
+        "type": "header",
+        "content": "Typography"
+      },
+      {
+        "type": "font_picker",
+        "id": "subtitle_font",
+        "label": "Subtitle Font",
+        "default": "inconsolata_n4"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_subtitle_font",
+        "label": "Enable Custom Subtitle Font",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "custom_subtitle_font_name",
+        "label": "Custom Subtitle Font Name"
+      },
+      {
+        "type": "text",
+        "id": "custom_subtitle_font",
+        "label": "Custom Subtitle Font URL"
+      },
+      {
+        "type": "font_picker",
+        "id": "text_font",
+        "label": "Text Font",
+        "default": "inconsolata_n4"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_custom_text_font",
+        "label": "Enable Custom Text Font",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "custom_text_font_name",
+        "label": "Custom Text Font Name"
+      },
+      {
+        "type": "text",
+        "id": "custom_text_font",
+        "label": "Custom Text Font URL"
+      },
+      {
+        "type": "range",
+        "id": "subtitle_size",
+        "min": 12,
+        "max": 32,
+        "step": 1,
+        "unit": "px",
+        "label": "Subtitle Font Size",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "subtitle_size_mobile",
+        "min": 10,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "label": "Subtitle Font Size (Mobile)",
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "text_size",
+        "min": 16,
+        "max": 72,
+        "step": 1,
+        "unit": "px",
+        "label": "Text Font Size",
+        "default": 32
+      },
+      {
+        "type": "range",
+        "id": "text_size_mobile",
+        "min": 14,
+        "max": 48,
+        "step": 1,
+        "unit": "px",
+        "label": "Text Font Size (Mobile)",
+        "default": 24
+      },
+      {
+        "type": "checkbox",
+        "id": "subtitle_bold",
+        "label": "Bold Subtitle",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "text_bold",
+        "label": "Bold Text",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color_background",
+        "id": "background_color",
+        "label": "Background Color",
+        "default": "linear-gradient(#ffffff, #ffffff)"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image",
+        "label": "Background Image"
+      },
+      {
+        "type": "color",
+        "id": "subtitle_color",
+        "label": "Subtitle Color",
+        "default": "#1B1B1B"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color",
+        "default": "#1B1B1B"
+      },
+  
+      {
+        "type": "header",
+        "content": "Styling"
+      },
+      {
+        "type": "select",
+        "id": "text_animation_type",
+        "label": "Text Animation",
+        "options": [
+          {
+            "value": "none",
+            "label": "No Animation"
+          },
+          {
+            "value": "typewriter",
+            "label": "Typewriter"
+          },
+          {
+            "value": "fade-up",
+            "label": "Fade Up"
+          },
+          {
+            "value": "reveal",
+            "label": "Reveal"
+          }
+        ],
+        "default": "none"
+      },
+  
+      {
+        "type": "header",
+        "content": "Spacing"
+      },
+      {
+        "type": "range",
+        "id": "section_height",
+        "min": 20,
+        "max": 100,
+        "step": 5,
+        "unit": "vh",
+        "label": "Section Height (Desktop)",
+        "default": 70
+      },
+      {
+        "type": "range",
+        "id": "section_height_mobile",
+        "min": 20,
+        "max": 100,
+        "step": 5,
+        "unit": "vh",
+        "label": "Section Height (Mobile)",
+        "default": 60
+      },
+      {
+        "type": "range",
+        "id": "vertical_padding",
+        "min": 0,
+        "max": 30,
+        "step": 1,
+        "unit": "vh",
+        "label": "Vertical Padding (Desktop)",
+        "default": 15
+      },
+      {
+        "type": "range",
+        "id": "vertical_padding_mobile",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "unit": "vh",
+        "label": "Vertical Padding (Mobile)",
+        "default": 8
+      },
+      {
+        "type": "range",
+        "id": "top_spacing",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Top Spacing (Desktop)",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "bottom_spacing",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Bottom Spacing (Desktop)",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "top_spacing_mobile",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Top Spacing (Mobile)",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "bottom_spacing_mobile",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Bottom Spacing (Mobile)",
+        "default": 20
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_padding",
+        "label": "Remove Section Padding",
+        "default": false
+      },
+  
+      {
+        "type": "header",
+        "content": "Advanced Settings"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Text Block",
+        "category": "Text"
+      }
+    ]
+  }
+  {% endschema %}

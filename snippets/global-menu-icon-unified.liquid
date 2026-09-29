@@ -1,0 +1,170 @@
+{%- comment -%}
+  Universal hamburger menu icon that works on all pages
+
+  Parameters:
+  - menu_margin_top (optional): Vertical adjustment in pixels
+  - override_z_index (optional): Custom z-index value
+{%- endcomment -%}
+
+{% assign additional_margin = menu_margin_top | default: 0 %}
+{% assign icon_z_index = override_z_index | default: 3 %}
+{% assign menu_top = '30px' %}
+{% assign menu_right = '0px' %}
+{% assign menu_left = '0px' %}
+
+{%- comment -%} Calculate top position based on announcement bar {%- endcomment -%}
+{% if settings.show_announcement_bar %}
+  {%- assign show_on_page = true -%}
+
+  {%- if template == 'index' and settings.show_announcement_bar_on_home != true -%}
+    {%- assign show_on_page = false -%}
+  {%- elsif template == 'collection' and settings.show_announcement_bar_on_collection != true -%}
+    {%- assign show_on_page = false -%}
+  {%- elsif template == 'product' and settings.show_announcement_bar_on_product != true -%}
+    {%- assign show_on_page = false -%}
+  {%- endif -%}
+
+  {% if show_on_page %}
+    {% if settings.enable_large_announcement_bar and settings.enable_announcement_floater %}
+      {% assign menu_top = '80px' %}
+    {% elsif settings.enable_announcement_floater %}
+      {% assign menu_top = '59px' %}
+    {% elsif settings.enable_large_announcement_bar %}
+      {% assign menu_top = '59px' %}
+    {% else %}
+      {% assign menu_top = '50px' %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+{%- comment -%} Calculate left/right position based on announcement floater {%- endcomment -%}
+{% if settings.enable_announcement_floater and settings.show_announcement_bar %}
+  {% assign menu_left = '4.1%' %}
+  {% assign menu_right = 'auto' %}
+{% else %}
+  {% assign menu_left = '20px' %}
+  {% assign menu_right = 'auto' %}
+{% endif %}
+
+{%- comment -%} Template-specific positioning overrides {%- endcomment -%}
+{% if page.template_suffix contains "lookbook" %}
+  {% assign menu_top = '30px' %}
+  {% assign menu_left = '20px' %}
+  {% assign menu_right = 'auto' %}
+{% endif %}
+
+{% if page.template_suffix contains "space" %}
+  {% assign menu_top = '30px' %}
+  {% assign menu_left = '20px' %}
+  {% assign menu_right = 'auto' %}
+{% endif %}
+
+<style>
+  .global-menu {
+    position: fixed;
+    bottom: auto;
+    left: {{ menu_left }};
+    right: {{ menu_right }};
+    width: 45px;
+    height: 45px;
+    margin-left: 0;
+    margin-right: auto;
+    {% if additional_margin != 0 %}
+    margin-top: {{ additional_margin }}px;
+    {% endif %}
+    cursor: pointer;
+    z-index: {{ icon_z_index }};
+    top: {{ menu_top }};
+  }
+
+  {% if settings.global_menu_inverse_color %}
+    .menu-btn.global-menu {
+      mix-blend-mode: difference;
+    }
+
+    .menu-btn.global-menu svg path {
+      stroke: white;
+    }
+  {% else %}
+    .menu-btn.global-menu svg path {
+      stroke: {{ settings.global_menu_btn_color }};
+    }
+  {% endif %}
+</style>
+
+<a class="menu-btn global-menu" aria-label="Open navigation menu" role="button" tabindex="0">
+  <svg
+    width="100%"
+    height="100%"
+    viewBox="0 0 24 24"
+    fill="none"
+    aria-hidden="true"
+    focusable="false"
+    xmlns="http://www.w3.org/2000/svg">
+    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+    <g
+      id="SVGRepo_tracerCarrier"
+      stroke-linecap="round"
+      stroke-linejoin="round"></g>
+    <g id="SVGRepo_iconCarrier">
+      <path
+        d="M4 16L20 16"
+        stroke-width="1"
+        stroke-linecap="round"></path>
+      <path
+        d="M4 12L20 12"
+        stroke-width="1"
+        stroke-linecap="round"></path>
+      <path
+        d="M4 8L20 8"
+        stroke-width="1"
+        stroke-linecap="round"></path>
+    </g>
+  </svg>
+</a>
+
+{% if settings.global_menu_inverse_color %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuIcon = document.querySelector('.global-menu');
+      if (menuIcon) {
+        const paths = menuIcon.querySelectorAll('path');
+
+        function getBackgroundColor(element) {
+          let bg = window.getComputedStyle(element).backgroundColor;
+          if (bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') {
+            return element.parentElement ? getBackgroundColor(element.parentElement) : 'rgb(255, 255, 255)';
+          }
+          return bg;
+        }
+
+        function updateMenuColor() {
+          const elementUnderMenu = document.elementFromPoint(
+            menuIcon.offsetLeft + menuIcon.offsetWidth / 2,
+            menuIcon.offsetTop + menuIcon.offsetHeight / 2
+          );
+
+          if (elementUnderMenu) {
+            const bgColor = getBackgroundColor(elementUnderMenu);
+            const rgb = bgColor.match(/\d+/g);
+
+            if (rgb) {
+              const brightness = (parseInt(rgb[0]) * 299 + parseInt(rgb[1]) * 587 + parseInt(rgb[2]) * 114) / 1000;
+              const strokeColor = brightness > 128 ? '#000000' : '#FFFFFF';
+
+              paths.forEach(path => {
+                path.setAttribute('stroke', strokeColor);
+              });
+            }
+          }
+        }
+
+        window.addEventListener('scroll', updateMenuColor);
+        window.addEventListener('resize', updateMenuColor);
+
+        setTimeout(updateMenuColor, 100);
+        setInterval(updateMenuColor, 1000);
+      }
+    });
+  </script>
+{% endif %}

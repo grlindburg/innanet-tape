@@ -1,0 +1,841 @@
+<div class="lookbook-container">
+  <div class="lookbook-header-content" style="flex-direction: column; align-items: {{ section.settings.header_alignment }};">
+    <div class="lookbook-header-top">
+        <a
+          href="{{ section.settings.button_link }}"
+          class="lookbook-cta"
+          style="text-align: {{ section.settings.title_alignment }}; color: {{ section.settings.button_color }};">{{ section.settings.button_text }}</a>
+      <h3 class="lookbook-title" style="color: {{ section.settings.title_color }}; text-align: {{ section.settings.title_alignment }};">{{ section.settings.title }}</h3>
+    </div>
+    <div class="lookbook-description" 
+         style="
+                color: {{ section.settings.description_color }}; 
+                text-align: {{ section.settings.description_alignment }}; 
+                max-width: 800px;">{{ section.settings.description }}</div>
+  </div>
+
+  <div class="lookbook-grid">
+    {% for block in section.blocks %}
+      <div class="lookbook-item">
+        {% if block.settings.image != blank %}
+          <img
+            src="{{ block.settings.image | img_url: 'master' }}"
+            alt="{{ block.settings.image.alt }}"
+            class="lookbook-image">
+        {% else %}
+          {% assign default_image_index = forloop.index | modulo: 8 | plus: 1 %}
+          <img
+            src="{{ 'lookbook-' | append: default_image_index | append: '.png' | asset_img_url: 'master' }}"
+            class="lookbook-image"
+            alt="{{ block.settings.title | escape }}"
+          >
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Add this new slider container -->
+
+  <div id="slider-backdrop" class="slider-backdrop"></div>
+
+  <div id="lookbook-slider" class="lookbook-slider">
+    <div class="slider-close" style="color: {{ section.settings.close_button_color }};">&times;</div>
+
+
+    <div class="slider-content">
+      {% for block in section.blocks %}
+        {% if block.settings.image != blank %}
+          <img
+            src="{{ block.settings.image | img_url: 'master' }}"
+            alt="{{ block.settings.image.alt }}"
+            class="slider-image">
+        {% else %}
+          {% assign default_image_index = forloop.index | modulo: 8 | plus: 1 %}
+          <img
+            src="{{ 'lookbook-' | append: default_image_index | append: '.png' | asset_img_url: 'master' }}"
+            class="slider-image"
+            alt="{{ block.settings.title | escape }}"
+          >
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Update the scroll-downs div -->
+    <div class="scroll-downs desktop-only">
+      <div class="mousey" style="border-color: {{ section.settings.scroll_animation_color }};">
+        <div class="scroller" style="background-color: {{ section.settings.scroll_animation_color }};"></div>
+      </div>
+    </div>
+
+    <!-- Add a new mobile-only class to the SVG -->
+    <svg
+      id="Swipe-horizontal_1"
+      class="mobile-only"
+      data-name="Swipe horizontal 1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 200 200"
+      style="position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 99px;
+      z-index: 1002;
+      ">
+        <path
+        class="hand-x"
+        d="M139.93,113.56l-41.12-6.93V76.08a9.25,9.25,0,0,0-9.25-9.25h0a9.25,9.25,0,0,0-9.25,9.25v57.36L71,122.65c-3.61-3.61-8.44-3.89-13.08,0,0,0-7.24,5.84-3.83,9.25l34,34h42.63a9.25,9.25,0,0,0,9.07-7.43l6.82-34.09A9.28,9.28,0,0,0,139.93,113.56Z"
+        style="fill: {{ section.settings.swipe_animation_color }};" />
+    </svg>
+
+    <!-- Inside the lookbook-slider div, update the slider-caption div -->
+    <div
+      id="slider-caption"
+      class="slider-caption"
+      style="background-color: transparent; color: {{ section.settings.caption_text_color }};">
+      <h2>{{ section.settings.title }}</h2>
+    </div>
+  </div>
+</div>
+
+
+
+
+{% schema %}
+  {
+    "name": "Lookbook",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content & Data"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "LOOKBOOK TITLE"
+      },
+      {
+        "type": "richtext",
+        "id": "description",
+        "label": "Description",
+        "default": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>"
+      },
+      {
+        "type": "text",
+        "id": "button_text",
+        "label": "Link Text",
+        "default": "Shop This Look"
+      },
+      {
+        "type": "url",
+        "id": "button_link",
+        "label": "Link"
+      },
+  
+      {
+        "type": "header",
+        "content": "Layout & Display"
+      },
+      {
+        "type": "select",
+        "id": "header_alignment",
+        "label": "Header Alignment",
+        "options": [
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "left",
+            "label": "Left"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_scroll_animation",
+        "label": "Show Scroll Animation (Desktop)",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_swipe_animation",
+        "label": "Show Swipe Animation (Mobile)",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "columns",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "label": "Columns (Desktop)",
+        "default": 3
+      },
+      {
+        "type": "header",
+        "content": "Typography"
+      },
+      {
+        "type": "select",
+        "id": "title_alignment",
+        "label": "Title Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "select",
+        "id": "description_alignment",
+        "label": "Description Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "range",
+        "id": "title_font_size",
+        "min": 20,
+        "max": 80,
+        "step": 2,
+        "unit": "px",
+        "label": "Title Font Size (Desktop)",
+        "default": 38
+      },
+      {
+        "type": "range",
+        "id": "description_font_size",
+        "min": 12,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "label": "Description Font Size (Desktop)",
+        "default": 14
+      },
+  
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Title Color",
+        "default": "#1B1B1B"
+      },
+      {
+        "type": "color",
+        "id": "description_color",
+        "label": "Description Color",
+        "default": "#1B1B1B"
+      },
+      {
+        "type": "color",
+        "id": "button_color",
+        "label": "Link Color",
+        "default": "#1B1B1B"
+      },
+      {
+        "type": "color",
+        "id": "caption_text_color",
+        "label": "Caption Text Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "close_button_color",
+        "label": "Close Button Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "scroll_animation_color",
+        "label": "Scroll Animation Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "swipe_animation_color",
+        "label": "Swipe Animation Color",
+        "default": "#808080"
+      },
+  
+      {
+        "type": "header",
+        "content": "Styling"
+      },
+      {
+        "type": "range",
+        "id": "image_border_radius",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Round Image Corners",
+        "default": 0
+      },
+  
+      {
+        "type": "header",
+        "content": "Spacing"
+      },
+      {
+        "type": "range",
+        "id": "title_desktop_margin",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Title Top Margin (Desktop)",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "title_mobile_margin",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Title Top Margin (Mobile)",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "description_desktop_margin",
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Description Top Margin (Desktop)",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "description_mobile_margin",
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "label": "Description Top Margin (Mobile)",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Advanced Settings"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "lookbook_item",
+        "name": "Lookbook Item",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          }
+        ]
+      }
+    ]
+  }
+  {% endschema %}
+
+<style>
+
+.logo-container {
+  padding-bottom: 10px; 
+}
+  .lookbook-container {
+    max-width: none;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  .lookbook-header-content {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+  .lookbook-header-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .lookbook-title {
+    font-size: {{ section.settings.title_font_size }}px;
+    margin: 0;
+    font-family: var(--font_header), sans-serif;
+    margin-top: {{ section.settings.title_desktop_margin }}px;
+
+  }
+  .lookbook-description {
+    font-size: {{ section.settings.description_font_size }}px;
+    line-height: 1.4;
+    margin-top: {{ section.settings.description_desktop_margin }}px;
+
+  }
+  .lookbook-cta {
+    text-decoration: none;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+  .lookbook-grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns }}, 1fr);
+    gap: 20px;
+  }
+  .lookbook-item {
+    display: flex;
+    align-items: start;
+  }
+  .lookbook-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: {{ section.settings.image_border_radius }}px;
+  }
+  .lookbook-image {
+    cursor: pointer;
+  }
+  .lookbook-cta {
+    display: inline-block;
+    margin-top: 2px;
+    font-size: 16px;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+  }
+  .lookbook-cta:hover {
+    opacity: 0.7;
+  }
+  .lookbook-slider {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    z-index: 1000;
+    overflow-x: scroll;
+    white-space: nowrap;
+  }
+  .slider-close {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    font-size: 38px;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    z-index: 1002;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+  .slider-close:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  .slider-content {
+    height: 100%;
+    display: flex;
+    /* Changed from inline-block to flex */
+    align-items: center;
+  }
+  .slider-image {
+    height: 100%;
+    width: auto;
+    display: block;
+    /* Changed from inline-block */
+    flex-shrink: 0;
+    /* Prevent images from shrinking */
+    max-width: none;
+  }
+  .slider-caption {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    text-align: center;
+    z-index: 1001;
+    transition: opacity 0.3s ease;
+    background-color: {{ section.settings.caption_background_color }};
+  }
+  .slider-caption h2 {
+    margin: 0;
+    font-size: 24px;
+  }
+  .scroll-downs {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 34px;
+    height: 55px;
+    z-index: 1002;
+    opacity: 1;
+    /* Change this from 0 to 1 */
+    transition: opacity 0.3s ease;
+  }
+  .desktop-only {
+    display: none;
+  }
+  .mobile-only {
+    display: none;
+  }
+  @media (min-width: 769px) {
+    .desktop-only {
+      display: block;
+    }
+  }
+  @media (max-width: 768px) {
+    .mobile-only {
+      display: block;
+    }
+  }
+  .mousey {
+    width: 3px;
+    padding: 10px 15px;
+    height: 35px;
+    border: 2px solid #fff;
+    border-radius: 25px;
+    opacity: 0.75;
+    box-sizing: content-box;
+  }
+  .scroller {
+    width: 3px;
+    height: 10px;
+    border-radius: 25%;
+    background-color: #fff;
+    animation-name: scroll;
+    animation-duration: 2.2s;
+    animation-timing-function: cubic-bezier(0.15,0.41,0.69,0.94);
+    animation-iteration-count: infinite;
+  }
+  @keyframes scroll {
+    0% {
+      opacity: 0;
+    }
+    10% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(15px);
+      opacity: 0;
+    }
+  }
+  @media (max-width: 768px) {
+    .lookbook-header-content > div:last-child {
+      align-items: center !important;
+    }
+    .lookbook-title {
+      font-size: 1.5rem;
+      line-height: 1.2;
+      text-align: center !important;
+      margin-top: {{ section.settings.title_mobile_margin }}px;
+    }
+    .lookbook-description {
+      font-size: 1rem;
+      text-align: center !important;
+      margin-top: {{ section.settings.description_mobile_margin }}px;
+    }
+    .lookbook-cta {
+      text-align: center !important;
+    }
+    .lookbook-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    #Swipe-horizontal_1 {
+      margin: 3% auto;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    /* SVG RULES */
+    .hand-x {
+      fill: {{ section.settings.swipe_animation_color }};
+      opacity: .7;
+    }
+    .arrow-left,
+    .arrow-right,
+    .line-horizontal,
+    .notes {
+      fill: transparent;
+      opacity: .75;
+      stroke: {{ section.settings.swipe_animation_color }};
+      stroke-width: 3px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .notes {
+      opacity: 0;
+    }
+    @keyframes swipe-x {
+      0% {
+        transform: translateX(0px);
+      }
+      25% {
+        transform: translateX(50px) rotateZ(10deg);
+      }
+      50% {
+        transform: translateX(0px);
+      }
+      75% {
+        transform: translateX(-50px) rotateZ(-10deg);
+      }
+    }
+    /* SVG ANIMATION */
+    .hand-x {
+      animation: swipe-x 2.25s ease-in-out backwards;
+      animation-iteration-count: infinite;
+    }
+    .fade-out {
+      animation: fadeOut 0.5s forwards;
+    }
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+  }
+  @media (max-width: 480px) {
+    .lookbook-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .slider-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(10px);
+    z-index: 999;
+  }
+  /* Add responsive styles */
+  @media (max-width: 768px) {
+    .lookbook-header-content {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      margin: {{ section.settings.header_margin_top_mobile }}px 0 26px;
+    }
+    .lookbook-left-content {
+      width: 100%;
+      margin-bottom: 0;
+      align-items: center;
+    }
+    .lookbook-description {
+      width: 100%;
+      text-align: center;
+    }
+    .lookbook-title {
+      text-align: center !important;
+    }
+    .lookbook-left-content > div:first-child {
+      width: 100%;
+    }
+    .lookbook-left-content > div:first-child > div {
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    function updateGridColumns() {
+      var grid = document.querySelector('.lookbook-grid');
+      if (window.innerWidth > 768) {
+        grid.style.gridTemplateColumns = 'repeat({{ section.settings.columns }}, 1fr)';
+      } else if (window.innerWidth > 480) {
+        grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+      } else {
+        grid.style.gridTemplateColumns = '1fr';
+      }
+    }
+    window.addEventListener('resize', updateGridColumns);
+    updateGridColumns();
+    const lookbookImages = document.querySelectorAll('.lookbook-image');
+    const slider = document.getElementById('lookbook-slider');
+    const sliderBackdrop = document.getElementById('slider-backdrop');
+    const sliderClose = document.querySelector('.slider-close');
+    const sliderImages = document.querySelectorAll('.slider-image');
+    const scrollDowns = document.querySelector('.scroll-downs');
+    const swipeHorizontal = document.getElementById('Swipe-horizontal_1');
+    let scrollTimeout;
+    let animationShown = false;
+    function showScrollAnimation() {
+      if (animationShown) {
+        // Hide both animations if they've already been shown
+        scrollDowns.style.opacity = '0';
+        swipeHorizontal.style.opacity = '0';
+        return;
+      }
+      if (window.innerWidth > 768) {
+        if ({{ section.settings.show_scroll_animation }}) {
+          scrollDowns.style.display = 'block';
+          scrollDowns.style.opacity = '1';
+        } else {
+          scrollDowns.style.display = 'none';
+        }
+        swipeHorizontal.style.display = 'none';
+      } else {
+        scrollDowns.style.display = 'none';
+        if ({{ section.settings.show_swipe_animation }}) {
+          swipeHorizontal.style.display = 'block';
+          swipeHorizontal.style.opacity = '1';
+          swipeHorizontal.classList.remove('fade-out');
+        } else {
+          swipeHorizontal.style.display = 'none';
+        }
+      }
+      // Apply colors dynamically
+      const mousey = document.querySelector('.mousey');
+      const scroller = document.querySelector('.scroller');
+      const handX = document.querySelector('.hand-x');
+      mousey.style.borderColor = '{{ section.settings.scroll_animation_color }}';
+      scroller.style.backgroundColor = '{{ section.settings.scroll_animation_color }}';
+      handX.style.fill = '{{ section.settings.swipe_animation_color }}';
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        scrollDowns.style.opacity = '0';
+        swipeHorizontal.style.opacity = '0';
+        animationShown = true;
+      }, 3000);
+    }
+    function resetAnimationState() {
+      animationShown = false;
+      scrollDowns.style.opacity = '0';
+      swipeHorizontal.style.opacity = '0';
+    }
+    lookbookImages.forEach((image, index) => {
+      image.addEventListener('click', () => {
+        slider.style.display = 'block';
+        sliderBackdrop.style.display = 'block';
+        
+        // Calculate the scroll position based on the clicked image index
+        const scrollPosition = sliderImages[index].offsetLeft;
+        
+        // Scroll to the corresponding image in the slider
+        slider.scrollTo({
+          left: scrollPosition,
+          behavior: 'smooth'
+        });
+        // Reset animation state and show scroll animation
+        resetAnimationState();
+        setTimeout(showScrollAnimation, 100); // Delay showing the animation
+      });
+    });
+    // Modified wheel event listener for vertical scrolling on desktop
+    slider.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      slider.scrollLeft += e.deltaY;
+    });
+    // Touch swiping functionality
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    slider.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    });
+    slider.addEventListener('touchstart', () => {
+      // No action needed here now
+    });
+    slider.addEventListener('mouseleave', () => {
+      isDown = false;
+    });
+    slider.addEventListener('mouseup', () => {
+      isDown = false;
+    });
+    slider.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 2;
+      slider.scrollLeft = scrollLeft - walk;
+    });
+    sliderClose.addEventListener('click', () => {
+      slider.style.display = 'none';
+      sliderBackdrop.style.display = 'none';
+      resetAnimationState();
+    });
+    slider.addEventListener('click', (event) => {
+      if (event.target === slider) {
+        slider.style.display = 'none';
+        sliderBackdrop.style.display = 'none';
+        resetAnimationState();
+      }
+    });
+    const sliderContent = document.querySelector('.slider-content');
+    const sliderCaption = document.getElementById('slider-caption');
+    let fadeTimeout;
+    function showCaption() {
+      sliderCaption.style.opacity = '1';
+    }
+    function hideCaption() {
+      sliderCaption.style.opacity = '0';
+    }
+    function handleInteraction() {
+      showCaption();
+      clearTimeout(fadeTimeout);
+      fadeTimeout = setTimeout(hideCaption, 1000); // Hide after 1 second of inactivity
+    }
+    slider.addEventListener('scroll', handleInteraction);
+    slider.addEventListener('mousemove', handleInteraction);
+    slider.addEventListener('touchmove', handleInteraction);
+    // Show caption initially and set timeout to hide it
+    showCaption();
+    fadeTimeout = setTimeout(hideCaption, 2000);
+    // Modify the resize event listener
+    window.addEventListener('resize', () => {
+      if (slider.style.display === 'block') {
+        if (window.innerWidth > 768) {
+          swipeHorizontal.style.display = 'none';
+          if ({{ section.settings.show_scroll_animation }}) {
+            scrollDowns.style.display = 'block';
+          } else {
+            scrollDowns.style.display = 'none';
+          }
+        } else {
+          scrollDowns.style.display = 'none';
+          if ({{ section.settings.show_swipe_animation }}) {
+            swipeHorizontal.style.display = 'block';
+          } else {
+            swipeHorizontal.style.display = 'none';
+          }
+        }
+        if (!animationShown) {
+          showScrollAnimation();
+        }
+      }
+    });
+  });
+</script>
+</script>

@@ -1,0 +1,160 @@
+{%- liquid
+  assign current = product.selected_or_first_available_variant
+  assign back_url = routes.all_products_collection_url
+  if collection
+    assign back_url = collection.url
+  endif
+  assign single_default = false
+  if product.has_only_default_variant
+    assign single_default = true
+  endif
+-%}
+<section class="inn-product" data-inn-product>
+  <a class="inn-back" href="{{ back_url }}">&lt; Back</a>
+
+  <div class="inn-product__layout">
+    <div class="inn-product__gallery">
+      {%- if product.media.size > 1 -%}
+        <div class="inn-product__thumbs" role="list">
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' -%}
+              <button type="button" class="inn-thumb{% if media.id == product.featured_media.id %} is-active{% endif %}" data-inn-thumb data-src="{{ media | image_url: width: 2400 }}" data-media-id="{{ media.id }}" aria-label="Image {{ forloop.index }}">
+                {{ media | image_url: width: 400 | image_tag: loading: 'lazy', alt: media.alt }}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      <div class="inn-product__main">
+        {%- render 'inn-spin', product: product -%}
+        {%- if product.featured_media -%}
+          <img data-inn-main src="{{ product.featured_media | image_url: width: 2400 }}" alt="{{ product.featured_media.alt | default: product.title | escape }}" width="{{ product.featured_media.width }}" height="{{ product.featured_media.height }}">
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="inn-product__info">
+      <div class="inn-product__head">
+        <h1 class="inn-product__title product-title">{{ product.title }}</h1>
+        {%- if product.price > 0 -%}
+          <div class="inn-product__price" data-inn-price>{{ current.price | money }}</div>
+        {%- endif -%}
+      </div>
+
+      {%- liquid
+        assign note = product.metafields.custom.note.value
+        if note == blank and section.settings.preorder_note != blank
+          assign title_down = product.title | downcase
+          if product.tags contains 'pre-order' or product.tags contains 'preorder' or title_down contains 'pre-sale' or title_down contains 'pre-order'
+            assign note = section.settings.preorder_note
+          endif
+          assign desc_down = product.description | strip_html | downcase
+          if desc_down contains 'pre-order' or desc_down contains 'preorder'
+            assign note = blank
+          endif
+        endif
+      -%}
+      {%- if note != blank -%}
+        <p class="inn-product__note">{{ note }}</p>
+      {%- endif -%}
+
+      {%- form 'product', product, class: 'inn-product__form', data-inn-form: '' -%}
+        <input type="hidden" name="id" value="{{ current.id }}" data-inn-variant-id>
+        {%- unless single_default -%}
+          {%- for option in product.options_with_values -%}
+            <label class="inn-select">
+              <span class="visually-hidden">{{ option.name }}</span>
+              <select data-inn-option="{{ forloop.index0 }}" aria-label="{{ option.name }}">
+                {%- if product.options.size == 1 -%}
+                  <option value="" disabled {% unless product.selected_variant %}selected{% endunless %}>Select a {{ option.name | downcase }}</option>
+                {%- endif -%}
+                {%- for value in option.values -%}
+                  <option value="{{ value | escape }}" {% if product.options.size > 1 or product.selected_variant %}{% if option.selected_value == value %}selected{% endif %}{% endif %}>{{ value }}</option>
+                {%- endfor -%}
+              </select>
+            </label>
+          {%- endfor -%}
+        {%- endunless -%}
+        <button type="submit" class="inn-add" data-inn-add {% unless product.available %}disabled{% endunless %}>
+          {%- if product.available -%}Add to bag{%- else -%}Sold out{%- endif -%}
+        </button>
+        <p class="inn-product__error" data-inn-error role="alert" hidden></p>
+      {%- endform -%}
+
+      {%- liquid
+        assign waitlist_on = section.settings.waitlist
+        if product.tags contains 'no-waitlist'
+          assign waitlist_on = false
+        endif
+        assign waitlist_tag = 'waitlist-' | append: product.handle
+      -%}
+      {%- if waitlist_on -%}
+        <div class="inn-waitlist" id="inn-waitlist" data-inn-waitlist data-inn-signup="product" data-success="{{ section.settings.waitlist_success | escape }}" data-base-tags="waitlist,{{ waitlist_tag }}" {% if product.available and current.available %}hidden{% endif %}>
+          {%- form 'customer', id: 'inn-waitlist-form', class: 'inn-waitlist__form' -%}
+            {%- if form.posted_successfully? -%}
+              <p class="inn-waitlist__done" role="status" data-inn-waitlist-done>{{ section.settings.waitlist_success }}</p>
+            {%- else -%}
+              <p class="inn-waitlist__head">{{ section.settings.waitlist_heading }}</p>
+              {%- if form.errors -%}
+                <p class="inn-product__error" role="alert">{{ form.errors.messages.first | default: 'That email did not go through. Try again.' }}</p>
+              {%- endif -%}
+              <input type="hidden" name="contact[tags]" value="waitlist,{{ waitlist_tag }}" data-inn-waitlist-tags>
+              <input type="hidden" name="return_to" value="{{ product.url }}?inn_joined=product#inn-waitlist">
+              <div class="inn-waitlist__row">
+                <label class="visually-hidden" for="inn-waitlist-name">First name</label>
+                <input id="inn-waitlist-name" type="text" name="contact[first_name]" placeholder="First name" autocomplete="given-name">
+                <label class="visually-hidden" for="inn-waitlist-email">Email</label>
+                <input id="inn-waitlist-email" type="email" name="contact[email]" placeholder="Email" autocomplete="email" required>
+              </div>
+              <button type="submit" class="inn-add inn-waitlist__btn">{{ section.settings.waitlist_button }}</button>
+              <p class="inn-waitlist__fine">{{ section.settings.waitlist_consent }}</p>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+
+      {%- if product.description != blank -%}
+        <div class="inn-product__desc">{{ product.description }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <script type="application/json" data-inn-variants>
+    [{%- for v in product.variants -%}
+      {"id": {{ v.id }}, "options": {{ v.options | json }}, "available": {{ v.available }}, "price": {{ v.price | money | json }}, "media": {% if v.featured_media %}{{ v.featured_media.id }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}]
+  </script>
+</section>
+
+{%- liquid
+  assign more = collections.all
+  if collection != blank and collection.products_count > 4
+    assign more = collection
+  endif
+  assign shown = 0
+-%}
+<section class="inn-featured inn-featured--more">
+  <a class="inn-label" href="{{ more.url }}">More&gt;</a>
+  <div class="inn-grid inn-grid--row">
+    {%- for p in more.products limit: 8 -%}
+      {%- if p.id == product.id or shown >= 4 -%}{%- continue -%}{%- endif -%}
+      {% render 'inn-card', product: p %}
+      {%- assign shown = shown | plus: 1 -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Innanet product",
+  "settings": [
+    { "type": "text", "id": "preorder_note", "label": "Pre-order note", "default": "This is a pre-order. Orders ship out after 2 weeks.", "info": "Shown on products tagged pre-order, or with PRE-SALE / PRE-ORDER in the title. A product's own custom.note metafield replaces it." },
+    { "type": "header", "content": "Sold-out waitlist" },
+    { "type": "checkbox", "id": "waitlist", "label": "Show waitlist sign-up on sold-out products", "default": true, "info": "Tag a product no-waitlist to leave it off." },
+    { "type": "text", "id": "waitlist_heading", "label": "Heading", "default": "Sold out. Get on the list for the next drop." },
+    { "type": "text", "id": "waitlist_button", "label": "Button", "default": "Join the waitlist" },
+    { "type": "text", "id": "waitlist_consent", "label": "Consent line", "default": "By joining you agree to get emails from Vic Mensa about this item and new releases. Unsubscribe any time." },
+    { "type": "text", "id": "waitlist_success", "label": "Success message", "default": "You're on the list." }
+  ]
+}
+{% endschema %}

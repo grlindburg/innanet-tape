@@ -1,0 +1,561 @@
+a{
+    color: inherit;
+}
+
+/*
+CUSTOMER ACCOUNTS
+*/
+
+#account_template{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+.account-container{
+    width: 1100px;
+    min-width: 950px;
+    display: flex;
+    justify-content: space-around;
+    height: 100%;
+    align-items: center;
+}
+
+.account-login-side-image{
+    height: 544px;
+    width: 500px;
+    object-fit: cover;
+    object-position: center;
+}
+
+#reset-password-form{
+    width: 100%;
+}
+
+#customer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 4px;
+    width: 400px;
+}
+
+.account_template_title{
+    margin-right: auto;
+    margin-left: auto;
+    width: fit-content;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 24px;
+    font-weight: 300;
+}
+
+.account_template_description{
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 40px;
+    font-weight: 200;
+}
+
+#customer_login .errors ul {
+    padding-left: 0;
+    font-weight: 200;
+    color: var(--login-error-color);
+}
+
+.account_input_label{
+    font-size: 21px;
+}
+
+.account_input{
+    border-radius: 4px;
+    margin-bottom: 14px;
+    height: 44px;
+    width: 100%;
+    padding-left: 6px;
+    font-weight: 200;
+}
+
+#customer_login{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+#create_customer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+#forgot_password{
+    display: flex; justify-content: center;
+    background-color: transparent; /* Ensures the background is transparent */
+    -webkit-text-decoration-skip: objects; /* Prevents underlines from being cut off */
+    color: white;
+}
+
+#forgot_password:hover {
+    text-decoration: underline; /* Example: underline on hover */
+}
+
+#forgot_password:active {
+    color: white; /* Example: change color when clicked */
+}
+
+#forgot_password:focus {
+    outline: none; /* Removes the default focus outline */
+}
+
+#login_email_label{
+    font-size: 16px !important;
+    font-weight: 200;
+}
+
+#login_password_label{
+    font-size: 16px !important;
+    font-weight: 200;
+}
+
+
+.hide-success-msg{
+    opacity: 0;
+    transition: opacity 1s ease-out;
+}
+
+
+/*CUSTOMER ACCOUNTS END*/
+
+
+
+/*ACCOUNT DETAILS AND ORDER HISTORY*/
+/* Header styles */
+
+a:visited {
+    text-decoration: none;
+}
+
+
+.account-hero-image{
+    height: 375px;
+    width: 850px;
+    object-fit: cover;
+    object-position: center;
+}
+
+#admin_header {
+    text-align: center;
+    margin-bottom: 0;
+}
+
+#admin_header .action_link {
+    font-size: 14px;
+}
+
+#admin_header .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.flex-container {
+    display: flex;
+    gap: 36px; /* Adds some space between flex items */
+    justify-content: center;
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    margin: 34px 0;
+}
+
+/* Sidebar & customer details */
+#customer_sidebar {
+    min-width: 250px;
+    max-width: 100%;
+    width: 850px;
+}
+
+#customer_detail{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.action_link > a{
+    padding: 5px 10px;
+    background-color: transparent;
+}
+
+.account-email{
+    margin: 5px auto 5px 0;
+}
+
+.group {
+    margin-bottom: 0px;
+}
+
+.name {
+    font-size: 14px;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.account-name-section{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.address{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.note {
+    font-size: 14px;
+}
+
+.logout-link-mobile{
+    display: none;
+}
+
+.address p {
+    margin: 5px 0;
+}
+
+.account-addy p {
+    margin: 5px 0;
+    text-align: left;
+}
+
+#order_address{
+    width: 850px;
+    max-width: 100%;
+
+}
+
+#view_address {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: right;
+}
+
+
+/* Orders table */
+#customer_orders {
+    max-width: 850px;
+    width: 100%;
+}
+
+/* Enhanced table styles */
+table {
+    max-width: 850px;
+    width: 100%;
+    border-collapse: collapse; /* Allows us to apply border-radius */
+    border-spacing: 0; /* Removes default spacing to handle borders and radius correctly */
+    margin: 0 auto; /* Centers the table horizontally */
+    overflow: hidden; /* Ensures the content doesn't overflow the rounded corners */
+}
+
+th{
+    font-weight: 400;
+}
+
+th, td {
+    text-align: left;
+    padding: 12px; /* Adjust padding as needed */
+    border: 1px solid var(--table-color); /* Lighter and thinner dividing lines */
+}
+
+.order-table-color{
+    border: 1px solid var(--order-table-color);
+}
+
+
+thead th {
+    background-color: transparent;
+    position: relative;
+}
+
+/* This targets the last th element and applies rounded corners on the top */
+thead th:last-child {
+    border-top-right-radius: 0px;
+}
+
+/* This targets the first th element and applies rounded corners on the top */
+thead th:first-child {
+    border-top-left-radius: 0px;
+}
+
+/* Adjustments for rows and columns */
+tr:last-child td:first-child {
+    border-bottom-left-radius: 0px; /* Rounded bottom left corner */
+}
+
+tr:last-child td:last-child {
+    border-bottom-right-radius: 0px; /* Rounded bottom right corner */
+}
+
+tr.odd {
+}
+
+/* Styling status indicators */
+.status_paid, .status_fulfilled {
+}
+
+.status_pending, .status_unfulfilled {
+}
+
+/* Ensures odd and even rows are clearly distinguished */
+tr.odd td {
+    background-color: transparent;
+}
+
+tr.even td {
+    background-color: transparent;
+}
+
+
+tr.cancelled_order {
+    text-decoration: line-through;
+}
+
+
+.money {
+}
+
+
+
+/*CUSTOMER ADDRESSES*/
+
+input{
+    -webkit-appearance: checkbox;
+}
+
+#address_tables{
+    min-width: 250px;
+    max-width: 100%;
+    width: 850px;
+}
+
+#admin_header_address{
+    min-width: 250px;
+    max-width: 100%;
+    width: 850px;
+}
+
+.address_actions .action_edit a {
+    padding-left: 0;
+}
+
+.action_add{
+    margin-top: 20px;
+}
+
+.action_add a{
+    padding-left: 0;
+}
+
+#add_address{
+    min-width: 250px;
+    max-width: 100%;
+    width: 850px;
+}
+
+.customer_address_table {
+    max-width: 850px;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0 10px;
+    color: var(--form-text-color);
+}
+
+.customer_address_table,
+.customer_address_table th,
+.customer_address_table td {
+    border: none;
+}
+
+.customer_address_table tr {
+    border: none;
+}
+
+.customer_address_table td {
+    padding: 0px;
+}
+
+.customer_address_table input,
+.customer_address_table select {
+    box-sizing: border-box;
+}
+
+
+
+.customer_address_table .label label{
+   font-weight: 400; margin: 0;
+    line-height: 0;
+}
+
+.customer_address_table input{
+    height: 30px;
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-bottom: var(--addy-line-input-color) solid 1px;
+}
+.customer_address_table .label {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 0;
+}
+
+.customer_address_table .value {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0 0 40px 0;
+}
+
+.action_bottom{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.note_addy{
+    margin-top: 10px;
+    color: var(--form-text-color);
+ }
+
+.action_bottom input{
+    background-color: var(--form-btn-color);
+    color: var(--form-btn-txt-color);
+    border: none;
+    padding: 9px;
+}
+
+
+
+/*CUSTOMER ADDRESSES END*/
+
+
+
+
+
+
+
+
+@media screen and (max-width: 957px) {
+
+    #account_template {
+        margin: 20px 0;
+    }
+    .account-container{
+        width: 100%;
+        min-width: 100%;
+        flex-direction: column !important;
+    }
+
+    .account-login-side-image{
+        height: 301px;
+        width: 327px;
+        margin-bottom: 20px;
+    }
+    #customer_sidebar {
+        margin-bottom: 20px;
+    }
+    .customer_address_table {
+        width: 100%;
+        max-width: none;
+    }
+
+}
+
+
+
+@media screen and (max-width: 850px) {
+
+
+}
+
+@media screen and (max-width: 479px) {
+
+    .flex-container{
+        gap: 20px;
+    }
+
+    .account-name-section{
+        flex-direction: column-reverse;
+        align-items: start;
+    }
+
+    .account-name-section a{
+        display: none;
+    }
+
+    .logout-link-mobile{
+        display: block;
+        margin: 10px auto 0 0;
+    }
+
+    .address{
+        flex-direction: column;
+        align-items: start;
+    }
+
+    th, td {
+        padding: 4px; /* Adjust padding as needed */
+    }
+
+
+    /* CUSTOMER ACCOUNTS */
+    .account_template_title{
+        font-size: 17px;
+    }
+
+    .account_template_description{
+        font-size: 12px;
+    }
+
+    #customer{
+        width: 260px !important;
+    }
+
+    #login_email_label{
+        font-size: 13px !important;
+    }
+
+    #login_password_label{
+        font-size: 13px !important;
+    }
+
+    .template_header .title{
+        font-size: x-large;
+        margin-top: 0;
+    }
+
+    .action_add{
+        margin-top: 40px;
+    }
+
+
+
+    .customer_address_table input {
+        width: 100%;
+    }
+
+
+}
+
+/* CUSTOMER ACCOUNTS END*/

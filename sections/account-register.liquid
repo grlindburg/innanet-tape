@@ -1,0 +1,357 @@
+{% assign pj = section.settings %}
+{{ 'account.css' | asset_url | stylesheet_tag }}
+
+
+<div id="account_template">
+
+  <div class="account-container" style="{% if pj.switch_account_side_img %} flex-direction: row-reverse; {% endif %}">
+
+    {% if pj.remove_account_side_img == false %}
+      <img
+        src="{% if pj.account_login_side_img %}{{ pj.account_login_side_img | image_url }}{% else %}{{ 'account.png' | asset_img_url: 'master' }}{% endif %}"
+        alt=""
+        class="account-login-side-image"
+        style="{% if pj.curve_account_side_img %} border-radius: 12px; {% endif %}">
+    {% endif %}
+
+    <div id="customer">
+      <div class="account_template_header">
+        <h1 class="account_template_title" style="color: {{ pj.login_header_color }};">{{ pj.login_header }}</h1>
+        <p class="account_template_description" style="color: {{ pj.login_desc_color }};">{{ pj.login_desc }}</p>
+      </div>
+
+      {% form 'create_customer' %}
+        <div style="color: {{ pj.login_errors_color }};">
+          {{ form.errors | default_errors }}
+        </div>
+
+
+        <div
+          style="width: 100%; margin-bottom: 0px;"
+          id="login_email"
+          class="clearfix large_form">
+          <label
+            id="login_email_label"
+            style="color: {{ pj.login_first_name_label_color }};"
+            for="first_name"
+            class="login account_input_label">{{ 'account.form.first_name' | t }}</label>
+          <input
+            style="
+                        color: {{ pj.login_first_name_input_text_color }};
+                        background: transparent;
+                        border-radius: {% if pj.enable_login_border_radius %} 4px {% else %} 0px {% endif %};
+                        border: 0.5px {{ pj.login_first_name_input_border_color }} solid;"
+            type="text"
+            value=""
+            name="customer[first_name]"
+            id="first_name"
+            class="large account_input"
+            autocomplete="given-name"
+            aria-required="true"
+            size="30" />
+        </div>
+
+        <div
+          style="width: 100%; margin-bottom: 0px;"
+          id="login_email"
+          class="clearfix large_form">
+          <label
+            id="login_email_label"
+            style="color: {{ pj.login_last_name_label_color }};"
+            for="last_name"
+            class="login account_input_label">{{ 'account.form.last_name' | t }}</label>
+          <input
+            style="
+                        color: {{ pj.login_last_name_input_text_color }};
+                        background: transparent;
+                        border-radius: {% if pj.enable_login_border_radius %} 4px {% else %} 0px {% endif %};
+                        border: 0.5px {{ pj.login_last_name_input_border_color }} solid;"
+            type="text"
+            value=""
+            name="customer[last_name]"
+            id="last_name"
+            class="large account_input"
+            autocomplete="family-name"
+            aria-required="true"
+            size="30" />
+        </div>
+
+        <div
+          style="width: 100%; margin-bottom: 0px;"
+          id="login_email"
+          class="clearfix large_form">
+          <label
+            id="login_email_label"
+            style="color: {{ pj.login_email_label_color }};"
+            for="customer_email"
+            class="login account_input_label">{{ 'account.form.email_placeholder' | t }}</label>
+          <input
+            style="
+                        color: {{ pj.login_email_input_text_color }};
+                        background: transparent;
+                        border-radius: {% if pj.enable_login_border_radius %} 4px {% else %} 0px {% endif %};
+                        border: 0.5px {{ pj.login_email_input_border_color }} solid;"
+            type="email"
+            value=""
+            name="customer[email]"
+            id="customer_email"
+            class="large account_input"
+            autocomplete="email"
+            aria-required="true"
+            size="30" />
+        </div>
+
+        <div
+          style="width: 100%;"
+          id="login_password"
+          class="clearfix large_form">
+          <label
+            id="login_password_label"
+            style="color: {{ pj.login_password_label_color }};"
+            for="customer_password"
+            class="login account_input_label">{{ 'account.form.password_placeholder' | t }}</label>
+          <input
+            style="
+                            color: {{ pj.login_password_input_text_color }};
+                            background: transparent;
+                            border-radius: {% if pj.enable_login_border_radius %} 4px {% else %} 0px {% endif %};
+                            border: 0.5px {{ pj.login_password_input_border_color }} solid;"
+            type="password"
+            value=""
+            name="customer[password]"
+            id="customer_password"
+            class="large password account_input"
+            autocomplete="new-password"
+            aria-required="true"
+            size="30" />
+          <div id="forgot_password" style="display: flex; justify-content: center;">
+            <a href="{{ routes.account_login_url }}" style="
+                                   color:{{ pj.login_register_color }};
+                                   text-decoration: none;
+                                   -webkit-text-decoration-skip: objects;
+                                   font-size: 14px;
+                                   font-weight: 200;
+                                   margin: 11px 0;
+                                   ">
+              {{ pj.login_register }}</a>
+          </div>
+        </div>
+
+        <div class="account_action_bottom" style="
+        align-items: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        ">
+          <input
+            style="
+                        width: 100%;
+                        height: 44px;
+                        font-family: var(--btn_font), sans-serif;
+                        border-radius: {% if pj.enable_login_border_radius %} 4px {% else %} 0px {% endif %};
+                        border-color: transparent;
+                        background-color: {{ pj.login_btn_color }};
+                        font-size: 17px;
+                        color: {{ pj.login_btn_txt_color }};
+                        cursor: pointer;
+                        "
+            class="account_action_btn"
+            type="submit"
+            value="{{ pj.login_btn_txt }}" />
+          <a style="text-decoration: none; font-weight: 200; color: {{ pj.login_back_store_color }};  margin: 20px;" href="{{ routes.root_url }}">{{ pj.login_back_store_text }}</a>
+        </div>
+      {% endform %}
+    </div>
+
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Register Form",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Register Side Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "account_login_side_img",
+        "label": "Register Side Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_account_side_img",
+        "label": "Remove Account Side Image",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "switch_account_side_img",
+        "label": "Switch Account Side Image",
+        "default": false
+      }, {
+        "type": "checkbox",
+        "id": "curve_account_side_img",
+        "label": "Curve Account Side Image",
+        "default": false
+      }, {
+        "type": "header",
+        "content": "Login Header"
+      }, {
+        "type": "text",
+        "id": "login_header",
+        "label": "Header Text",
+        "default": "REGISTER"
+      }, {
+        "type": "text",
+        "id": "login_desc",
+        "label": "Sub-Header Text",
+        "default": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      }, {
+        "type": "color",
+        "id": "login_header_color",
+        "label": "Header Text Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_desc_color",
+        "label": "Sub-Header Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "First Name Field"
+      }, {
+        "type": "color",
+        "id": "login_first_name_label_color",
+        "label": "Label Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_first_name_input_border_color",
+        "label": "Input Border Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_first_name_input_text_color",
+        "label": "Input Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Last Name Field"
+      }, {
+        "type": "color",
+        "id": "login_last_name_label_color",
+        "label": "Label Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_last_name_input_border_color",
+        "label": "Input Border Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_last_name_input_text_color",
+        "label": "Input Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Email Field"
+      }, {
+        "type": "color",
+        "id": "login_email_label_color",
+        "label": "Label Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_email_input_border_color",
+        "label": "Input Border Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_email_input_text_color",
+        "label": "Input Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Password Field"
+      }, {
+        "type": "color",
+        "id": "login_password_label_color",
+        "label": "Password Label Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_password_input_border_color",
+        "label": "Input Border Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "login_password_input_text_color",
+        "label": "Input Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Join Button"
+      }, {
+        "type": "text",
+        "id": "login_btn_txt",
+        "label": "Text",
+        "default": "Join"
+      }, {
+        "type": "color",
+        "id": "login_btn_color",
+        "label": "Background Color",
+        "default": "#FE0000"
+      }, {
+        "type": "color",
+        "id": "login_btn_txt_color",
+        "label": "Text Color",
+        "default": "#fff"
+      }, {
+        "type": "header",
+        "content": "Register Error Info"
+      }, {
+        "type": "color",
+        "id": "login_errors_color",
+        "label": "Text Color",
+        "default": "#FE0000"
+      }, {
+        "type": "header",
+        "content": "Already Signed Up Link"
+      }, {
+        "type": "text",
+        "id": "login_register",
+        "label": "Text",
+        "default": "Already Signed up?"
+      }, {
+        "type": "color",
+        "id": "login_register_color",
+        "label": "Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Back To Store Link"
+      }, {
+        "type": "text",
+        "id": "login_back_store_text",
+        "label": "Text",
+        "default": "Back To Store"
+      }, {
+        "type": "color",
+        "id": "login_back_store_color",
+        "label": "Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Misc"
+      }, {
+        "type": "checkbox",
+        "id": "enable_login_border_radius",
+        "label": "Enable Radius On Inputs & Buttons",
+        "default": false
+      }
+    ]
+  }
+{% endschema %}

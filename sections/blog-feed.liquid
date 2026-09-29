@@ -1,0 +1,330 @@
+{{ 'minimal-blog-list.css' | asset_url | stylesheet_tag }}
+
+<div class="minimal-blog-list" style="
+            background-color: {{ section.settings.background_color }};
+           --title-size-desktop: {{ section.settings.title_size_desktop }}px;
+           --title-size-mobile: {{ section.settings.title_size_mobile }}px;
+           --margin-top: {{ section.settings.top_spacing }}px;
+            --margin-bottom: {{ section.settings.bottom_spacing }}px;
+           --margin-top-mobile: {{ section.settings.top_spacing_mobile }}px;
+           --margin-bottom-mobile: {{ section.settings.bottom_spacing_mobile }}px;">
+  <h2 class="minimal-blog-list__blog-title" 
+      style="color: {{ section.settings.blog_title_color }}; 
+             font-weight: {% if section.settings.title_weight %} 700 {% else %} 400 {% endif %};">
+      {{ section.settings.blog_header }}
+  </h2>
+  <div class="minimal-blog-list__container">
+    {%- assign articles = blogs[section.settings.blog].articles -%}
+    {% if articles.size > 0 %}
+      {%- for article in articles limit: section.settings.posts_limit -%}
+        <a href="{{ article.url }}" class="minimal-blog-list__item" style="border-top-color: {{ section.settings.border_color }}; background-color: {{ section.settings.row_background_color }};">
+          <div class="minimal-blog-list__image-container">
+            {%- if article.image -%}
+              <img 
+                src="{{ article.image | img_url: '800x' }}"
+                srcset="{{ article.image | img_url: '148x93', crop: 'center' }} 148w,
+                        {{ article.image | img_url: '400x250', crop: 'center' }} 400w,
+                        {{ article.image | img_url: '800x500', crop: 'center' }} 800w"
+                sizes="(max-width: 768px) 100vw, 148px"
+                alt="{{ article.title }}"
+                class="minimal-blog-list__image"
+                loading="lazy"
+                width="148"
+                height="93"
+              >
+            {%- else -%}
+              {{ 'image' | placeholder_svg_tag: 'minimal-blog-list__image placeholder' }}
+            {%- endif -%}
+          </div>
+          
+          <div class="minimal-blog-list__content">
+            {%- if article.author -%}
+              <div class="minimal-blog-list__brand" style="color: {{ section.settings.author_color }};">{{ article.author }}</div>
+            {%- endif -%}
+            <h3 class="minimal-blog-list__title" style="color: {{ section.settings.title_color }};">{{ article.title }}</h3>
+          </div>
+
+          {%- if article.published_at -%}
+            <div class="minimal-blog-list__date" style="color: {{ section.settings.date_color }};">{{ article.published_at | date: '%B %d, %Y' }}</div>
+          {%- else -%}
+            <div class="minimal-blog-list__date"></div>
+          {%- endif -%}
+
+          <div class="minimal-blog-list__tags-wrapper">
+            {%- if article.tags.size > 0 -%}
+              <div class="minimal-blog-list__tags">
+                {%- for tag in article.tags -%}
+                  <span class="minimal-blog-list__tag" style="color: {{ section.settings.tag_text_color }}; background-color: {{ section.settings.tag_background_color }}; border-color: {{ section.settings.tag_border_color }}; border-radius: {{ section.settings.tag_border_radius }}px;">{{ tag }}</span>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </a>
+      {%- endfor -%}
+    {% else %}
+      {% for i in (1..3) %}
+        {% assign default_image = 'blog-3.jpeg' %}
+        <a href="#" class="minimal-blog-list__item" style="border-top-color: {{ section.settings.border_color }}; background-color: {{ section.settings.row_background_color }};">
+          <div class="minimal-blog-list__image-container">
+            <img 
+              src="{{ default_image | asset_img_url: '800x' }}"
+              srcset="{{ default_image | asset_img_url: '148x93', crop: 'center' }} 148w,
+                      {{ default_image | asset_img_url: '400x250', crop: 'center' }} 400w,
+                      {{ default_image | asset_img_url: '800x500', crop: 'center' }} 800w"
+              sizes="(max-width: 768px) 100vw, 148px"
+              alt="Blog Post {{ i }}"
+              class="minimal-blog-list__image"
+              loading="lazy"
+              width="148"
+              height="93"
+            >
+          </div>
+          
+          <div class="minimal-blog-list__content">
+            <div class="minimal-blog-list__brand" style="color: {{ section.settings.author_color }};">AUTHOR</div>
+            <h3 class="minimal-blog-list__title" style="color: {{ section.settings.title_color }};">Example Blog Post {{ i }}</h3>
+          </div>
+
+          <div class="minimal-blog-list__date" style="color: {{ section.settings.date_color }};">January {{ i }}, 2024</div>
+
+          <div class="minimal-blog-list__tags-wrapper">
+            <div class="minimal-blog-list__tags">
+              <span class="minimal-blog-list__tag" style="color: {{ section.settings.tag_text_color }}; background-color: {{ section.settings.tag_background_color }}; border-color: {{ section.settings.tag_border_color }}; border-radius: {{ section.settings.tag_border_radius }}px;">Example</span>
+              <span class="minimal-blog-list__tag" style="color: {{ section.settings.tag_text_color }}; background-color: {{ section.settings.tag_background_color }}; border-color: {{ section.settings.tag_border_color }}; border-radius: {{ section.settings.tag_border_radius }}px;">Blog</span>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  @media screen and (max-width: 768px) {
+    .minimal-blog-list {
+      margin-top: var(--margin-top-mobile);
+      margin-bottom: var(--margin-bottom-mobile);
+    }
+    
+    .minimal-blog-list__item:nth-child(n + {{ section.settings.posts_limit_mobile | plus: 1 }}) {
+      display: none;
+    }
+  }
+
+  .minimal-blog-list__title {
+    font-size: var(--title-size-desktop);
+    margin: 0;
+    color: {{ section.settings.title_color }};
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Blog Feed",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content & Data"
+      },
+      {
+        "type": "blog",
+        "id": "blog",
+        "label": "Blog"
+      },
+      {
+        "type": "text",
+        "id": "blog_header",
+        "label": "Blog Header Title",
+        "default": "BLOG TITLE"
+      },
+  
+      {
+        "type": "header",
+        "content": "Layout & Display"
+      },
+      {
+        "type": "range",
+        "id": "posts_limit",
+        "min": 3,
+        "max": 12,
+        "step": 1,
+        "label": "Posts to show - Desktop",
+        "default": 6
+      },
+      {
+        "type": "range",
+        "id": "posts_limit_mobile",
+        "min": 2,
+        "max": 6,
+        "step": 1,
+        "label": "Posts to show - Mobile",
+        "default": 2,
+        "info": "Control how many posts appear on mobile devices"
+      },
+  
+      {
+        "type": "header",
+        "content": "Typography"
+      },
+      {
+        "type": "range",
+        "id": "title_size_desktop",
+        "min": 12,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Title Size - Desktop",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "title_size_mobile",
+        "min": 12,
+        "max": 30,
+        "step": 1,
+        "unit": "px",
+        "label": "Title Size - Mobile",
+        "default": 14
+      },
+      {
+        "type": "checkbox",
+        "id": "title_weight",
+        "label": "Bold Section Title",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "blog_title_color",
+        "label": "Blog Title Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "row_background_color",
+        "label": "Article Row Background Color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "border_color",
+        "label": "Article Border Color",
+        "default": "#e5e5e5"
+      },
+      {
+        "type": "color",
+        "id": "author_color",
+        "label": "Author Text Color",
+        "default": "#333333"
+      },
+      {
+        "type": "color",
+        "id": "title_color",
+        "label": "Article Title Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "date_color",
+        "label": "Article Date Color",
+        "default": "#667777"
+      },
+      {
+        "type": "color",
+        "id": "tag_background_color",
+        "label": "Article Tag Background Color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "tag_text_color",
+        "label": "Article Tag Text Color",
+        "default": "#667777"
+      },
+      {
+        "type": "color",
+        "id": "tag_border_color",
+        "label": "Article Tag Border Color",
+        "default": "#eaeaea"
+      },
+      {
+        "type": "header",
+        "content": "Styling"
+      },
+      {
+        "type": "range",
+        "id": "tag_border_radius",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "px",
+        "label": "Article Tag Border Radius",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Spacing"
+      },
+      {
+        "type": "range",
+        "id": "top_spacing",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Top Spacing (Desktop)",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "bottom_spacing",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Bottom Spacing (Desktop)",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "top_spacing_mobile",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Top Spacing (Mobile)",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "bottom_spacing_mobile",
+        "min": 0,
+        "max": 200,
+        "step": 2,
+        "unit": "px",
+        "label": "Bottom Spacing (Mobile)",
+        "default": 16
+      }
+    ],
+    "presets": [
+      {
+        "name": "Blog Feed",
+        "category": "Blog"
+      }
+    ],
+    "disabled_on": {
+      "templates": [
+        "password"
+      ]
+    }
+  }
+  {% endschema %}

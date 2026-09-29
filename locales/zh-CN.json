@@ -1,0 +1,171 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "tn7d8e379f": "02\/22\/2023",
+  "t589b2285": "2:22PM",
+  "t4c641ebb": "密码",
+  "tn5ac62c12": "Off-White c\/o Virgil Abloh™ 开启了一个新叙事，那里自由思考激发了未来的先锋模式，想象的时代成为现实的产物。",
+  "tn5ecce4ba": "受到Virgil的艺术愿景和方法的启发，Off-White™ 培养了一批创意人才，他们在各自领域表现卓越，并且与Virgil有着强烈的个人联系。 Ibrahim与Virgil和Off-White™ 的关系通过Instagram的私信建立并成长，在过去三年里，无论在个人还是职业上都蓬勃发展，建立了基于相互尊重和共同价值观的深厚纽带。",
+  "t65b2da83": "“在九年内打造一个成功的奢侈品牌，这是一种天才表现。我钦佩这一壮举，并希望在此基础上继续打造一个丰富的遗产。他革命性地融合了跨越世代和年代的街头服饰和奢侈品。他向世界展示了，那些没有被代表的人、处于弱势地位的人，尤其是黑人，拥有卓越的智慧，并能够平等地推动和竞争体制。他激发了希望，并带来了改变。” - Ibrahim Kamara, Off-White™ 艺术与形象总监",
+  "tn3c849388": "返回主页",
+  "t5a0ea5a1": "谢谢！您的提交已被接收！",
+  "tnc0d2788": "返回主页",
+  "t4b47dc54": "+ 菜单",
+  "t1fef40": "购物车",
+  "tn77ee8913": "您的购物车",
+  "tn76f396dc": "小计",
+  "tn7941186e": "继续结账",
+  "t3d503d2b": "未找到商品。",
+  "tn1c765d0d": "产品不可用此数量。",
+  "tn118a2ab5": "返回主页",
+  "t58": "X",
+  "tn25f00e18": "促销中",
+  "t290691": "原价：",
+  "t71bb9a1c": "立即购买",
+  "tn11f7e1": "缺货",
+  "t43e13c3e": "下一个商品 >",
+  "tn33c4345d": "继续购物",
+  "tn437bd530": "春\/夏 23",
+  "t502cc34d": "我们相信，在业务的各个方面使用可持续和道德的做法，从材料采购到产品制造和运输。",
+  "tn10d26d54": "立即购买",
+  "tn54cb6016": "客户信息",
+  "t3ff5b7c": "电子邮件",
+  "tn35b49c7e": "送货地址",
+  "t12d3df93": "运输方式",
+  "tn175ec138": "付款信息",
+  "t7df1": " \/ ",
+  "t789bff0f": "账单地址",
+  "tn3eedfb0d": "订单商品",
+  "tn77079b6c": "订单摘要",
+  "t4d3eb24": "总计",
+  "tn65f5fa1c": "美国境内所有订单满 $200 美元免费送货",
+  "tn40b0787c": "页面未找到",
+  "t556d64d8": "您要查找的页面不存在或已被移动",
+  "general": {
+    "accessibility": {
+      "unit_price_separator": "每"
+    },
+    "meta": {
+      "tags": "标记 \"{{ tags }}\"",
+      "page": "第 {{ page }} 页"
+    },
+    "contact": {
+      "submit": "发送",
+      "message": "信息",
+      "subject": "主题",
+      "order_number": "订单号",
+      "first_name": "名字",
+      "last_name": "姓氏",
+      "email": "电子邮件地址"
+    },
+    "search": {
+      "no_results_html": "您搜索的 \"{{ terms }}\" 没有找到结果。",
+      "results_with_count": {
+        "one": "找到 {{ count }} 个结果关于 \"{{ terms }}\"",
+        "other": "找到 {{ count }} 个结果关于 \"{{ terms }}\""
+      },
+      "heading": "搜索我们的网站",
+      "placeholder": "搜索",
+      "submit": "提交",
+      "close": "关闭搜索",
+      "show_all_results": "显示所有结果"
+    }
+  },
+  "account": {
+    "form": {
+      "reset_password": "重置密码",
+      "reset_password_desc": "我们将向您发送一封电子邮件以重置您的密码。",
+      "email_placeholder": "电子邮件地址",
+      "password_placeholder": "密码",
+      "reset_password_success": "密码重置说明已发送至您的电子邮件。",
+      "first_name": "名字",
+      "last_name": "姓氏",
+      "company": "公司",
+      "address_1": "地址 1",
+      "address_2": "地址 2",
+      "city": "城市",
+      "country_region": "国家\/地区",
+      "state_province": "州\/省",
+      "zip": "邮编",
+      "phone": "电话",
+      "make_default_address": "设为默认地址?",
+      "update": "更新地址",
+      "cancel": "取消",
+      "or": "或",
+      "add_address": "添加地址",
+      "delete": "删除"
+    },
+    "orders": {
+      "order": "订单",
+      "date": "日期",
+      "payment_status": "付款状态",
+      "fulfillment_status": "履行状态",
+      "total": "总计",
+      "no_orders": "您尚未下任何订单。",
+      "subtotal": "小计",
+      "discount": "折扣",
+      "shipping": "运输",
+      "tax": "税款",
+      "placed_on": "下单日期",
+      "billing_address": "账单地址",
+      "shipping_address": "送货地址",
+      "product": "商品",
+      "quantity": "数量",
+      "price": "价格",
+      "fulfilled": "已履行",
+      "sku": "SKU"
+    }
+  },
+  "article": {
+    "by": "作者：",
+    "next_article": "下一个文章 >"
+  },
+  "products": {
+    "product": {
+      "on_sale": "促销中",
+      "sku": "SKU",
+      "was": "原价",
+      "adding_to_cart": "添加中...",
+      "add_to_cart": "添加到购物车",
+      "sold_out": "售罄",
+      "next_product": "下一个商品 >",
+      "keep_shopping": "继续购物",
+      "sort_by": "排序方式",
+      "menu": "菜单"
+    }
+  },
+  "password": {
+    "countdown": {
+      "days": "天",
+      "hours": "小时",
+      "minutes": "分钟",
+      "seconds": "秒"
+    },
+    "form": {
+      "submit": "加入",
+      "email_placeholder": "输入电子邮件"
+    }
+  },
+  "customer": {
+    "account_link": "账户",
+    "log_in": "登录"
+  },
+  "cart": {
+    "general": {
+      "title": "购物车",
+      "checkout": "结账"
+    }
+  },
+  "footer": {
+    "email": {
+      "placeholder": "输入电子邮件"
+    }
+  }
+}

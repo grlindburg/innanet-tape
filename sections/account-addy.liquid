@@ -1,0 +1,517 @@
+<script>
+  Shopify.CustomerAddress={toggleForm:function(e){var t=document.getElementById("edit_address_"+e),s=document.getElementById("view_address_"+e);return t.style.display="none"==t.style.display?"":"none",s.style.display="none"==s.style.display?"":"none",!1},toggleNewForm:function(){var e=document.getElementById("add_address");return e.style.display="none"==e.style.display?"":"none",!1},destroy:function(e,t){confirm(t||"Are you sure you wish to delete this address?")&&Shopify.postLink("/account/addresses/"+e,{parameters:{_method:"delete"}})}};
+</script>
+{% assign pj = section.settings %}
+{{ 'account.css' | asset_url | stylesheet_tag }}
+
+<div class="flex-container">
+
+  <a href="{{ routes.account_url }}" style="min-width: 250px;
+    max-width: 100%; 
+    width: 850px;">
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg">
+      <g id="Arrow / Arrow_Left_LG">
+        <path
+          id="Vector"
+          d="M3 12L8 17M3 12L8 7M3 12H21"
+          stroke="{{ pj.arrow_color }}"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+      </g>
+    </svg>
+  </a>
+
+  <div id="admin_header_address">
+    <h5 class="title" style="color: {{ pj.header_txt_color }};">{{ pj.header_txt }}</h5>
+    <div class="action_top">
+      <div id="action" class="action_link action_add note">
+        <button
+          type="button"
+          style="color: {{ pj.add_addy_color }}; background: none; border: none; padding: 0; font: inherit; cursor: pointer; text-decoration: underline;"
+          aria-controls="add_address"
+          onclick="Shopify.CustomerAddress.toggleNewForm(); return false;">{{ pj.addy_txt }}</button>
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="add_address"
+    class="customer_address edit_address"
+    style="display:none;">
+    {% form 'customer_address'
+      , customer.new_address %}
+      <div style="--addy-line-input-color: {{ pj.form_line_input_color }}; --form-text-color: {{ pj.form_txt_color }};" class="customer_address_table">
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_first_name_new">{{ 'account.form.first_name' | t }}</label>
+          </div>
+          <div class="value"><input
+              type="text"
+              id="address_first_name_new"
+              class="address_form"
+              name="address[first_name]"
+              value="{{form.first_name}}"
+              size="40" /></div>
+        </div>
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_last_name_new">{{ 'account.form.last_name' | t }}</label>
+          </div>
+          <div class="value"><input
+              type="text"
+              id="address_last_name_new"
+              class="address_form"
+              name="address[last_name]"
+              value="{{form.last_name}}"
+              size="40" /></div>
+        </div>
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_company_new">{{ 'account.form.company' | t }}</label>
+          </div>
+          <div class="value"><input
+              type="text"
+              id="address_company_new"
+              class="address_form"
+              name="address[company]"
+              value="{{form.company}}"
+              size="40" /></div>
+        </div>
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_address1_new">{{ 'account.form.address_1' | t }}</label>
+          </div>
+          <div class="value"><input
+              type="text"
+              id="address_address1_new"
+              class="address_form"
+              name="address[address1]"
+              value="{{form.address1}}"
+              size="40" /></div>
+        </div>
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_address2_new">{{ 'account.form.address_2' | t }}</label>
+          </div>
+          <div class="value"><input
+              type="text"
+              id="address_address2_new"
+              class="address_form"
+              name="address[address2]"
+              value="{{form.address2}}"
+              size="40" /></div>
+        </div>
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_province_new">{{ 'account.form.state_province' | t }}</label>
+          </div>
+          <div class="value"><input
+              type="text"
+              id="address_province_new"
+              class="address_form"
+              name="address[address2]"
+              value="{{form.address2}}"
+              size="40" /></div>
+        </div>
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_city_new">{{ 'account.form.city' | t }}</label>
+          </div>
+          <div class="value"><input
+              type="text"
+              id="address_city_new"
+              class="address_form"
+              name="address[city]"
+              value="{{form.city}}"
+              size="40" /></div>
+        </div>
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_country_new">{{ 'account.form.country_region' | t }}</label>
+          </div>
+          <div class="value">
+            <select
+              id="address_country_new"
+              name="address[country]"
+              data-default="{{form.country}}">{{ country_option_tags }}</select>
+          </div>
+        </div>
+        <div class="addr-field" id="address_province_container_new" style=" display:none">
+          <div class="label">
+            <label for="address_province_select_new">{{ 'account.form.province' | t }}</label>
+          </div>
+          <div class="value">
+            <select
+              id="address_province_select_new"
+              class="address_form"
+              name="address[province]"
+              data-default="{{form.province}}"></select>
+          </div>
+        </div>
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_zip_new">Zip</label>
+          </div>
+          <div class="value"><input
+              type="text"
+              id="address_zip_new"
+              class="address_form"
+              name="address[zip]"
+              value="{{form.zip}}"
+              size="40" /></div>
+        </div>
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_phone_new">{{ 'account.form.phone' | t }}</label>
+          </div>
+          <div class="value"><input
+              type="text"
+              id="address_phone_new"
+              class="address_form"
+              name="address[phone]"
+              value="{{form.phone}}"
+              size="40" /></div>
+        </div>
+        <div class="addr-field">
+          <div class="label">
+            <label for="address_default_address_new">{{ 'account.form.make_default_address' | t }}</label>
+          </div>
+          <div class="value"><input
+              type='checkbox'
+              id='address_default_address_new'
+              name='address[default]'
+              value='1'></div>
+        </div>
+      </div>
+      <div class="action_bottom">
+        <input
+          style="--form-btn-color: {{ pj.form_btn_color }}; --form-btn-txt-color: {{ pj.form_btn_txt_color }};"
+          class="btn "
+          type="submit"
+          value="Add Address" />
+        <span style="--form-text-color: {{ pj.form_txt_color }};" class="note_addy">
+          or
+          <button type="button" style="background: none; border: none; padding: 0; font: inherit; cursor: pointer; text-decoration: underline; color: inherit;" onclick="Shopify.CustomerAddress.toggleNewForm(); return false;">{{ 'account.form.cancel' | t }}</button>
+        </span>
+      </div>
+    {% endform %}
+  </div>
+
+  <div id="address_tables">
+    {% paginate customer.addresses by 10 %}
+
+      {% for address in customer.addresses %}
+        <div class="address_table">
+          <div id="view_address_{{address.id}}" class="customer_address">
+            <p style="color: {{ pj.addy_txt_color }}" class="address_title">
+              {{ address.summary }}
+              {% if address == customer.default_address %}
+                <span class="default_address note">({{ 'account.form.default_address' | t }})</span>
+              {% endif %}
+            </p>
+            <p class="address_actions">
+              <span style="color: {{ pj.edit_addy_txt_color }};" class="action_link action_edit">{{ "Edit" | edit_customer_address_link: address.id }}</span>
+              <form
+                class="address-delete-form"
+                method="post"
+                action="/account/addresses/{{ address.id }}">
+                <input
+                  type="hidden"
+                  name="_method"
+                  value="delete">
+                <button
+                  style="text-decoration: underline; padding: 0; background-color: transparent; color: {{ pj.del_btn_txt_color }}"
+                  type="submit"
+                  class="action_link action_delete">{{ 'account.form.delete' | t }}</button>
+              </form>
+
+            </p>
+            {% comment %}<div class="view_address">{% endcomment %}
+            {% comment %}<p>{{ address.first_name }} {{address.last_name }}</p>{% endcomment %}
+            {% comment %}<p>{{ address.company }}</p>{% endcomment %}
+            {% comment %}<p>{{ address.street }}</p>{% endcomment %}
+            {% comment %}<p>{{ address.city }} {% if address.province_code %}, {{ address.province_code }}{% endif %}</p>{% endcomment %}
+            {% comment %}<p>{{ address.country }} {{ address.zip }}</p>{% endcomment %}
+            {% comment %}<p>{{ address.phone }}</p>{% endcomment %}
+            {% comment %}</div>{% endcomment %}
+            <div style="width: 100%; height: 0.8px; background-color: {{ pj.line_div_color }}; margin: 30px 0; "></div>
+          </div>
+          <div
+            id="edit_address_{{address.id}}"
+            class="customer_address edit_address"
+            style="display:none;">
+            {% form 'customer_address'
+              , address %}
+              <div style="--addy-line-input-color: {{ pj.form_line_input_color }}; --form-text-color: {{ pj.form_txt_color }};" class="customer_address_table">
+                <div class="addr-field">
+                  <div class="label">
+                    <label for="address_first_name_{{form.id}}">{{ 'account.form.first_name' | t }}</label>
+                  </div>
+                  <div class="value"><input
+                      type="text"
+                      id="address_first_name_{{form.id}}"
+                      class="address_form"
+                      name="address[first_name]"
+                      value="{{form.first_name}}"
+                      size="40" /></div>
+                </div>
+                <div class="addr-field">
+                  <div class="label">
+                    <label for="address_last_name_{{form.id}}">{{ 'account.form.last_name' | t }}</label>
+                  </div>
+                  <div class="value"><input
+                      type="text"
+                      id="address_last_name_{{form.id}}"
+                      class="address_form"
+                      name="address[last_name]"
+                      value="{{form.last_name}}"
+                      size="40" /></div>
+                </div>
+                <div class="addr-field">
+                  <div class="label">
+                    <label for="address_company_{{form.id}}">{{ 'account.form.company' | t }}</label>
+                  </div>
+                  <div class="value"><input
+                      type="text"
+                      id="address_company_{{form.id}}"
+                      class="address_form"
+                      name="address[company]"
+                      value="{{form.company}}"
+                      size="40" /></div>
+                </div>
+                <div class="addr-field">
+                  <div class="label">
+                    <label for="address_address1_{{form.id}}">{{ 'account.form.address_1' | t }}</label>
+                  </div>
+                  <div class="value"><input
+                      type="text"
+                      id="address_address1_{{form.id}}"
+                      class="address_form"
+                      name="address[address1]"
+                      value="{{form.address1}}"
+                      size="40" /></div>
+                </div>
+                <div class="addr-field">
+                  <div class="label">
+                    <label for="address_address2_{{form.id}}">{{ 'account.form.address_2' | t }}</label>
+                  </div>
+                  <div class="value"><input
+                      type="text"
+                      id="address_address2_{{form.id}}"
+                      class="address_form"
+                      name="address[address2]"
+                      value="{{form.address2}}"
+                      size="40" /></div>
+                </div>
+                <div class="addr-field">
+                  <div class="label">
+                    <label for="address_city_{{form.id}}">{{ 'account.form.city' | t }}</label>
+                  </div>
+                  <div class="value"><input
+                      type="text"
+                      id="address_city_{{form.id}}"
+                      class="address_form"
+                      name="address[city]"
+                      value="{{form.city}}"
+                      size="40" /></div>
+                </div>
+                <div class="addr-field">
+                  <div class="label">
+                    <label for="address_country_{{form.id}}">{{ 'account.form.country_region' | t }}</label>
+                  </div>
+                  <div class="value">
+                    <select
+                      id="address_country_{{form.id}}"
+                      name="address[country]"
+                      data-default="{{form.country}}">{{ country_option_tags }}</select>
+                  </div>
+                </div>
+                <div class="addr-field" id="address_province_container_{{form.id}}" style="display:none">
+                  <div class="label">
+                    <label for="address_province_{{form.id}}">{{ 'account.form.province' | t }}</label>
+                  </div>
+                  <div class="value">
+                    <select
+                      id="address_province_{{form.id}}"
+                      class="address_form"
+                      name="address[province]"
+                      data-default="{{form.province}}"></select>
+                  </div>
+                </div>
+                <div class="addr-field">
+                  <div class="label">
+                    <label for="address_zip_{{form.id}}">{{ 'account.form.zip' | t }}</label>
+                  </div>
+                  <div class="value"><input
+                      type="text"
+                      id="address_zip_{{form.id}}"
+                      class="address_form"
+                      name="address[zip]"
+                      value="{{form.zip}}"
+                      size="40" /></div>
+                </div>
+                <div class="addr-field">
+                  <div class="label">
+                    <label for="address_phone_{{form.id}}">{{ 'account.form.phone' | t }}</label>
+                  </div>
+                  <div class="value"><input
+                      type="text"
+                      id="address_phone_{{form.id}}"
+                      class="address_form"
+                      name="address[phone]"
+                      value="{{form.phone}}"
+                      size="40" /></div>
+                </div>
+                <div class="addr-field">
+                  <div class="label">
+                    <label for="address_default_address_{{form.id}}">{{ 'account.form.make_default_address' | t }}</label>
+                  </div>
+                  <div class="value"><input
+                      type='checkbox'
+                      id='address_default_address_{{form.id}}'
+                      name='address[default]'
+                      value='1'></div>
+                </div>
+              </div>
+              <div class="action_bottom">
+                <input
+                  style="--form-btn-color: {{ pj.form_btn_color }}; --form-btn-txt-color: {{ pj.form_btn_txt_color }};"
+                  class="btn"
+                  type="submit"
+                  value="{{ 'account.form.update' | t }}" />
+                <span style="--form-text-color: {{ pj.form_txt_color }};" class="note_addy">
+                  {{ 'account.form.or' | t }}
+                  <button type="button" style="background: none; border: none; padding: 0; font: inherit; cursor: pointer; text-decoration: underline; color: inherit;" onclick="Shopify.CustomerAddress.toggleForm({{form.id}}); return false;">{{ 'account.form.cancel' | t }}</button>
+                </span>
+              </div>
+            {% endform %}
+          </div>
+        </div>
+        <!-- end .address_table -->
+      {% endfor %}
+
+      <div id="address_pagination">{{ paginate | default_pagination }}</div>
+    {% endpaginate %}
+  </div>
+  <!-- end #address_tables -->
+
+  <script type="text/javascript" charset="utf-8">
+    // initialize observers on address selectors
+    new Shopify.CountryProvinceSelector('address_country_new', 'address_province_new', {hideElement: 'address_province_container_new'});
+    {% for address in customer.addresses %}
+    new Shopify.CountryProvinceSelector('address_country_{{address.id}}', 'address_province_{{address.id}}', {hideElement: 'address_province_container_{{address.id}}'});
+    {% endfor %}
+  </script>
+
+
+  {% if pj.remove_account_hero_img == false %}
+    <img
+      src="{% if pj.account_hero_img %}{{ pj.account_hero_img | image_url }}{% else %}{{ 'ow-2.jpg' | asset_img_url: 'master' }}{% endif %}"
+      alt=""
+      class="account-hero-image"
+      style="{% if pj.curve_account_hero_img %} border-radius: 12px; {% endif %}">
+  {% endif %}
+</div>
+
+{% schema %}
+
+  {
+    "name": "Account Addresses",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Account Hero Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "account_hero_img",
+        "label": "Account Hero Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "remove_account_hero_img",
+        "label": "Remove Account Hero Image",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "curve_account_hero_img",
+        "label": "Curve Account Hero Image",
+        "default": false
+      }, {
+        "type": "text",
+        "id": "header_txt",
+        "label": "Header Text",
+        "default": "Manage Account Addresses"
+      }, {
+        "type": "text",
+        "id": "addy_txt",
+        "label": "Add New Address Text",
+        "default": "Add New Address"
+      }, {
+        "type": "color",
+        "id": "arrow_color",
+        "label": "Back Arrow Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "header_txt_color",
+        "label": "Header Title Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "add_addy_color",
+        "label": "Add New Address Link Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "addy_txt_color",
+        "label": "Address Text Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "edit_addy_txt_color",
+        "label": "Edit Address Link Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "del_btn_txt_color",
+        "label": "Delete Button Txt Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "line_div_color",
+        "label": "Address Line Divider Color",
+        "default": "#9f9f9f"
+      }, {
+        "type": "color",
+        "id": "form_txt_color",
+        "label": "Form Text Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "form_line_input_color",
+        "label": "Address Input Line Color",
+        "default": "#777"
+      }, {
+        "type": "color",
+        "id": "form_btn_color",
+        "label": "Form Btn Color",
+        "default": "#9f9f9f"
+      }, {
+        "type": "color",
+        "id": "form_btn_txt_color",
+        "label": "Form Btn Txt Color",
+        "default": "#fff"
+      }
+
+    ]
+  }
+
+{% endschema %}

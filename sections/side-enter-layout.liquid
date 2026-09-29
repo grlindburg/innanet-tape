@@ -1,0 +1,95 @@
+
+<div class="enter-layouts" style="
+z-index: 2;
+display: flex;
+flex-direction: column;
+justify-content: center;
+margin-top: 20px;
+position: absolute;
+top: 0;
+{% if section.settings['logo-alignment'] == 'right' %}
+        right: 0;
+        margin-right: 40px;
+        align-items: end;
+
+{% else %}
+        margin-left: 40px;
+        align-items: start;
+
+{% endif %}
+">
+{% if settings.show_home_logo %}
+  <a href="{{ routes.root_url }}" aria-current="page" class="logo-link w-inline-block w--current"
+  style=""
+  >
+    {% if settings.enter_screen_logo %}
+      <img src="{{ settings.enter_screen_logo | image_url }}"
+           height="auto"
+           style="width: {{ settings.enter_screen_logo_size }}px;"
+           alt="Logo"
+           class="logo"
+      >
+    {% else %}
+
+      <img src="{{ 'Supreme-dummy.png' | asset_url }}" alt="" class="logo">
+
+    {% endif %}
+  </a>
+{% endif %}
+
+{% if settings.show_home_time %}
+  {% if section.settings.show_date_time %}
+    <div class="date-time-container">
+      <div class="date" style="color: {{ section.settings.index_date_color }}">{{ 'tn7d8e379f' | t }}</div>
+      <div class="time" style="color: {{ section.settings.index_time_color }}">{{ 't589b2285' | t }}</div>
+    </div>
+  {% endif %}
+{% endif %}
+</div>
+
+
+
+
+{% schema %}
+{
+  "name": "Logo & Clock",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_date_time",
+      "label": "Show Date/Time",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "index_date_color",
+      "label": "Date Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "index_time_color",
+      "label": "Time Color",
+      "default": "#000"
+    },
+    {
+      "type": "select",
+      "id": "logo-alignment",
+      "label": "Logo Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    }
+  ]
+}
+
+
+{% endschema %}

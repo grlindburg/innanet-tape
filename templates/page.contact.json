@@ -1,0 +1,117 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "background": {
+      "type": "default-background",
+      "settings": {
+        "password_bg_style": "color",
+        "bg_color": "#f6b117",
+        "bg_color_mobile": "#f6b117",
+        "overlay_top_color": "#000000",
+        "overlay_top_opacity": 0,
+        "overlay_bottom_color": "#000000",
+        "overlay_bottom_opacity": 0,
+        "overlay_top_color_mobile": "#000000",
+        "overlay_top_opacity_mobile": 0,
+        "overlay_bottom_color_mobile": "#000000",
+        "overlay_bottom_opacity_mobile": 0,
+        "show_background_image_mobile": false
+      }
+    },
+    "clock": {
+      "type": "default-timezone",
+      "settings": {
+        "index_date_color": "#000000",
+        "index_time_color": "#000000",
+        "background_color": "rgba(0,0,0,0)"
+      }
+    },
+    "content": {
+      "type": "contact-content",
+      "disabled": true,
+      "settings": {
+        "contact-message": "Thanks for reaching out! Please allow 3-5 business days for a response.",
+        "contact_text_color": "#000000"
+      }
+    },
+    "form": {
+      "type": "contact-form",
+      "disabled": true,
+      "settings": {
+        "field-bg-color": "#ffffff",
+        "field-text-color": "#000000",
+        "submit-bg-color": "#000000",
+        "submit-text-color": "#ffffff",
+        "back-home-color": "#000000",
+        "back-home-text-color": "#ffffff"
+      }
+    },
+    "contact_inquiries_MVHC49": {
+      "type": "contact-inquiries",
+      "name": "Contact Inquiries",
+      "settings": {
+        "contact-message": "For all order-related inquiries, please allow 3-5 business days for a response to your inquiry.",
+        "contact_text_color": "#000",
+        "field-bg-color": "#fff",
+        "field-text-color": "#000",
+        "submit-bg-color": "#000000",
+        "submit-text-color": "#fff",
+        "back-home-color": "#000000",
+        "back-home-text-color": "#fff",
+        "booking-message": "If you're interested in booking Vic for performances, appearances, DJ sets, or other opportunities, please reach below.",
+        "booking_url": "https://docs.google.com/forms/d/e/1FAIpQLScZM-dJEmkKL8S_arm7Byf2Sd19Ekkx_FbR4AUi7mLBMBAaQg/viewform?usp=header",
+        "booking-card-bg-color": "#037246",
+        "booking-card-text-color": "#ffffff",
+        "booking-btn-bg-color": "#000000",
+        "booking-btn-text-color": "#ffffff"
+      }
+    },
+    "embedded_email_signup_K3nQpC": {
+      "type": "embedded-email-signup",
+      "name": "Embedded Email Signup",
+      "settings": {
+        "header": "Join Vic's Community",
+        "email_message": "<p>Be the first to access new music, events, giveaways, essays, inspiration + more. </p><p>Stay connected.</p>",
+        "email_placeholder": "EMAIL",
+        "button_text": "JOIN",
+        "success_message": "Thank you for joining! We'll keep you updated.",
+        "heading_alignment": "center",
+        "heading_color": "#000000",
+        "message_color": "#4c4c4c",
+        "background_color": "#191818",
+        "button_background": "#f7f5ec",
+        "button_text_color": "#191818",
+        "input_background": "#f7f5ec",
+        "input_border": "#e0e0e0",
+        "input_text": "#000000",
+        "input_placeholder": "#191818",
+        "success_color": "#28a745",
+        "button_radius": 0,
+        "input_radius": 0,
+        "margin_top_desktop": 20,
+        "margin_bottom_desktop": 0,
+        "margin_top_mobile": 18,
+        "margin_bottom_mobile": 0,
+        "title_size_desktop": 24,
+        "title_size_mobile": 20,
+        "title_weight": "400"
+      }
+    }
+  },
+  "order": [
+    "background",
+    "clock",
+    "content",
+    "form",
+    "contact_inquiries_MVHC49",
+    "embedded_email_signup_K3nQpC"
+  ]
+}
