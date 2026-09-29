@@ -48,7 +48,7 @@
 
   <nav class="inn-menu__links" aria-label="Menu">
     <a href="{{ routes.root_url }}">Home</a>
-    <a href="{{ tour_url }}" target="_blank" rel="noopener">Tour</a>
+    <a href="{{ tour_url }}" target="_blank" rel="noopener">Tour <span class="inn-icon inn-menu__wifi" style="--inn-icon: url('{{ 'inn-icon-wifi.svg' | asset_url }}')" aria-hidden="true"></span></a>
     <a href="{{ shop_url }}">Shop</a>
     {%- if section.settings.about_url != blank -%}<a href="{{ section.settings.about_url }}">About</a>{%- endif -%}
     <a href="{{ section.settings.contact_url | default: '/pages/contact' }}">Contact</a>
