@@ -305,7 +305,9 @@ a.inn-label:hover { color: var(--inn-orange); }
 .inn-header a, .inn-header button, .inn-header .cart-text, .inn-header .cart-count { color: var(--inn-peach) !important; }
 .inn-header a:hover { color: #fff !important; }
 .inn-menu__links a, .inn-menu__streams a, .inn-menu__close, .inn-menu__logo { color: var(--inn-orange) !important; }
-.inn-menu__links a.inn-menu__alt, .inn-menu__mark { color: #f4f4f4 !important; }
+/* Paint the drawer logotype directly so it can't pick up the base theme's dark link/span color. */
+.inn-menu .inn-menu__logo .inn-icon { background-color: var(--inn-orange) !important; }
+.inn-menu__links a.inn-menu__alt, .inn-menu .inn-menu__mark { color: #f4f4f4 !important; }
 .inn-footer__links a, .inn-footer__icons a, .inn-footer__copy { color: #8d8a8b !important; }
 .inn-footer__links a:hover, .inn-footer__icons a:hover { color: var(--inn-orange) !important; }
 .inn-card, .inn-card:hover, .inn-back, .inn-side__link, .inn-pager a { color: #000 !important; }
