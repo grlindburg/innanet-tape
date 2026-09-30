@@ -401,6 +401,11 @@ body { opacity: 1 !important; animation: none !important; }
 .inn-capture { display: none; grid-column: 1 / -1; justify-self: center; width: min(100%, 360px); text-align: center; font-family: var(--inn-font); }
 .inn-hero--capture-desktop .inn-capture { display: block; margin-top: clamp(20px, 3vw, 48px); }
 .inn-capture__head { margin: 0; font-weight: 700; font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: var(--inn-ink); }
+.inn-dots span { opacity: 0; animation: inn-dot 1.6s infinite; }
+.inn-dots span:nth-child(2) { animation-delay: .2s; }
+.inn-dots span:nth-child(3) { animation-delay: .4s; }
+@keyframes inn-dot { 0%, 15% { opacity: 0; } 30%, 75% { opacity: 1; } 90%, 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .inn-dots span { opacity: 1; animation: none; } }
 .inn-capture__sub { margin: 4px 0 12px; font-weight: 600; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--inn-ink); }
 .inn-capture__field {
   display: flex; height: 42px; background: var(--inn-ink);

@@ -4,6 +4,15 @@
   if section.settings.shop_collection != blank
     assign shop_url = section.settings.shop_collection.url
   endif
+
+  # A heading ending in "..." gets animated dots in place of the literal ones.
+  assign capture_heading = section.settings.capture_heading | strip
+  assign capture_dots = false
+  assign capture_tail = capture_heading | slice: -3, 3
+  if capture_tail == '...'
+    assign capture_heading = capture_heading | remove_last: '...'
+    assign capture_dots = true
+  endif
 -%}
 <section class="inn-hero{% if section.settings.capture %} inn-hero--capture{% endif %}{% if section.settings.capture and section.settings.capture_desktop %} inn-hero--capture-desktop{% endif %}">
   <picture class="inn-hero__bg">
@@ -30,7 +39,7 @@
           {%- if form.posted_successfully? -%}
             <p class="inn-capture__head" role="status">{{ section.settings.capture_success }}</p>
           {%- else -%}
-            <p class="inn-capture__head">{{ section.settings.capture_heading }}</p>
+            <p class="inn-capture__head">{{ capture_heading }}{% if capture_dots %}<span class="inn-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>{% endif %}</p>
             <p class="inn-capture__sub">{{ section.settings.capture_sub }}</p>
             <input type="hidden" name="contact[tags]" value="newsletter,waitlist,{{ section.settings.capture_tag | handleize }}">
             <input type="hidden" name="return_to" value="{{ routes.root_url }}?inn_joined=hero#inn-capture">
