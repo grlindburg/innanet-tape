@@ -164,8 +164,7 @@ a.inn-label:hover { color: var(--inn-orange); }
 .inn-footer__links a { color: #8d8a8b; font-weight: 600; font-size: 12px; letter-spacing: .02em; text-transform: uppercase; text-decoration: none; }
 .inn-footer__links a:hover, .inn-footer__icons a:hover { color: var(--inn-orange); }
 .inn-footer__copy { margin: 16px 0 0; font-size: 10px; color: #8d8a8b; }
-.inn-footer__signup { display: none; margin: 0 auto 22px; width: min(100%, 260px); height: 44px; background: var(--inn-orange); }
-.inn-footer--signup .inn-footer__signup { display: flex; }
+.inn-footer__signup { display: flex; margin: 0 auto 22px; width: min(100%, 260px); height: 44px; background: var(--inn-orange); }
 .inn-footer__signup input[type="email"] { flex: 1; min-width: 0; border: 0; background: transparent; padding: 0 14px; font-family: var(--inn-font); font-weight: 600; font-size: 14px; color: var(--inn-ink); }
 .inn-footer__signup input::placeholder { color: var(--inn-ink); opacity: 1; }
 .inn-footer__signup input:focus { outline: 2px solid #fff; outline-offset: -2px; }
@@ -271,7 +270,7 @@ a.inn-label:hover { color: var(--inn-orange); }
   .inn-tile--podcast { order: -1; }
 
   .inn-footer { padding: 90px var(--inn-gutter) 30px; }
-  .inn-footer__signup { display: flex; margin-bottom: 40px; }
+  .inn-footer__signup { margin-bottom: 40px; }
   .inn-footer__icons { display: flex; }
   .inn-footer__links { justify-content: center; gap: 10px 22px; }
   .inn-footer__links .inn-footer__wide { display: none; }
