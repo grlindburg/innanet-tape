@@ -32,7 +32,7 @@
           {%- else -%}
             <p class="inn-capture__head">{{ section.settings.capture_heading }}</p>
             <p class="inn-capture__sub">{{ section.settings.capture_sub }}</p>
-            <input type="hidden" name="contact[tags]" value="waitlist,{{ section.settings.capture_tag | handleize }}">
+            <input type="hidden" name="contact[tags]" value="newsletter,waitlist,{{ section.settings.capture_tag | handleize }}">
             <input type="hidden" name="return_to" value="{{ routes.root_url }}?inn_joined=hero#inn-capture">
             <div class="inn-capture__field">
               <label class="visually-hidden" for="inn-capture-email">Email</label>

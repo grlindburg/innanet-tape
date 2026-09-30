@@ -18,7 +18,7 @@
   });
 
   // ---- Footer "Email signup" link focuses the form ----
-  document.querySelectorAll('[data-inn-signup]').forEach(function (a) {
+  document.querySelectorAll('[data-inn-signup-link]').forEach(function (a) {
     a.addEventListener('click', function (e) {
       var input = document.querySelector('#inn-signup input[type="email"]');
       if (!input) return;

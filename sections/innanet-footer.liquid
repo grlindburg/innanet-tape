@@ -4,16 +4,14 @@
   assign substack_url = section.settings.substack_url | default: 'https://vicmensa.substack.com'
 -%}
 <footer class="inn-footer" role="contentinfo">
-  <form class="inn-footer__signup" id="inn-signup" method="post" action="/contact#inn-signup" accept-charset="UTF-8" data-inn-signup="footer" data-success="You're on the list.">
+  {%- form 'customer', id: 'inn-signup', class: 'inn-footer__signup', data-inn-signup: 'footer', data-success: "You're on the list." -%}
     <input type="hidden" name="return_to" value="{{ routes.root_url }}?inn_joined=footer#inn-signup">
-    <input type="hidden" name="form_type" value="customer">
-    <input type="hidden" name="utf8" value="✓">
     <input type="hidden" name="contact[tags]" value="newsletter">
     <input type="email" name="contact[email]" placeholder="Email Signup" aria-label="Email" autocomplete="email" required>
     <button type="submit" aria-label="Sign up">
       <svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M0 8h18M11 1l7 7-7 7"/></svg>
     </button>
-  </form>
+  {%- endform -%}
 
   <div class="inn-footer__icons">
     {%- if settings.social_facebook_link != blank -%}<a href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener" aria-label="Facebook"><span class="inn-icon" style="--inn-icon: url('{{ 'inn-icon-fb.svg' | asset_url }}')"></span></a>{%- endif -%}
@@ -31,7 +29,7 @@
     {%- if shop.refund_policy -%}<a href="{{ shop.refund_policy.url }}">Refunds</a>{%- endif -%}
     {%- if shop.shipping_policy -%}<a href="{{ shop.shipping_policy.url }}">Shipping</a>{%- endif -%}
     {%- if section.settings.faq_url != blank -%}<a href="{{ section.settings.faq_url }}">FAQ</a>{%- endif -%}
-    <a class="inn-footer__wide" href="#inn-signup" data-inn-signup>Email Signup</a>
+    <a class="inn-footer__wide" href="#inn-signup" data-inn-signup-link>Email Signup</a>
     <a class="inn-footer__wide" href="{{ boyz_url }}" target="_blank" rel="noopener">93Boyz</a>
     {%- if settings.social_facebook_link != blank -%}<a class="inn-footer__wide" href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener">Facebook</a>{%- endif -%}
     {%- if settings.social_instagram_link != blank -%}<a class="inn-footer__wide" href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener">Instagram</a>{%- endif -%}
